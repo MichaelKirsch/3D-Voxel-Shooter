@@ -2,11 +2,22 @@
 
 #pragma once
 
-class GameOver {
-public:
-    GameOver();
+#include <iostream>
+#include "StateMachine/State.h"
 
-    ~GameOver();
+class GameOver : public State {
+public:
+    GameOver()= default;
+    void updateFrame(){
+        std::cout <<"Frame\n";
+    };
+    void updateEntities(){
+        std::cout <<"Update\n";
+    };
+    void processInputs(){
+        std::cout <<"Input\n";
+    };
+    ~GameOver() = default;
 
 private:
 protected:

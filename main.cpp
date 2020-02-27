@@ -1,6 +1,7 @@
 #include <iostream>
+#include "StateMachine/Statemachine.h"
 
 int main() {
-    std::cout << "Hello, World!" << std::endl;
-    return 0;
+    Statemachine st;
+    st.run();
 }

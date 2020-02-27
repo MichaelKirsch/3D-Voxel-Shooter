@@ -14,8 +14,10 @@ file(COPY ${REQUIRED_DLLS_FOR_SFML} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 find_package(SFML 2.5.1 COMPONENTS system window graphics network audio REQUIRED)
 
 include_directories("libs")
-include_directories("libs/glad/include/glad/")
-include_directories("scr/")
+include_directories("libs/glad/include/")
+include_directories("src/")
+include_directories("libs/glm/glm/")
+include_directories("src/Engine/")
 find_package(OpenGL REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCES} libs/glad/src/glad.c main.cpp)

@@ -4,10 +4,8 @@
 
 class Renderable {
 public:
-    Renderable();
-
-    ~Renderable();
-
+    void render();
+    ~Renderable() = default;
 private:
 protected:
 };

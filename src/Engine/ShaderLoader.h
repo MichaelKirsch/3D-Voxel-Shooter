@@ -2,11 +2,15 @@
 
 #pragma once
 
+#include <string>
 class ShaderLoader {
 public:
-    ShaderLoader();
+    enum SHADERTYPE{
+        VERTEX,GEOMETRY,FRAGMENT
+    };
+    ShaderLoader(std::string path_to_shaderfolder);
 
-    ~ShaderLoader();
+    ~ShaderLoader() = default;
 
 private:
 protected:
