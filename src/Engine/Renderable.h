@@ -4,7 +4,7 @@
 
 class Renderable {
 public:
-    void render();
+    virtual void render(){};
     ~Renderable() = default;
 private:
 protected:

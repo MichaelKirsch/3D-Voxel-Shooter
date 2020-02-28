@@ -9,6 +9,7 @@
 #include "Timer.h"
 #include "States/GameOver.h"
 #include "WindowManager.h"
+#include "ShaderLoader.h"
 
 class Statemachine {
 public:
@@ -20,6 +21,7 @@ private:
     std::unique_ptr<State> m_playedState;
     sf::Clock m_clock;
     WindowManager m_windowmanager;
+    ShaderLoader m_shaderloader;
     float time;
     Timer frameTimer,updateTimer,inputTimer;
     bool running;

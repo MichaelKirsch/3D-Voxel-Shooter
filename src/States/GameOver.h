@@ -7,7 +7,7 @@
 
 class GameOver : public State {
 public:
-    GameOver()= default;
+    GameOver(ShaderLoader& shloader);
     void updateFrame(){
         std::cout <<"Frame\n";
     };
@@ -20,6 +20,7 @@ public:
     ~GameOver() = default;
 
 private:
+    unsigned int programm;
 protected:
 };
 

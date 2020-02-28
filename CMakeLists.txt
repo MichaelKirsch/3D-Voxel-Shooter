@@ -20,7 +20,7 @@ include_directories("libs/glm/glm/")
 include_directories("src/Engine/")
 find_package(OpenGL REQUIRED)
 
-add_executable(${PROJECT_NAME} ${SOURCES} libs/glad/src/glad.c main.cpp)
+add_executable(${PROJECT_NAME} ${SOURCES} libs/glad/src/glad.c libs/FastNoise/FastNoise.cpp main.cpp)
 
 
 target_link_libraries(${PROJECT_NAME} sfml-audio sfml-graphics sfml-window sfml-system ${OPENGL_LIBRARIES} )
