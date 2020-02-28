@@ -10,6 +10,7 @@ class WindowManager {
 public:
     WindowManager(sf::Vector2i resolution, bool fullscreen);
     void swapBuffers();
+    void clearScreen();
     sf::Window& getWindow();
     ~WindowManager();
 

@@ -39,7 +39,7 @@ unsigned int ShaderLoader::loadAndCompileShader(ShaderObject obj) {
     if(!success)
     {
         glGetShaderInfoLog(shaderID, 512, NULL, infoLog);
-        throw std::runtime_error("Shader Failed to load");
+        throw std::runtime_error("Shader Failed to load\n\n"+std::string(infoLog));
     }
     return shaderID;
 }

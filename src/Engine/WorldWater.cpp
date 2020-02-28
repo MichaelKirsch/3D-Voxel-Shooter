@@ -6,13 +6,12 @@ WorldWater::WorldWater(ShaderLoader& loader,unsigned int size, int seed) : m_loa
     m_size = size;
     m_noise.SetNoiseType(FastNoise::SimplexFractal);
     m_noise.SetSeed(seed);
-    PROG = loader.createProgram({{"water_fragment",ShaderLoader::FRAGMENT},
-                                 {"water_vertex",ShaderLoader::VERTEX}});
+    PROG = loader.createProgram({{"water_fragment.glsl",ShaderLoader::FRAGMENT},
+                                 {"water_vertex.glsl",ShaderLoader::VERTEX}});
     glGenVertexArrays(1,&VAO);
     glBindVertexArray(VAO);
-    glGenBuffers(1,&VBO);
-    glGenBuffers(1,&EBO);
 
+    glGenBuffers(1,&EBO);
 
     /*
      * In the beginning we will fill the water with random values. after that the sinus function
@@ -28,12 +27,16 @@ WorldWater::WorldWater(ShaderLoader& loader,unsigned int size, int seed) : m_loa
             positions.emplace_back(glm::vec3(x,y,z));
         }
     }
+    glGenBuffers(1,&VBO);
+    glBufferData(GL_ARRAY_BUFFER, positions.size()* sizeof(glm::vec3),&positions[0], GL_STATIC_DRAW);
     generateElements();
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBindBuffer(GL_ARRAY_BUFFER, VBO);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size(), &elements[0], GL_STATIC_DRAW);
-
     update(0.f);
-
+    glBindVertexArray(0);
 }
 
 void WorldWater::render() {

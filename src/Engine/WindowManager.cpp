@@ -19,6 +19,7 @@ WindowManager::WindowManager(sf::Vector2i resolution, bool fullscreen) {
         std::runtime_error("Glad is not loading");
     }
     glViewport(0, 0, m_Window.getSize().y,m_Window.getSize().y);
+    glClearColor(0.027f, 0.7f, 0.9f, 1.0f);
 }
 
 WindowManager::~WindowManager() {
@@ -32,3 +33,9 @@ void WindowManager::swapBuffers() {
 sf::Window &WindowManager::getWindow() {
     return m_Window;
 }
+
+void WindowManager::clearScreen() {
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+
