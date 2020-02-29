@@ -2,14 +2,15 @@
 
 #include "GameOver.h"
 
-GameOver::GameOver(ShaderLoader &shloader, WindowManager& win) : State(shloader), water(shloader),m_windowmanger(win) {
-    programm=shloader.createProgram({{"platform_fragment",ShaderLoader::FRAGMENT},{"platform_vertex",ShaderLoader::VERTEX}});
+
+GameOver::GameOver(StateEssentials &es) : State(es),water(es) {
+    programm=essentials.loader.createProgram({{"platform_fragment",ShaderLoader::FRAGMENT},{"platform_vertex",ShaderLoader::VERTEX}});
 }
 
 void GameOver::updateFrame() {
-    m_windowmanger.clearScreen();
+    essentials.windowManager.clearScreen();
     water.render();
-    m_windowmanger.swapBuffers();
+    essentials.windowManager.swapBuffers();
 }
 
 void GameOver::updateEntities() {
@@ -18,7 +19,7 @@ void GameOver::updateEntities() {
 
 void GameOver::processInputs() {
     sf::Event ev;
-    while(m_windowmanger.getWindow().pollEvent(ev))
+    while(essentials.windowManager.getWindow().pollEvent(ev))
     {
         if(ev.type == sf::Event::Closed)
         {
@@ -26,3 +27,5 @@ void GameOver::processInputs() {
         }
     }
 }
+
+

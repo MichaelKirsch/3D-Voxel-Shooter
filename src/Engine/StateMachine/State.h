@@ -1,12 +1,12 @@
 
 
 #pragma once
+#include "Essential.h"
 
-#include "ShaderLoader.h"
 class State {
 public:
-    State(ShaderLoader& loader) : sh_loader(loader){};
-    ShaderLoader& sh_loader;
+    State(StateEssentials& essentials) : essentials(essentials){};
+    StateEssentials& essentials;
     virtual void updateFrame(){};
     virtual void updateEntities(){};
     virtual void processInputs(){};

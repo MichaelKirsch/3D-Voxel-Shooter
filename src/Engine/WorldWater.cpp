@@ -2,21 +2,20 @@
 
 #include "WorldWater.h"
 
-WorldWater::WorldWater(ShaderLoader& loader,unsigned int size, int seed) : m_loader(loader) {
+WorldWater::WorldWater(StateEssentials& es,unsigned int size, int seed) : essentials(es) {
     m_size = size;
     m_noise.SetNoiseType(FastNoise::SimplexFractal);
+    m_noise.SetFrequency(0.5f);
     m_noise.SetSeed(seed);
-    PROG = loader.createProgram({{"water_fragment.glsl",ShaderLoader::FRAGMENT},
+    PROG = essentials.loader.createProgram({{"water_fragment.glsl",ShaderLoader::FRAGMENT},
                                  {"water_vertex.glsl",ShaderLoader::VERTEX}});
     glGenVertexArrays(1,&VAO);
     glBindVertexArray(VAO);
 
     glGenBuffers(1,&EBO);
+    glGenBuffers(1,&VBO);
+    glGenBuffers(1,&NORMALS);
 
-    /*
-     * In the beginning we will fill the water with random values. after that the sinus function
-     * will take over and control the waves
-     */
     for(int x =0;x<size;x++)
     {
         for(int z =0;z<size;z++)
@@ -31,18 +30,31 @@ WorldWater::WorldWater(ShaderLoader& loader,unsigned int size, int seed) : m_loa
     glBufferData(GL_ARRAY_BUFFER, positions.size()* sizeof(glm::vec3),&positions[0], GL_STATIC_DRAW);
     generateElements();
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size()*sizeof(unsigned int), &elements[0], GL_STATIC_DRAW);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, elements.size(), &elements[0], GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ARRAY_BUFFER, NORMALS);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+    glVertexAttribDivisor(1, 1);
+    glEnableVertexAttribArray(1);
+    normals.resize(elements.size());
+    std::fill(normals.begin(),normals.end(),glm::vec3(1.f,0.f,0.f));
     update(0.f);
+    glBindBuffer(GL_ARRAY_BUFFER,NORMALS);
+    glBufferData(GL_ARRAY_BUFFER,normals.size()*sizeof(glm::vec3),&normals[0],GL_STATIC_DRAW);
     glBindVertexArray(0);
 }
 
 void WorldWater::render() {
-    m_loader.useProgramm(PROG);
+    essentials.loader.useProgramm(PROG);
+    essentials.loader.setUniform(model,"model");
+    essentials.loader.setUniform(essentials.camera.GetViewMatrix(),"view");
+    essentials.loader.setUniform(essentials.windowManager.perspectiveProjection,"projection");
     glBindVertexArray(VAO);
-    glDrawElements(GL_TRIANGLE_STRIP,elements.size(),GL_UNSIGNED_INT,0);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glDrawElements(GL_TRIANGLES,elements.size(),GL_UNSIGNED_INT,0);
     glBindVertexArray(0);
 }
 
@@ -53,8 +65,26 @@ void WorldWater::update(float change) {
         if(points.y>1.0f)
             points.y =0.f;
     }
+
+    for(int iterate =0;iterate<elements.size();iterate+=3)
+    {
+        int position_in_elements = iterate;
+        glm::vec3 rv1=(positions[elements[position_in_elements]]-positions[elements[position_in_elements+1]]);
+        glm::vec3 rv2 =(positions[elements[position_in_elements]]-positions[elements[position_in_elements+2]]);
+        normals[iterate] = glm::normalize(glm::cross(rv1,rv2));
+        normals[iterate+1] = glm::normalize(glm::cross(rv1,rv2));
+        normals[iterate+2] = glm::normalize(glm::cross(rv1,rv2));
+    }
+
+    model = glm::rotate(model, glm::radians(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, positions.size()* sizeof(glm::vec3),&positions[0], GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec3),&positions[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+    glBindBuffer(GL_ARRAY_BUFFER, NORMALS);
+    glBufferData(GL_ARRAY_BUFFER, normals.size() * sizeof(glm::vec3),&normals[0], GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER,0);
+    glBindVertexArray(0);
 }
 
 void WorldWater::generateElements() {
@@ -67,9 +97,9 @@ void WorldWater::generateElements() {
             elements.emplace_back(pos_in_vector);
             elements.emplace_back(pos_in_vector+1);
             elements.emplace_back(pos_in_vector+m_size);
+            elements.emplace_back(pos_in_vector+m_size);
             elements.emplace_back(pos_in_vector+1);
             elements.emplace_back(pos_in_vector+m_size+1);
-            elements.emplace_back(pos_in_vector+m_size);
         }
     }
 }

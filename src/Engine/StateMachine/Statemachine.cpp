@@ -2,12 +2,13 @@
 
 #include "Statemachine.h"
 
-Statemachine::Statemachine()  : m_windowmanager({1000,1000},false){
+Statemachine::Statemachine() {
     running = true;
+    essential.windowManager.create({1000,1000}, false);
     updateTimer.setTickrate(40);
     frameTimer.setTickrate(60);
     inputTimer.setTickrate(80);
-    m_playedState = std::make_unique<GameOver>(m_shaderloader,m_windowmanager);
+    m_playedState = std::make_unique<GameOver>(essential);
 }
 
 void Statemachine::run() {
