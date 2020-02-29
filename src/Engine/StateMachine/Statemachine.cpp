@@ -9,10 +9,11 @@ Statemachine::Statemachine() {
     frameTimer.setTickrate(60);
     inputTimer.setTickrate(80);
     m_playedState = std::make_unique<GameOver>(essential);
+    essential.shouldClose = false;
 }
 
 void Statemachine::run() {
-    while(running)
+    while(!essential.shouldClose)
     {
         float elapsed = m_clock.restart().asSeconds();
         updateTimer.setElapsed(elapsed);

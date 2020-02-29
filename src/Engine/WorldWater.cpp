@@ -76,7 +76,7 @@ void WorldWater::update(float change) {
         normals[iterate+2] = glm::normalize(glm::cross(rv1,rv2));
     }
 
-    model = glm::rotate(model, glm::radians(1.0f), glm::vec3(1.0f, 1.0f, 1.0f));
+    //model = glm::rotate(model, glm::radians(5.0f), glm::vec3(10.0f, 10.0f, 10.0f));
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, positions.size() * sizeof(glm::vec3),&positions[0], GL_STATIC_DRAW);

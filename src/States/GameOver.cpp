@@ -23,7 +23,7 @@ void GameOver::processInputs() {
     {
         if(ev.type == sf::Event::Closed)
         {
-
+            essentials.shouldClose = true;
         }
     }
 }

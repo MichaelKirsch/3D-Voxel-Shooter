@@ -11,6 +11,7 @@ struct StateEssentials
     WindowManager windowManager;
     ShaderLoader loader;
     Camera camera;
+    bool shouldClose; //temporary
 };
 
 
