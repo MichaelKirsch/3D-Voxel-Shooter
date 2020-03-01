@@ -17,6 +17,8 @@ public:
 private:
     unsigned int programm;
     WorldWater water;
+    sf::Mouse m_Mouse;
+    float last_time;
 protected:
 };
 

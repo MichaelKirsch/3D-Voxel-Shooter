@@ -18,6 +18,8 @@ include_directories("libs/glad/include/")
 include_directories("src/")
 include_directories("libs/glm/glm/")
 include_directories("src/Engine/")
+include_directories("src/Engine/SpawnableObjects/")
+
 find_package(OpenGL REQUIRED)
 
 add_executable(${PROJECT_NAME} ${SOURCES} libs/glad/src/glad.c libs/FastNoise/FastNoise.cpp main.cpp)
