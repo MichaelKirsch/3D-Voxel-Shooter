@@ -14,13 +14,13 @@ void main() {
     vec3 lightDir = normalize(sun_position - pos);
     float diff = max(dot(normal, lightDir), 0.0);
     vec3 diffuse = diff * lightColor;
-    vec3 objectColor = vec3(0.25f,0.9f,1.0f);
+    vec3 objectColor = vec3(1.0f,0.3f,0.2f);
 
     vec3 viewDir = normalize(viewPos - pos);
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 4);
     vec3 specular = specularStrength * spec * lightColor;
 
-    vec3 result = height * objectColor;
+    vec3 result = (objectColor*0.9)+(0.1*height);
     FragColor = vec4(result, 1.0f);
 }

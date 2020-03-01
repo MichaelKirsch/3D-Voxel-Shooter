@@ -15,7 +15,7 @@ void GameOver::updateFrame() {
 }
 
 void GameOver::updateEntities() {
-    water.update(0.5f);
+    water.update(0.009f);
 }
 
 void GameOver::processInputs() {
@@ -33,6 +33,11 @@ void GameOver::processInputs() {
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
         essentials.camera.ProcessKeyboard(RIGHT,time);
+    }
+
+    if(m_Mouse.isButtonPressed(sf::Mouse::Left))
+    {
+        essentials.camera.Position = {50,50,50};
     }
 
     float yaw,pitch;

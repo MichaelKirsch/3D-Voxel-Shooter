@@ -6,7 +6,7 @@ WorldWater::WorldWater(StateEssentials& es,unsigned int size, int seed) : essent
     m_size = size;
     m_noise.SetNoiseType(FastNoise::SimplexFractal);
     m_noise.SetFrequency(0.5f);
-    m_noise.SetSeed(seed);
+    //m_noise.SetSeed(seed);
     PROG = essentials.loader.createProgram({{"water_fragment.glsl",ShaderLoader::FRAGMENT},
                                  {"water_vertex.glsl",ShaderLoader::VERTEX}});
     glGenVertexArrays(1,&VAO);
@@ -20,7 +20,7 @@ WorldWater::WorldWater(StateEssentials& es,unsigned int size, int seed) : essent
     {
         for(int z =0;z<size;z++)
         {
-            int y = m_noise.GetNoise(x,z);
+            float y = m_noise.GetNoise(x,z);
             y+=1.0f;
             y/=2.f;
             positions.emplace_back(glm::vec3(x,y,z));
@@ -59,7 +59,7 @@ void WorldWater::render() {
 }
 
 void WorldWater::update(float change) {
-    for(auto points:positions)
+    for(auto& points:positions)
     {
         points.y+=change;
         if(points.y>1.0f)
