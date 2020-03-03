@@ -5,7 +5,7 @@
 class Timer {
 public:
     void setTickrate(unsigned int tickrate);
-    void setElapsed(float elapsed);
+    void setElapsed(float& elapsed);
     bool getState();
     ~Timer()= default;
 private:

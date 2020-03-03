@@ -9,9 +9,9 @@
 class GameOver : public State {
 public:
     GameOver(StateEssentials& es);
-    void updateFrame();
-    void updateEntities();
-    void processInputs();
+    void updateFrame(float& elapsed);
+    void updateEntities(float& elapsed);
+    void processInputs(float& elapsed);
     ~GameOver() = default;
 
 private:
@@ -19,6 +19,7 @@ private:
     WorldWater water;
     sf::Mouse m_Mouse;
     float last_time;
+    bool mouse_hold;
 protected:
 };
 

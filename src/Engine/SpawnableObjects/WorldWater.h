@@ -9,12 +9,16 @@
 #include <vector>
 #include <cmath>
 #include "glm.hpp"
+#include "glm/glm/gtx/normal.hpp"
+
 class WorldWater : public Renderable {
 public:
     WorldWater(StateEssentials& es,unsigned int size=200, int seed=100);
     void update(float angle);
     void render() override;
     ~WorldWater() = default;
+    void setWaveheight(float height){waveheight = height;};
+    float getWaveheigh(){ return waveheight;};
 
 private:
     glm::mat4 model = glm::mat4(1.0f);
@@ -26,6 +30,7 @@ private:
     std::vector<unsigned int> elements;
     std::vector<glm::vec3> positions;
     std::vector<glm::vec3> normals;
+    float waveheight;
 protected:
 };
 

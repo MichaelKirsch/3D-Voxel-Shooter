@@ -8,36 +8,46 @@ GameOver::GameOver(StateEssentials &es) : State(es),water(es) {
     programm=essentials.loader.createProgram({{"platform_fragment",ShaderLoader::FRAGMENT},{"platform_vertex",ShaderLoader::VERTEX}});
 }
 
-void GameOver::updateFrame() {
+void GameOver::updateFrame(float& elapsed) {
     essentials.windowManager.clearScreen();
     water.render();
     essentials.windowManager.swapBuffers();
 }
 
-void GameOver::updateEntities() {
+void GameOver::updateEntities(float& elapsed) {
+
     water.update(0.009f);
 }
 
-void GameOver::processInputs() {
+void GameOver::processInputs(float& elapsed) {
     sf::Event ev;
-    float time = state_clock.getElapsedTime().asSeconds()-last_time;
+    float time = elapsed;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-        essentials.camera.ProcessKeyboard(FORWARD,time);
+        essentials.camera.ProcessKeyboard(FORWARD,time*2);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-        essentials.camera.ProcessKeyboard(LEFT,time);
+        essentials.camera.ProcessKeyboard(LEFT,time*2);
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-        essentials.camera.ProcessKeyboard(BACKWARD,time);
+        essentials.camera.ProcessKeyboard(BACKWARD,time*2);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-        essentials.camera.ProcessKeyboard(RIGHT,time);
+        essentials.camera.ProcessKeyboard(RIGHT,time*2);
     }
 
     if(m_Mouse.isButtonPressed(sf::Mouse::Left))
     {
         essentials.camera.Position = {50,50,50};
+    }
+
+
+    if(m_Mouse.isButtonPressed(sf::Mouse::Middle))
+    {
+        water.setWaveheight(0.9);
+    } else
+    {
+        water.setWaveheight(0.4);
     }
 
     float yaw,pitch;
@@ -58,6 +68,7 @@ void GameOver::processInputs() {
         m_Mouse.setPosition({static_cast<int>(essentials.windowManager.getWindow().getSize().x/2),static_cast<int>(essentials.windowManager.getWindow().getSize().y/2)},essentials.windowManager.getWindow());
     } else
     {
+        mouse_hold = false;
         essentials.windowManager.getWindow().setMouseCursorVisible(true);
     }
 

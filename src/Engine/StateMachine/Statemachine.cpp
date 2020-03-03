@@ -21,15 +21,15 @@ void Statemachine::run() {
         inputTimer.setElapsed(elapsed);
         if(frameTimer.getState())
         {
-            m_playedState->updateFrame();
+            m_playedState->updateFrame(elapsed);
         }
         if(inputTimer.getState())
         {
-            m_playedState->processInputs();
+            m_playedState->processInputs(elapsed);
         }
         if(updateTimer.getState())
         {
-            m_playedState->updateEntities();
+            m_playedState->updateEntities(elapsed);
         }
     }
 }

@@ -7,7 +7,7 @@ void Timer::setTickrate(unsigned int tickrate) {
     timer = 1.f/tickrate;
 }
 
-void Timer::setElapsed(float elapsed) {
+void Timer::setElapsed(float& elapsed) {
     m_elapsed+=elapsed;
 }
 

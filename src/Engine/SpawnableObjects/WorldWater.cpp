@@ -5,13 +5,13 @@
 WorldWater::WorldWater(StateEssentials& es,unsigned int size, int seed) : essentials(es) {
     m_size = size;
     m_noise.SetNoiseType(FastNoise::SimplexFractal);
-    m_noise.SetFrequency(0.5f);
+    m_noise.SetFrequency(10.f);
     //m_noise.SetSeed(seed);
     PROG = essentials.loader.createProgram({{"water_fragment.glsl",ShaderLoader::FRAGMENT},
                                  {"water_vertex.glsl",ShaderLoader::VERTEX}});
     glGenVertexArrays(1,&VAO);
     glBindVertexArray(VAO);
-
+    waveheight  = 0.4f;
     glGenBuffers(1,&EBO);
     glGenBuffers(1,&VBO);
     glGenBuffers(1,&NORMALS);
@@ -20,12 +20,13 @@ WorldWater::WorldWater(StateEssentials& es,unsigned int size, int seed) : essent
     {
         for(int z =0;z<size;z++)
         {
-            float y = m_noise.GetNoise(x,z);
+            float y=m_noise.GetNoise(x,z);
             y+=1.0f;
             y/=2.f;
             positions.emplace_back(glm::vec3(x,y,z));
         }
     }
+
     glGenBuffers(1,&VBO);
     glBufferData(GL_ARRAY_BUFFER, positions.size()* sizeof(glm::vec3),&positions[0], GL_STATIC_DRAW);
     generateElements();
@@ -52,6 +53,8 @@ void WorldWater::render() {
     essentials.loader.setUniform(model,"model");
     essentials.loader.setUniform(essentials.camera.GetViewMatrix(),"view");
     essentials.loader.setUniform(essentials.windowManager.perspectiveProjection,"projection");
+    essentials.loader.setUniform(essentials.camera.Position,"viewPos");
+    essentials.loader.setUniform(waveheight,"waveheight");
     glBindVertexArray(VAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glDrawElements(GL_TRIANGLES,elements.size(),GL_UNSIGNED_INT,0);
@@ -69,11 +72,18 @@ void WorldWater::update(float change) {
     for(int iterate =0;iterate<elements.size();iterate+=3)
     {
         int position_in_elements = iterate;
-        glm::vec3 rv1=(positions[elements[position_in_elements]]-positions[elements[position_in_elements+1]]);
-        glm::vec3 rv2 =(positions[elements[position_in_elements]]-positions[elements[position_in_elements+2]]);
+
+        glm::vec3 point1 = positions[elements[position_in_elements]];
+        glm::vec3 point2 = positions[elements[position_in_elements+1]];
+        glm::vec3 point3 = positions[elements[position_in_elements+2]];
+        point1.y =sin(point1.y*2*M_PI)*waveheight;
+        point2.y =sin(point2.y*2*M_PI)*waveheight;
+        point2.y =sin(point2.y*2*M_PI)*waveheight;
+        glm::vec3 rv1=(point1-point2);
+        glm::vec3 rv2 =(point1-point3);
         normals[iterate] = glm::normalize(glm::cross(rv1,rv2));
         normals[iterate+1] = glm::normalize(glm::cross(rv1,rv2));
-        normals[iterate+2] = glm::normalize(glm::cross(rv1,rv2));
+        normals[iterate+2] =glm::normalize(glm::cross(rv1,rv2));
     }
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
