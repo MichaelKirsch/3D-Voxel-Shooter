@@ -5,7 +5,6 @@ layout (location = 1) in vec3 aNormal;
 out float height;
 out vec4 pos;
 out vec3 normalRaw;
-
 uniform float waveheight = 0.4;
 uniform mat4 view;
 uniform mat4 projection;
@@ -14,10 +13,9 @@ void main()
 {
     normalRaw = aNormal;
     height = aPos.y;
-
     float calcy = sin(aPos.y*2*M_PI)*waveheight;
     //float calcy = aPos.y;
-    pos = projection * view * model * vec4(aPos.x, calcy, aPos.z, 1.0);
-    gl_Position = pos;
+    pos = projection * view *  vec4(aPos.x, calcy, aPos.z, 1.0);
+    gl_Position = projection * view *  vec4(aPos.x, calcy, aPos.z, 1.0);
 
 }

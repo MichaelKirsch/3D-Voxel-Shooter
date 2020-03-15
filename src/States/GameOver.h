@@ -6,6 +6,7 @@
 #include "StateMachine/State.h"
 #include "WorldWater.h"
 #include "SFML/Graphics.hpp"
+#include "Terrain.h"
 class GameOver : public State {
 public:
     GameOver(StateEssentials& es);
@@ -20,6 +21,7 @@ private:
     sf::Mouse m_Mouse;
     float last_time;
     bool mouse_hold;
+    Terrain terrain;
 protected:
 };
 

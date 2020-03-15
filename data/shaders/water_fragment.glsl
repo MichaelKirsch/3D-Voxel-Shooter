@@ -23,10 +23,10 @@ void main() {
     vec3 reflectedLightDirection = reflect(lightDirection,normal);
     float specularFactor = dot(reflectedLightDirection, viewVector);
     specularFactor = max(pow(specularFactor, shineDamper), 0.0);
-    vec3 speculatTrue =  lightColour * specularFactor * reflectivity;
+    vec3 specularFinal =  lightColour * specularFactor * reflectivity;
 
     float brightness = max(dot(-lightDirection, normal), ambientLighting);
 
-    vec3 result = ((waterColour*brightness)+speculatTrue);
+    vec3 result = ((waterColour*brightness)+specularFinal);
     FragColor = vec4(result, 1.0f);
 }

@@ -11,8 +11,6 @@ public:
 private:
     unsigned int m_tickrate;
     float m_elapsed, timer;
-
-protected:
 };
 
 
