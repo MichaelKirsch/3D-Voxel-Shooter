@@ -11,8 +11,8 @@ GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es) {
 
 void GameOver::updateFrame(float& elapsed) {
     essentials.windowManager.clearScreen();
-    terrain.render();
     water.render();
+    terrain.render();
     essentials.windowManager.swapBuffers();
 }
 

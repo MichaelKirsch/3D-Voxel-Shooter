@@ -11,17 +11,19 @@ void Water::render() {
     essentials.loader.setUniform(essentials.windowManager.perspectiveProjection,"projection");
     essentials.loader.setUniform(essentials.camera.GetViewMatrix(),"view");
     essentials.loader.setUniform(m_degrees,"degrees");
+    essentials.loader.setUniform(m_waveheight,"waveheight");
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES,0,waterVertices.size()/3);
     glBindVertexArray(1);
 }
 
 void Water::update(float& elapsed) {
-    m_degrees+=0.05f;
+    m_degrees+=m_speed;
 }
 
-void Water::create(glm::vec3 origin, float WaveSize, float WaterBodySize, glm::vec3 waterColor, float speed) {
+void Water::create(glm::vec3 origin, float WaveSize, float WaterBodySize, glm::vec3 waterColor, float speed,float waveheight) {
     m_origin = origin;
+    m_waveheight = waveheight;
     m_waveSize = WaveSize;
     m_speed = speed;
     noise.SetNoiseType(FastNoise::Simplex);
@@ -38,7 +40,9 @@ void Water::create(glm::vec3 origin, float WaveSize, float WaterBodySize, glm::v
             float y = noise.GetNoise(x,z);
             y+=1.f;
             y/=2.f;
-            rawVertices.emplace_back((float)x,y,(float)z);
+            glm::vec3 rawPos = {(float)x,y,(float)z};
+            rawPos+=m_origin;
+            rawVertices.emplace_back(rawPos);
         }
     }
 

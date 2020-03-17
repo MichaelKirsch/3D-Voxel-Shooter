@@ -15,7 +15,7 @@ uniform float degrees;
 uniform mat4 view;
 uniform mat4 projection;
 
-const float waveheight =0.4;
+uniform float waveheight;
 void main()
 {
     vec3 positionA = vec3(positionAraw.x,sin((positionAraw.y*2*M_PI)+degrees)*waveheight,positionAraw.z);

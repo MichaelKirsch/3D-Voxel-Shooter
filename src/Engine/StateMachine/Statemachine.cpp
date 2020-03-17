@@ -19,6 +19,7 @@ void Statemachine::run() {
         updateTimer.setElapsed(elapsed);
         frameTimer.setElapsed(elapsed);
         inputTimer.setElapsed(elapsed);
+
         if(frameTimer.getState())
         {
             m_playedState->updateFrame(elapsed);
@@ -31,5 +32,8 @@ void Statemachine::run() {
         {
             m_playedState->updateEntities(elapsed);
         }
+
+
+
     }
 }

@@ -11,10 +11,15 @@ Terrain::Terrain(StateEssentials &es, int seed, int size) :essential(es) {
         for(int z =0;z<size;z++)
         {
 
-            auto y = static_cast<int>(noise.GetNoise(x,z)*15.f);
-            y*=calculateBorderFactor(x,z,size);
-            positions.emplace_back(glm::vec3((float)x,(float)y,(float)z));
-            positions.emplace_back(0.01* (rand()%100),0.01* (rand()%100),0.01* (rand()%100));
+            auto y = static_cast<int>(noise.GetNoise(x,z)*30.f);
+            y*=calculateBorderFactor(x,z,size,0.3f);
+            y-=3;
+            if(y>-1)
+            {
+                positions.emplace_back(glm::vec3((float)x,(float)y,(float)z));
+                positions.emplace_back(glm::vec3(0.223, 0.458, 0));
+            }
+
         }
     }
 
@@ -50,5 +55,41 @@ void Terrain::checkForCracks() {
 
 float Terrain::calculateBorderFactor(float x, float y, int size, float border_thicccccnes) {
 
-    return 1.0;
+    float factor = 1.0;
+
+    int size_border=size*border_thicccccnes;
+
+    if(y<size_border)
+    {
+        float buf=(1.0/size_border)*y;
+        if(buf<factor)
+            factor=buf;
+    }
+    if(x<size_border)
+    {
+        float buf=(1.0/size_border)*x;
+        if(buf<factor)
+            factor=buf;
+    }
+
+    if(x>(size-size_border))
+    {
+        float bufx = x-(size-size_border);
+
+        float buf=(1.0/size_border)*(size_border-bufx);
+        if(buf<factor)
+            factor=buf;
+    }
+
+    if(y>(size-size_border))
+    {
+        float bufy = y-(size-size_border);
+
+        float buf=(1.0/size_border)*(size_border-bufy);
+        if(buf<factor)
+            factor=buf;
+    }
+
+
+    return factor;
 }
