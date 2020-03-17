@@ -8,13 +8,14 @@
 
 class Terrain : public Renderable {
 public:
-    Terrain(StateEssentials& es,int seed=100, int size=100);
+    Terrain(StateEssentials& es,int seed=100, int size=300);
 
     void render() override;
 
     ~Terrain() = default;
 
 private:
+    float calculateBorderFactor(float x , float y, int size,float border_thiccccness=.2);
     void checkForCracks();
     StateEssentials& essential;
     unsigned int VAO,VBO,ProgrammID;

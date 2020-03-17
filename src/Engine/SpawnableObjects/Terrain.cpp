@@ -4,13 +4,17 @@
 
 Terrain::Terrain(StateEssentials &es, int seed, int size) :essential(es) {
     noise.SetNoiseType(FastNoise::Simplex);
-    noise.SetFrequency(0.3);
+    noise.SetFrequency(0.01);
 
     for(int x =0;x<size;x++)
     {
         for(int z =0;z<size;z++)
         {
-            positions.emplace_back(glm::vec3((float)x,(float)noise.GetNoise(x,z),(float)z));
+
+            auto y = static_cast<int>(noise.GetNoise(x,z)*15.f);
+            y*=calculateBorderFactor(x,z,size);
+            positions.emplace_back(glm::vec3((float)x,(float)y,(float)z));
+            positions.emplace_back(0.01* (rand()%100),0.01* (rand()%100),0.01* (rand()%100));
         }
     }
 
@@ -36,7 +40,7 @@ void Terrain::render() {
     essential.loader.setUniform(essential.camera.GetViewMatrix(),"view");
     essential.loader.setUniform(essential.windowManager.perspectiveProjection,"projection");
     essential.loader.setUniform(model,"model");
-    glDrawArrays(GL_POINTS, 0, positions.size());
+    glDrawArrays(GL_LINES, 0, positions.size());
     glBindVertexArray(0);
 }
 
@@ -44,4 +48,7 @@ void Terrain::checkForCracks() {
 
 }
 
+float Terrain::calculateBorderFactor(float x, float y, int size, float border_thicccccnes) {
 
+    return 1.0;
+}

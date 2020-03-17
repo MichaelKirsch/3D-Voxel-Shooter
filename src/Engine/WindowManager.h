@@ -11,6 +11,7 @@ class WindowManager {
 public:
     WindowManager();
     void create(sf::Vector2u resolution={1000,1000}, bool fullscreen= false, float fov = 60, float range = 500.f);
+    void setRange(float newrange);
     void swapBuffers();
     void clearScreen();
     glm::mat4 perspectiveProjection;
@@ -18,7 +19,11 @@ public:
     ~WindowManager();
 
 private:
+    void refactorProjection();
     sf::Window m_Window;
+    float m_fov, m_range;
+    bool m_fullscreen;
+    sf::Vector2u m_resolution;
 protected:
 };
 

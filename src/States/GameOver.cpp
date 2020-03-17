@@ -6,6 +6,7 @@
 GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es) {
     essentials.camera.Position = {10.f,10.f,10.f};
     essentials.camera.MovementSpeed = 30.0;
+    //essentials.windowManager.setRange(600.f);
     programm=essentials.loader.createProgram({{"platform_fragment",ShaderLoader::FRAGMENT},{"platform_vertex",ShaderLoader::VERTEX}});
 }
 

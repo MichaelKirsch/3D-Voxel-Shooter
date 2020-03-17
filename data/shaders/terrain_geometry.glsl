@@ -1,107 +1,75 @@
 #version 330
-layout (points) in;
-layout (triangle_strip, max_vertices = 5) out;
+layout (lines) in;
+layout (triangle_strip, max_vertices = 24) out;
+
+out vec3 finalColor;
+
+uniform mat4 model;
+uniform mat4 view;
+uniform mat4 projection;
+
+
+const float size = 0.5;
+const vec3 lightDirection = normalize(vec3(0.4,-1.0,0.8));
+
+void createVertex(vec3 offset, vec3 faceNormal)
+{
+    vec4 actualoffset = vec4(offset * size,0.0);
+    vec4 worldposition = gl_in[0].gl_Position + actualoffset;
+    vec4 pos = (projection*view) * worldposition;
+    gl_Position = pos;
+    float brightness = max(dot(-lightDirection,faceNormal),0.3);
+    vec3 color = vec3(gl_in[1].gl_Position);
+    finalColor = color * brightness;
+    EmitVertex();
+}
+
 void main() {
-    vec4 position = gl_in[0].gl_Position;
-    gl_Position = position + vec4(-0.5, -0.5, 0.0, 0.0);    // 1:bottom-left
-    EmitVertex();
-    gl_Position = position + vec4( 0.5, -0.5, 0.0, 0.0);    // 2:bottom-right
-    EmitVertex();
-    gl_Position = position + vec4(-0.5,  0.5, 0.0, 0.0);    // 3:top-left
-    EmitVertex();
-    gl_Position = position + vec4( 0.5,  0.5, 0.0, 0.0);    // 4:top-right
-    EmitVertex();
-    gl_Position = position + vec4( 0.0,  1.0, 0.0, 0.0);    // 5:top
-    EmitVertex();
+    vec3 faceNormal = vec3(0.0, 0.0, 1.0);
+    createVertex(vec3(-1.0, 1.0, 1.0), faceNormal);
+    createVertex(vec3(-1.0, -1.0, 1.0), faceNormal);
+    createVertex(vec3(1.0, 1.0, 1.0), faceNormal);
+    createVertex(vec3(1.0, -1.0, 1.0), faceNormal);
+
     EndPrimitive();
 
-}
-    //first side
-    /*
-    gl_Position = gl_in[0].gl_Position + vec4(-0.5f, -0.5f, -0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(0.5f, -0.5f, -0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(0.5f,  0.5f, -0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(0.5f,  0.5f, -0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(-0.5f,  0.5f, -0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(-0.5f, -0.5f, -0.5f,1.0);
-    EmitVertex();
+    faceNormal = vec3(1.0, 0.0, 0.0);
+    createVertex(vec3(1.0, 1.0, 1.0), faceNormal);
+    createVertex(vec3(1.0, -1.0, 1.0), faceNormal);
+    createVertex(vec3(1.0, 1.0, -1.0), faceNormal);
+    createVertex(vec3(1.0, -1.0, -1.0), faceNormal);
+
     EndPrimitive();
 
-    //second
-    gl_Position = gl_in[0].gl_Position + vec4(-0.5f, -0.5f,  0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(0.5f, -0.5f,  0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(0.5f,  0.5f,  0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(0.5f,  0.5f,  0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(-0.5f,  0.5f,  0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(-0.5f, -0.5f,  0.5f,1.0);
-    EmitVertex();
+    faceNormal = vec3(0.0, 0.0, -1.0);
+    createVertex(vec3(1.0, 1.0, -1.0), faceNormal);
+    createVertex(vec3(1.0, -1.0, -1.0), faceNormal);
+    createVertex(vec3(-1.0, 1.0, -1.0), faceNormal);
+    createVertex(vec3(-1.0, -1.0, -1.0), faceNormal);
+
     EndPrimitive();
-    //third
-    gl_Position = gl_in[0].gl_Position + vec4(-0.5f,  0.5f,  0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(-0.5f,  0.5f, -0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(-0.5f, -0.5f, -0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(-0.5f, -0.5f, -0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(-0.5f, -0.5f,  0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(-0.5f,  0.5f,  0.5f,1.0);
-    EmitVertex();
+
+    faceNormal = vec3(-1.0, 0.0, 0.0);
+    createVertex(vec3(-1.0, 1.0, -1.0), faceNormal);
+    createVertex(vec3(-1.0, -1.0, -1.0), faceNormal);
+    createVertex(vec3(-1.0, 1.0, 1.0), faceNormal);
+    createVertex(vec3(-1.0, -1.0, 1.0), faceNormal);
+
     EndPrimitive();
-    //fourth
-    gl_Position = gl_in[0].gl_Position + vec4(0.5f,  0.5f,  0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(0.5f,  0.5f, -0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(0.5f, -0.5f, -0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(0.5f, -0.5f, -0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(0.5f, -0.5f,  0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(0.5f,  0.5f,  0.5f,1.0);
-    EmitVertex();
+
+    faceNormal = vec3(0.0, 1.0, 0.0);
+    createVertex(vec3(1.0, 1.0, 1.0), faceNormal);
+    createVertex(vec3(1.0, 1.0, -1.0), faceNormal);
+    createVertex(vec3(-1.0, 1.0, 1.0), faceNormal);
+    createVertex(vec3(-1.0, 1.0, -1.0), faceNormal);
+
     EndPrimitive();
-    //fifth
-    gl_Position = gl_in[0].gl_Position + vec4(-0.5f, -0.5f, -0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(0.5f, -0.5f, -0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(0.5f, -0.5f,  0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(0.5f, -0.5f,  0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(-0.5f, -0.5f,  0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(-0.5f, -0.5f, -0.5f,1.0);
-    EmitVertex();
-    EndPrimitive();
-    //sixth
-    gl_Position = gl_in[0].gl_Position + vec4(-0.5f,  0.5f, -0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(0.5f,  0.5f, -0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(0.5f,  0.5f,  0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(0.5f,  0.5f,  0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(-0.5f,  0.5f,  0.5f,1.0);
-    EmitVertex();
-    gl_Position = gl_in[0].gl_Position + vec4(-0.5f,  0.5f, -0.5f,1.0);
-    EmitVertex();
+
+    faceNormal = vec3(0.0, -1.0, 0.0);
+    createVertex(vec3(-1.0, -1.0, 1.0), faceNormal);
+    createVertex(vec3(-1.0, -1.0, -1.0), faceNormal);
+    createVertex(vec3(1.0, -1.0, 1.0), faceNormal);
+    createVertex(vec3(1.0, -1.0, -1.0), faceNormal);
 
     EndPrimitive();
 }
-*/

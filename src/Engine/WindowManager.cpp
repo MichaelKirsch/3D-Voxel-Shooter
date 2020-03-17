@@ -27,6 +27,9 @@ WindowManager::WindowManager() {
 
 void WindowManager::create(sf::Vector2u resolution , bool fullscreen,float fov, float range) {
     sf::ContextSettings settings;
+    m_range = range;
+    m_fov = fov;
+    m_fullscreen = fullscreen;
     perspectiveProjection = glm::perspective(glm::radians(fov), (float)resolution.x/(float)resolution.y, 0.1f, range);
     settings.depthBits = 8;
     settings.antialiasingLevel = 4;
@@ -45,6 +48,15 @@ void WindowManager::create(sf::Vector2u resolution , bool fullscreen,float fov, 
     glViewport(0, 0, m_Window.getSize().y,m_Window.getSize().y);
     glClearColor(0.027f, 0.7f, 0.9f, 1.0f);
     glEnable(GL_DEPTH_TEST);
+}
+
+void WindowManager::setRange(float newrange) {
+    m_range = newrange;
+    refactorProjection();
+}
+
+void WindowManager::refactorProjection() {
+    perspectiveProjection = glm::perspective(glm::radians(m_fov), (float)m_resolution.x/(float)m_resolution.y, 0.1f, m_range);
 }
 
 
