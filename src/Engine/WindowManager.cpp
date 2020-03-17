@@ -45,7 +45,7 @@ void WindowManager::create(sf::Vector2u resolution , bool fullscreen,float fov, 
     {
         std::runtime_error("Glad is not loading");
     }
-    glViewport(0, 0, m_Window.getSize().y,m_Window.getSize().y);
+    glViewport(0, 0, m_Window.getSize().x,m_Window.getSize().y);
     glClearColor(0.027f, 0.7f, 0.9f, 1.0f);
     glEnable(GL_DEPTH_TEST);
 }

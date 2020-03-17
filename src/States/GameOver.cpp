@@ -5,38 +5,52 @@
 
 GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es) {
     essentials.camera.Position = {10.f,10.f,10.f};
-    essentials.camera.MovementSpeed = 30.0;
-    //essentials.windowManager.setRange(600.f);
-    programm=essentials.loader.createProgram({{"platform_fragment",ShaderLoader::FRAGMENT},{"platform_vertex",ShaderLoader::VERTEX}});
+    essentials.camera.MovementSpeed = 60.0;
+    water.create({0.f,0.f,0.f},1.0f,300.f);
 }
 
 void GameOver::updateFrame(float& elapsed) {
     essentials.windowManager.clearScreen();
-    water.render();
     terrain.render();
+    water.render();
     essentials.windowManager.swapBuffers();
 }
 
 void GameOver::updateEntities(float& elapsed) {
-
-    water.update(0.009f);
+    water.update(elapsed);
 }
 
 void GameOver::processInputs(float& elapsed) {
     sf::Event ev;
-    float time = elapsed;
+    float time = 0.02;
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-        essentials.camera.ProcessKeyboard(FORWARD,time*2);
+        essentials.camera.ProcessKeyboard(FORWARD,time);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-        essentials.camera.ProcessKeyboard(LEFT,time*2);
+        essentials.camera.ProcessKeyboard(LEFT,time);
     }
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-        essentials.camera.ProcessKeyboard(BACKWARD,time*2);
+        essentials.camera.ProcessKeyboard(BACKWARD,time);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-        essentials.camera.ProcessKeyboard(RIGHT,time*2);
+        essentials.camera.ProcessKeyboard(RIGHT,time);
+    }
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
+        if(wire)
+            wire =0;
+        else
+            wire =1;
+        if(wire)
+        {
+            glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+        }
+        else
+        {
+            glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
+        }
+
     }
 
     if(m_Mouse.isButtonPressed(sf::Mouse::Left))
@@ -44,14 +58,6 @@ void GameOver::processInputs(float& elapsed) {
         essentials.camera.Position = {50,50,50};
     }
 
-
-    if(m_Mouse.isButtonPressed(sf::Mouse::Middle))
-    {
-        water.setWaveheight(0.9);
-    } else
-    {
-        water.setWaveheight(0.4);
-    }
 
     float yaw,pitch;
     float x_percent =  (1.f/essentials.windowManager.getWindow().getSize().x) * m_Mouse.getPosition(essentials.windowManager.getWindow()).x;

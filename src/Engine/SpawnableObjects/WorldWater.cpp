@@ -101,7 +101,7 @@ void WorldWater::generateElements() {
         for(int z =0;z<m_size-1;z++)
         {
             auto pos_in_vector = (x*m_size)+z;
-            //lets generate the pelemts for the traingle strips
+            //lets generate the elements for the traingle strips
             elements.emplace_back(pos_in_vector);
             elements.emplace_back(pos_in_vector+1);
             elements.emplace_back(pos_in_vector+m_size);

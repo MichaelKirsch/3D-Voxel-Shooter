@@ -5,6 +5,7 @@
 #include <iostream>
 #include "StateMachine/State.h"
 #include "WorldWater.h"
+#include "Water.h"
 #include "SFML/Graphics.hpp"
 #include "Terrain.h"
 class GameOver : public State {
@@ -17,11 +18,12 @@ public:
 
 private:
     unsigned int programm;
-    WorldWater water;
+    Water water;
     sf::Mouse m_Mouse;
     float last_time;
     bool mouse_hold;
     Terrain terrain;
+    bool wire;
 protected:
 };
 
