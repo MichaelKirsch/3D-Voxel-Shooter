@@ -15,6 +15,7 @@ public:
     void update(float& elapsed) override;
 
     ~Water() = default;
+    //TODO destroy buffers
 
 private:
     FastNoise noise;
