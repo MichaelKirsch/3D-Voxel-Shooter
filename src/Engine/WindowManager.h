@@ -10,7 +10,7 @@
 class WindowManager {
 public:
     WindowManager();
-    void create(sf::Vector2u resolution={1000,1000}, bool fullscreen= false, float fov = 60, float range = 500.f);
+    void create(sf::Vector2u resolution={1000,1000}, bool fullscreen= false, float fov = 60, float range = 1000.f);
     void setRange(float newrange);
     void swapBuffers();
     void clearScreen();

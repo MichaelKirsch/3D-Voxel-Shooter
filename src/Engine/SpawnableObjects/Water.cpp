@@ -12,6 +12,7 @@ void Water::render() {
     essentials.loader.setUniform(essentials.camera.GetViewMatrix(),"view");
     essentials.loader.setUniform(m_degrees,"degrees");
     essentials.loader.setUniform(m_waveheight,"waveheight");
+    essentials.loader.setUniform(essentials.camera.Position,"cameraPos");
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES,0,waterVertices.size()/3);
     glBindVertexArray(1);
@@ -27,7 +28,7 @@ void Water::create(glm::vec3 origin, float WaveSize, float WaterBodySize, glm::v
     m_waveSize = WaveSize;
     m_speed = speed;
     noise.SetNoiseType(FastNoise::Simplex);
-    noise.SetFrequency(0.2);
+    noise.SetFrequency(0.15);
     m_waterbodySize = WaterBodySize;
     m_waterColor = waterColor;
     trianglesPerSide = static_cast<unsigned int>(m_waterbodySize/m_waveSize);
@@ -88,6 +89,12 @@ void Water::create(glm::vec3 origin, float WaveSize, float WaterBodySize, glm::v
     glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, 3*sizeof(glm::vec3), (void*)(2* sizeof(glm::vec3)));
     glEnableVertexAttribArray(2);
     glBindVertexArray(0);
+}
+
+Water::~Water() {
+    glDeleteBuffers(1,&VBO);
+    glDeleteBuffers(1,&VAO);
+    glDeleteProgram(PROGRAMM);
 }
 
 

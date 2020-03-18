@@ -14,7 +14,7 @@ public:
 
     void update(float& elapsed) override;
 
-    ~Water() = default;
+    ~Water();
     //TODO destroy buffers
 
 private:

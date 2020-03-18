@@ -6,7 +6,10 @@
 GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es) {
     essentials.camera.Position = {10.f,10.f,10.f};
     essentials.camera.MovementSpeed = 60.0;
-    water.create({0.f,0.f,0.f},1.0f,300.f);
+    int size = 600;
+    timer.setTickrate(0.5);
+    terrain.create({0.f,0.f,0.f},400,size,25.f,0.2f);
+    water.create({-100.f,0.f,-100.f},1.0f,size+200,{0, 0.337, 0.921},0.06f,0.15f);
 }
 
 void GameOver::updateFrame(float& elapsed) {
@@ -52,6 +55,24 @@ void GameOver::processInputs(float& elapsed) {
         }
 
     }
+
+    if(timer.check(0.02))
+    {
+        bool check= false;
+        for(int x =0;x<terrain.getHeight();x++)
+        {
+            auto campos = essentials.camera.Position;
+
+            if(terrain.getBlocktype(glm::ivec3(campos.x,x,campos.z))==BLOCK_TYPE::GRASS)
+            {
+                check= true;
+            }
+        }
+        auto campos = essentials.camera.Position;
+        std::cout << campos.x<<"|"<<campos.y<<"|"<<campos.z<<": "<< check<<std::endl;
+    }
+
+
 
     if(m_Mouse.isButtonPressed(sf::Mouse::Left))
     {

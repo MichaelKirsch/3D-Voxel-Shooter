@@ -8,6 +8,7 @@
 #include "Water.h"
 #include "SFML/Graphics.hpp"
 #include "Terrain.h"
+#include "StateMachine/SimpleTimer.h"
 class GameOver : public State {
 public:
     GameOver(StateEssentials& es);
@@ -24,6 +25,7 @@ private:
     bool mouse_hold;
     Terrain terrain;
     bool wire;
+    SimpleTimer timer;
 protected:
 };
 

@@ -31,7 +31,7 @@ void WindowManager::create(sf::Vector2u resolution , bool fullscreen,float fov, 
     m_fov = fov;
     m_fullscreen = fullscreen;
     perspectiveProjection = glm::perspective(glm::radians(fov), (float)resolution.x/(float)resolution.y, 0.1f, range);
-    settings.depthBits = 8;
+    settings.depthBits = 24;
     settings.antialiasingLevel = 4;
     settings.minorVersion = 3;
     settings.majorVersion = 4;
