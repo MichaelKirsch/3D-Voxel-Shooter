@@ -62,31 +62,38 @@ float Terrain::calculateBorderFactor(float x, float y, int size, float border_th
     return factor;
 }
 
-void Terrain::create(glm::vec3 origin,int seed, int size, int height, float border_width) {
+void Terrain::create(glm::vec3 origin,int seed, int size, int height, float border_width,float frequency) {
     m_size= size;
+    m_freq=frequency;
     m_height = height;
+    m_border_factor=border_width;
     auto possible_blocks = size*size*height;
     chunkData.resize(possible_blocks);
     std::fill(chunkData.begin(),chunkData.end(),BLOCK_TYPE::NONE);
     noise.SetNoiseType(FastNoise::Simplex);
-    noise.SetFrequency(0.01);
-
+    noise.SetFrequency(0.01f);
     for(int x =0;x<size;x++)
     {
         for(int z =0;z<size;z++)
         {
 
-            auto y = static_cast<int>(noise.GetNoise(x,z)*height);
-            y*=calculateBorderFactor(x,z,size,border_width);
-            y-=3;
+            auto y = getY(x,z);
             if(y>-1)
             {
                 glm::ivec3 raw = glm::ivec3((int)x,(int)y,(int)z);
                 raw+=origin;
-                setBlocktype(raw,BLOCK_TYPE::GRASS);
+                BLOCK_TYPE type;
+                if(y==1)
+                    type=BLOCK_TYPE::SAND;
+                if(y>1&&y<=6)
+                    type=BLOCK_TYPE::GRASS;
+                if(y>6&&y<=9)
+                    type=BLOCK_TYPE::DIRT;
+
+                setBlocktype(raw,type);
                 if(raw.y>1)
                 {
-                    setBlocktype(glm::ivec3(raw.x,raw.y-1,raw.z),BLOCK_TYPE::GRASS);
+                    setBlocktype(glm::ivec3(raw.x,raw.y-1,raw.z),type);
                 }
             }
         }
@@ -101,10 +108,26 @@ void Terrain::create(glm::vec3 origin,int seed, int size, int height, float bord
 
     for(int x =0;x<chunkData.size();x++)
     {
-        if(chunkData[x]==BLOCK_TYPE::GRASS)
+        if(chunkData[x]!=BLOCK_TYPE::NONE)
         {
+            BLOCK_TYPE type = chunkData[x];
             positions.emplace_back(getPosFromInt(x));
-            positions.emplace_back(glm::vec3(0, 0.6, 0.160));
+            switch(type)
+            {
+                case BLOCK_TYPE::SAND:
+                    positions.emplace_back(glm::vec3(0.937, 0.796, 0.082));
+                    break;
+                case BLOCK_TYPE::GRASS:
+                    positions.emplace_back(glm::vec3(0.058, 0.419, 0.078));
+                    break;
+                case BLOCK_TYPE::DIRT:
+                    positions.emplace_back(glm::vec3(0.419, 0.219, 0.058));
+                    break;
+                default:
+                    positions.emplace_back(glm::vec3(0.501, 0.854, 0.062));
+                    break;
+            }
+
         }
     }
 
@@ -125,7 +148,11 @@ void Terrain::create(glm::vec3 origin,int seed, int size, int height, float bord
 }
 
 int Terrain::getPosInChunk(glm::ivec3 position) {
-    return position.x + position.y * m_size + position.z * m_size * m_height;
+    int pos = position.x + position.y * m_size + position.z * m_size * m_height;
+    if(pos<chunkData.size())
+        return pos;
+    else
+        return 1;
     //return (position.x*m_size)+(position.z*m_height)+position.y;
 }
 
@@ -147,6 +174,23 @@ glm::ivec3 Terrain::getPosFromInt(int pos) {
         v.y = (pos / m_size) % m_height;
         v.z = pos / (m_size * m_height);
         return v;
+}
+
+int Terrain::getY(int x, int z) {
+    auto y = static_cast<int>((noise.GetNoise(x,z))*m_height);
+    y*=calculateBorderFactor(x,z,m_size,m_border_factor);
+    y-=3;
+    return y;
+}
+
+bool Terrain::isTerrain(int x, int z) {
+    bool isTerrain= false;
+    for(int y =0;y<m_height;y++)
+    {
+        if(getBlocktype({x,y,z})!=BLOCK_TYPE::NONE)
+            isTerrain = true;
+    }
+    return isTerrain;
 }
 
 

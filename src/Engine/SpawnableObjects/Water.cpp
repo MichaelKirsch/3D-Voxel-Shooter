@@ -22,7 +22,7 @@ void Water::update(float& elapsed) {
     m_degrees+=m_speed;
 }
 
-void Water::create(glm::vec3 origin, float WaveSize, float WaterBodySize, glm::vec3 waterColor, float speed,float waveheight) {
+void Water::create(Terrain& ter,glm::vec3 origin, float WaveSize, float WaterBodySize, glm::vec3 waterColor, float speed,float waveheight) {
     m_origin = origin;
     m_waveheight = waveheight;
     m_waveSize = WaveSize;
@@ -53,22 +53,22 @@ void Water::create(glm::vec3 origin, float WaveSize, float WaterBodySize, glm::v
         for (int z = 0; z < trianglesPerSide - 1; z++) {
             glm::vec3 main, sec, tri;
             //inject first triangle
-            auto pos_in_vector = (x * trianglesPerSide) + z;
-            main = rawVertices[pos_in_vector];
-            sec = rawVertices[pos_in_vector + 1];
-            tri = rawVertices[pos_in_vector + trianglesPerSide];
+                auto pos_in_vector = (x * trianglesPerSide) + z;
+                main = rawVertices[pos_in_vector];
+                sec = rawVertices[pos_in_vector + 1];
+                tri = rawVertices[pos_in_vector + trianglesPerSide];
 
-            //One Tiangle = (vec3posA,posab,posac,
-            waterVertices.insert(waterVertices.end(), {main, sec, tri});
-            waterVertices.insert(waterVertices.end(), {sec,tri, main});
-            waterVertices.insert(waterVertices.end(), {tri, main, sec});
-            //inject second triangle
-            main = rawVertices[pos_in_vector + trianglesPerSide];
-            sec = rawVertices[pos_in_vector + 1];
-            tri = rawVertices[pos_in_vector + trianglesPerSide+1];
-            waterVertices.insert(waterVertices.end(), {main, sec, tri});
-            waterVertices.insert(waterVertices.end(), {sec,tri, main});
-            waterVertices.insert(waterVertices.end(), {tri, main, sec});
+                //One Tiangle = (vec3posA,posab,posac,
+                waterVertices.insert(waterVertices.end(), {main, sec, tri});
+                waterVertices.insert(waterVertices.end(), {sec,tri, main});
+                waterVertices.insert(waterVertices.end(), {tri, main, sec});
+                //inject second triangle
+                main = rawVertices[pos_in_vector + trianglesPerSide];
+                sec = rawVertices[pos_in_vector + 1];
+                tri = rawVertices[pos_in_vector + trianglesPerSide+1];
+                waterVertices.insert(waterVertices.end(), {main, sec, tri});
+                waterVertices.insert(waterVertices.end(), {sec,tri, main});
+                waterVertices.insert(waterVertices.end(), {tri, main, sec});
         }
     }
     waterVertices.shrink_to_fit();

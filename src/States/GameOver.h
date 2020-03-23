@@ -4,11 +4,11 @@
 
 #include <iostream>
 #include "StateMachine/State.h"
-#include "WorldWater.h"
 #include "Water.h"
 #include "SFML/Graphics.hpp"
 #include "Terrain.h"
 #include "StateMachine/SimpleTimer.h"
+#include "Food.h"
 class GameOver : public State {
 public:
     GameOver(StateEssentials& es);
@@ -20,6 +20,7 @@ public:
 private:
     unsigned int programm;
     Water water;
+    Food food;
     sf::Mouse m_Mouse;
     float last_time;
     bool mouse_hold;

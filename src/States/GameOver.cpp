@@ -3,24 +3,27 @@
 #include "GameOver.h"
 
 
-GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es) {
+GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),food(es) {
     essentials.camera.Position = {10.f,10.f,10.f};
     essentials.camera.MovementSpeed = 60.0;
-    int size = 600;
+    int size = 700;
     timer.setTickrate(0.5);
-    terrain.create({0.f,0.f,0.f},400,size,25.f,0.2f);
-    water.create({-100.f,0.f,-100.f},1.0f,size+200,{0, 0.337, 0.921},0.06f,0.15f);
+    terrain.create({0.f,0.f,0.f},400,size,25.f,0.3f,0.01f);
+    water.create(terrain,{-100.f,0.f,-100.f},1.0f,size+200,{0, 0.337, 0.921},0.06f,0.15f);
+    food.create(terrain,1000,1.0);
 }
 
 void GameOver::updateFrame(float& elapsed) {
     essentials.windowManager.clearScreen();
     water.render();
     terrain.render();
+    food.render();
     essentials.windowManager.swapBuffers();
 }
 
 void GameOver::updateEntities(float& elapsed) {
     water.update(elapsed);
+    food.update(elapsed);
 }
 
 void GameOver::processInputs(float& elapsed) {
@@ -69,7 +72,7 @@ void GameOver::processInputs(float& elapsed) {
             }
         }
         auto campos = essentials.camera.Position;
-        std::cout << campos.x<<"|"<<campos.y<<"|"<<campos.z<<": "<< check<<std::endl;
+        //std::cout << campos.x<<"|"<<campos.y<<"|"<<campos.z<<": "<< check<<std::endl;
     }
 
 

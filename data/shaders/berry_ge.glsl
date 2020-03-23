@@ -8,13 +8,13 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 
-
-const float size = 0.5; 
+const float size = 0.25;
 const vec3 lightDirection = normalize(vec3(0.4,-1.0,0.8));
 
 void createVertex(vec3 offset, vec3 faceNormal)
 {
     vec4 actualoffset = vec4(offset * size,0.0);
+    actualoffset*=model;
     vec4 worldposition = gl_in[0].gl_Position + actualoffset;
     vec4 pos = (projection*view) * worldposition;
     gl_Position = pos;
