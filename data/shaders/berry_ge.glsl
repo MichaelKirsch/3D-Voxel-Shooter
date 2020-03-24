@@ -25,7 +25,8 @@ void createVertex(vec3 offset, vec3 faceNormal)
 }
 
 void main() {
-    vec3 faceNormal = vec3(0.0, 0.0, 1.0);
+    mat3 rot = mat3(model);
+    vec3 faceNormal = vec3(0.0, 0.0, 1.0)*rot;
     createVertex(vec3(-1.0, 1.0, 1.0), faceNormal);
     createVertex(vec3(-1.0, -1.0, 1.0), faceNormal);
     createVertex(vec3(1.0, 1.0, 1.0), faceNormal);
@@ -33,7 +34,7 @@ void main() {
 
     EndPrimitive();
 
-    faceNormal = vec3(1.0, 0.0, 0.0);
+    faceNormal = vec3(1.0, 0.0, 0.0)*rot;
     createVertex(vec3(1.0, 1.0, 1.0), faceNormal);
     createVertex(vec3(1.0, -1.0, 1.0), faceNormal);
     createVertex(vec3(1.0, 1.0, -1.0), faceNormal);
@@ -41,7 +42,7 @@ void main() {
 
     EndPrimitive();
 
-    faceNormal = vec3(0.0, 0.0, -1.0);
+    faceNormal = vec3(0.0, 0.0, -1.0)*rot;
     createVertex(vec3(1.0, 1.0, -1.0), faceNormal);
     createVertex(vec3(1.0, -1.0, -1.0), faceNormal);
     createVertex(vec3(-1.0, 1.0, -1.0), faceNormal);
@@ -49,7 +50,7 @@ void main() {
 
     EndPrimitive();
 
-    faceNormal = vec3(-1.0, 0.0, 0.0);
+    faceNormal = vec3(-1.0, 0.0, 0.0)*rot;
     createVertex(vec3(-1.0, 1.0, -1.0), faceNormal);
     createVertex(vec3(-1.0, -1.0, -1.0), faceNormal);
     createVertex(vec3(-1.0, 1.0, 1.0), faceNormal);
@@ -57,7 +58,7 @@ void main() {
 
     EndPrimitive();
 
-    faceNormal = vec3(0.0, 1.0, 0.0);
+    faceNormal = vec3(0.0, 1.0, 0.0)*rot;
     createVertex(vec3(1.0, 1.0, 1.0), faceNormal);
     createVertex(vec3(1.0, 1.0, -1.0), faceNormal);
     createVertex(vec3(-1.0, 1.0, 1.0), faceNormal);
@@ -65,7 +66,7 @@ void main() {
 
     EndPrimitive();
 
-    faceNormal = vec3(0.0, -1.0, 0.0);
+    faceNormal = vec3(0.0, -1.0, 0.0)*rot;
     createVertex(vec3(-1.0, -1.0, 1.0), faceNormal);
     createVertex(vec3(-1.0, -1.0, -1.0), faceNormal);
     createVertex(vec3(1.0, -1.0, 1.0), faceNormal);

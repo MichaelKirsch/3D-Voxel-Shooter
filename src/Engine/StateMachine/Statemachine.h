@@ -21,8 +21,8 @@ private:
     std::unique_ptr<State> m_playedState;
     sf::Clock m_clock;
     StateEssentials essential;
-    float time;
-    Timer frameTimer,updateTimer,inputTimer;
+    float time,elapsed;
+    Timer frameTimer, updateTimer, inputTimer;
     bool running;
 };
 

@@ -13,7 +13,7 @@ void Food::render() {
 }
 
 void Food::update(float &elapsed) {
-    model = glm::rotate(model,0.1f,glm::vec3(0.f,1.f,0.f));
+    model = glm::rotate(model,0.06f,glm::vec3(0.f,1.f,0.f));
 }
 
 void Food::create(Terrain &ter, int amount, float respawntime) {

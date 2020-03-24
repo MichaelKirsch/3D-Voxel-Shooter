@@ -4,7 +4,7 @@
 
 Statemachine::Statemachine() {
     running = true;
-    essential.windowManager.create({1920,1080}, true);
+    essential.windowManager.create({1920,1080}, false);
     updateTimer.setTickrate(40);
     frameTimer.setTickrate(60);
     inputTimer.setTickrate(60);
@@ -15,7 +15,7 @@ Statemachine::Statemachine() {
 void Statemachine::run() {
     while(!essential.shouldClose)
     {
-        float elapsed = m_clock.restart().asSeconds();
+        elapsed = m_clock.restart().asSeconds();
         updateTimer.setElapsed(elapsed);
         frameTimer.setElapsed(elapsed);
         inputTimer.setElapsed(elapsed);
@@ -32,8 +32,5 @@ void Statemachine::run() {
         {
             m_playedState->updateEntities(elapsed);
         }
-
-
-
     }
 }

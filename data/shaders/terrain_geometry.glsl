@@ -25,6 +25,9 @@ void createVertex(vec3 offset, vec3 faceNormal)
 }
 
 void main() {
+
+
+    //back
     vec3 faceNormal = vec3(0.0, 0.0, 1.0);
     createVertex(vec3(-1.0, 1.0, 1.0), faceNormal);
     createVertex(vec3(-1.0, -1.0, 1.0), faceNormal);
@@ -33,6 +36,7 @@ void main() {
 
     EndPrimitive();
 
+    //right
     faceNormal = vec3(1.0, 0.0, 0.0);
     createVertex(vec3(1.0, 1.0, 1.0), faceNormal);
     createVertex(vec3(1.0, -1.0, 1.0), faceNormal);
@@ -41,6 +45,7 @@ void main() {
 
     EndPrimitive();
 
+    //front
     faceNormal = vec3(0.0, 0.0, -1.0);
     createVertex(vec3(1.0, 1.0, -1.0), faceNormal);
     createVertex(vec3(1.0, -1.0, -1.0), faceNormal);
@@ -49,6 +54,8 @@ void main() {
 
     EndPrimitive();
 
+
+    //left
     faceNormal = vec3(-1.0, 0.0, 0.0);
     createVertex(vec3(-1.0, 1.0, -1.0), faceNormal);
     createVertex(vec3(-1.0, -1.0, -1.0), faceNormal);
@@ -56,7 +63,7 @@ void main() {
     createVertex(vec3(-1.0, -1.0, 1.0), faceNormal);
 
     EndPrimitive();
-
+    //up
     faceNormal = vec3(0.0, 1.0, 0.0);
     createVertex(vec3(1.0, 1.0, 1.0), faceNormal);
     createVertex(vec3(1.0, 1.0, -1.0), faceNormal);
@@ -64,12 +71,12 @@ void main() {
     createVertex(vec3(-1.0, 1.0, -1.0), faceNormal);
 
     EndPrimitive();
-
-    faceNormal = vec3(0.0, -1.0, 0.0);
-    createVertex(vec3(-1.0, -1.0, 1.0), faceNormal);
-    createVertex(vec3(-1.0, -1.0, -1.0), faceNormal);
-    createVertex(vec3(1.0, -1.0, 1.0), faceNormal);
-    createVertex(vec3(1.0, -1.0, -1.0), faceNormal);
-
-    EndPrimitive();
+    //down
+    //faceNormal = vec3(0.0, -1.0, 0.0);
+    //createVertex(vec3(-1.0, -1.0, 1.0), faceNormal);
+    //createVertex(vec3(-1.0, -1.0, -1.0), faceNormal);
+    //createVertex(vec3(1.0, -1.0, 1.0), faceNormal);
+    //createVertex(vec3(1.0, -1.0, -1.0), faceNormal);
+//
+    //EndPrimitive();
 }

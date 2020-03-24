@@ -3,14 +3,37 @@
 #include "GameOver.h"
 
 
-GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),food(es) {
+GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),food(es),terrainGenerator(es) {
     essentials.camera.Position = {10.f,10.f,10.f};
     essentials.camera.MovementSpeed = 60.0;
     int size = 700;
     timer.setTickrate(0.5);
     terrain.create({0.f,0.f,0.f},400,size,25.f,0.3f,0.01f);
-    water.create(terrain,{-100.f,0.f,-100.f},1.0f,size+200,{0, 0.337, 0.921},0.06f,0.15f);
-    food.create(terrain,1000,1.0);
+    water.create(terrain,{-100.f,0.f,-100.f},1.0f,size+200,{0, 0.337, 0.921},0.06f,0.15f,0.1);
+    food.create(terrain,7000,1.0);
+    terrainGenerator.setUpGenerator();
+    int chunksize = 32;
+    int micros=0;
+    int bytesize =0;
+    int cubes;
+    for(int x=0;x<1000;x++)
+
+    {
+        Chunk b(terrainGenerator,{x,rand()%3,rand()%100},chunksize);
+        micros+=b.microseconds_needed;
+        bytesize+=b.Blocks.size();
+        cubes = b.Blocks.size();
+    }
+    bytesize*=sizeof(Cube);
+    bytesize/=1024;
+    bytesize/=1024;
+
+    std::cout << "Total of " << bytesize << "mb of data generated ("<< (float)bytesize/1000<<"mb per chunk) \n"
+    << cubes << " cubes generated per chunk, and "<< cubes*1000 << " in total"
+     << "\nroughly " <<  micros/1000 << " microseconds needed  per chunk";
+
+    glCullFace(GL_BACK);
+    glEnable(GL_CULL_FACE);
 }
 
 void GameOver::updateFrame(float& elapsed) {
@@ -29,6 +52,7 @@ void GameOver::updateEntities(float& elapsed) {
 void GameOver::processInputs(float& elapsed) {
     sf::Event ev;
     float time = 0.02;
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
         essentials.camera.ProcessKeyboard(FORWARD,time);
     }
@@ -59,29 +83,6 @@ void GameOver::processInputs(float& elapsed) {
 
     }
 
-    if(timer.check(0.02))
-    {
-        bool check= false;
-        for(int x =0;x<terrain.getHeight();x++)
-        {
-            auto campos = essentials.camera.Position;
-
-            if(terrain.getBlocktype(glm::ivec3(campos.x,x,campos.z))==BLOCK_TYPE::GRASS)
-            {
-                check= true;
-            }
-        }
-        auto campos = essentials.camera.Position;
-        //std::cout << campos.x<<"|"<<campos.y<<"|"<<campos.z<<": "<< check<<std::endl;
-    }
-
-
-
-    if(m_Mouse.isButtonPressed(sf::Mouse::Left))
-    {
-        essentials.camera.Position = {50,50,50};
-    }
-
 
     float yaw,pitch;
     float x_percent =  (1.f/essentials.windowManager.getWindow().getSize().x) * m_Mouse.getPosition(essentials.windowManager.getWindow()).x;
@@ -94,22 +95,54 @@ void GameOver::processInputs(float& elapsed) {
     yaw = 180.f*x_percent;
     pitch = 180.f*-y_percent;
 
+
     if(m_Mouse.isButtonPressed(sf::Mouse::Right))
     {
+
         essentials.windowManager.getWindow().setMouseCursorVisible(false);
         essentials.camera.ProcessMouseMovement(yaw,pitch);
         m_Mouse.setPosition({static_cast<int>(essentials.windowManager.getWindow().getSize().x/2),static_cast<int>(essentials.windowManager.getWindow().getSize().y/2)},essentials.windowManager.getWindow());
+
     } else
     {
+        const float mouse_boundaries = 0.03f;
+        auto bound_pixels_x = mouse_boundaries*essentials.windowManager.getWindow().getSize().x;
+        auto bound_pixels_y = mouse_boundaries*essentials.windowManager.getWindow().getSize().y;
+        if(m_Mouse.getPosition(essentials.windowManager.getWindow()).x<bound_pixels_x)
+        {
+            essentials.camera.ProcessKeyboard(LEFT,time);
+        }
+        if(m_Mouse.getPosition(essentials.windowManager.getWindow()).x>essentials.windowManager.getWindow().getSize().x-bound_pixels_x)
+        {
+            essentials.camera.ProcessKeyboard(RIGHT,time);
+        }
+
+        if(m_Mouse.getPosition(essentials.windowManager.getWindow()).y<bound_pixels_y)
+        {
+            essentials.camera.ProcessKeyboard(FORWARD,time);
+        }
+        if(m_Mouse.getPosition(essentials.windowManager.getWindow()).y>essentials.windowManager.getWindow().getSize().y-bound_pixels_y)
+        {
+            essentials.camera.ProcessKeyboard(BACKWARD,time);
+        }
+
         mouse_hold = false;
         essentials.windowManager.getWindow().setMouseCursorVisible(true);
     }
+
+
+
 
     while(essentials.windowManager.getWindow().pollEvent(ev))
     {
         if(ev.type == sf::Event::Closed)
         {
             essentials.shouldClose = true;
+        }
+        if(ev.type == sf::Event::MouseWheelMoved)
+        {
+            int deltamouse = ev.mouseWheel.delta;
+            essentials.camera.ProcessMouseScroll(deltamouse,10.5);
         }
     }
 }

@@ -22,13 +22,14 @@ void Water::update(float& elapsed) {
     m_degrees+=m_speed;
 }
 
-void Water::create(Terrain& ter,glm::vec3 origin, float WaveSize, float WaterBodySize, glm::vec3 waterColor, float speed,float waveheight) {
+void Water::create(Terrain& ter,glm::vec3 origin, float WaveSize, float WaterBodySize, glm::vec3 waterColor, float speed,float waveheight,float freq) {
     m_origin = origin;
     m_waveheight = waveheight;
     m_waveSize = WaveSize;
     m_speed = speed;
+    m_freq = freq;
     noise.SetNoiseType(FastNoise::Simplex);
-    noise.SetFrequency(0.15);
+    noise.SetFrequency(freq);
     m_waterbodySize = WaterBodySize;
     m_waterColor = waterColor;
     trianglesPerSide = static_cast<unsigned int>(m_waterbodySize/m_waveSize);
@@ -41,7 +42,7 @@ void Water::create(Terrain& ter,glm::vec3 origin, float WaveSize, float WaterBod
             float y = noise.GetNoise(x,z);
             y+=1.f;
             y/=2.f;
-            glm::vec3 rawPos = {(float)x,y,(float)z};
+            glm::vec3 rawPos = {(float)x*m_waveSize,y,(float)z*m_waveSize};
             rawPos+=m_origin;
             rawVertices.emplace_back(rawPos);
         }

@@ -8,6 +8,7 @@
 #include <gtc/matrix_transform.hpp>
 
 #include <vector>
+#include <iostream>
 
 // Defines several possible options for camera movement. Used as abstraction to stay away from window-system specific input methods
 enum Camera_Movement {
@@ -32,6 +33,7 @@ public:
     // Camera Attributes
     glm::vec3 Position;
     glm::vec3 Front;
+    glm::vec3 FrontMovementVector;
     glm::vec3 Up;
     glm::vec3 Right;
     glm::vec3 WorldUp;
@@ -69,13 +71,14 @@ public:
     }
 
     // Processes input received from any keyboard-like input system. Accepts input parameter in the form of camera defined ENUM (to abstract it from windowing systems)
-    void ProcessKeyboard(Camera_Movement direction, float deltaTime)
+    void ProcessKeyboard(Camera_Movement direction, float& deltaTime)
     {
+        FrontMovementVector = glm::cross({0.0,1.0,0.0},Right);
         float velocity = MovementSpeed * deltaTime;
         if (direction == FORWARD)
-            Position += Front * velocity;
+            Position += FrontMovementVector * velocity;
         if (direction == BACKWARD)
-            Position -= Front * velocity;
+            Position -= FrontMovementVector * velocity;
         if (direction == LEFT)
             Position -= Right * velocity;
         if (direction == RIGHT)
@@ -105,14 +108,9 @@ public:
     }
 
     // Processes input received from a mouse scroll-wheel event. Only requires input on the vertical wheel-axis
-    void ProcessMouseScroll(float yoffset)
+    void ProcessMouseScroll(int yoffset,float velocity)
     {
-        if (Zoom >= 1.0f && Zoom <= 45.0f)
-            Zoom -= yoffset;
-        if (Zoom <= 1.0f)
-            Zoom = 1.0f;
-        if (Zoom >= 45.0f)
-            Zoom = 45.0f;
+        Position += Front * (yoffset*velocity);
     }
 
 private:

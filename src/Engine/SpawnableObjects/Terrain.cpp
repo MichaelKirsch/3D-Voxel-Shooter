@@ -145,6 +145,7 @@ void Terrain::create(glm::vec3 origin,int seed, int size, int height, float bord
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
     glEnableVertexAttribArray(0);
+    std::cout << "Blocks generated in the Terrain: "<<positions.size()<<std::endl;
 }
 
 int Terrain::getPosInChunk(glm::ivec3 position) {

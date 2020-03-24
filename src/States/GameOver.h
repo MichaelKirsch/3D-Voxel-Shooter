@@ -9,6 +9,8 @@
 #include "Terrain.h"
 #include "StateMachine/SimpleTimer.h"
 #include "Food.h"
+#include "Chunk.h"
+#include "Generators/TerrainGenerator.h"
 class GameOver : public State {
 public:
     GameOver(StateEssentials& es);
@@ -25,6 +27,7 @@ private:
     float last_time;
     bool mouse_hold;
     Terrain terrain;
+    TerrainGenerator terrainGenerator;
     bool wire;
     SimpleTimer timer;
 protected:
