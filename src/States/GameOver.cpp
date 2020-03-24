@@ -3,8 +3,7 @@
 #include "GameOver.h"
 
 
-GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),food(es),terrainGenerator(es) {
-    essentials.camera.Position = {10.f,10.f,10.f};
+GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),food(es),terrainGenerator(es),chmanager(es) {
     essentials.camera.MovementSpeed = 60.0;
     int size = 700;
     timer.setTickrate(0.5);
@@ -12,25 +11,7 @@ GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),food(e
     water.create(terrain,{-100.f,0.f,-100.f},1.0f,size+200,{0, 0.337, 0.921},0.06f,0.15f,0.1);
     food.create(terrain,7000,1.0);
     terrainGenerator.setUpGenerator();
-    int chunksize = 32;
-    int micros=0;
-    int bytesize =0;
-    int cubes;
-    for(int x=0;x<1000;x++)
-
-    {
-        Chunk b(terrainGenerator,{x,rand()%3,rand()%100},chunksize);
-        micros+=b.microseconds_needed;
-        bytesize+=b.Blocks.size();
-        cubes = b.Blocks.size();
-    }
-    bytesize*=sizeof(Cube);
-    bytesize/=1024;
-    bytesize/=1024;
-
-    std::cout << "Total of " << bytesize << "mb of data generated ("<< (float)bytesize/1000<<"mb per chunk) \n"
-    << cubes << " cubes generated per chunk, and "<< cubes*1000 << " in total"
-     << "\nroughly " <<  micros/1000 << " microseconds needed  per chunk";
+    chmanager.create(&terrainGenerator,10,32);
 
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
@@ -47,6 +28,7 @@ void GameOver::updateFrame(float& elapsed) {
 void GameOver::updateEntities(float& elapsed) {
     water.update(elapsed);
     food.update(elapsed);
+    chmanager.update(elapsed);
 }
 
 void GameOver::processInputs(float& elapsed) {
