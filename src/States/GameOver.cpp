@@ -3,7 +3,7 @@
 #include "GameOver.h"
 
 
-GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),food(es),terrainGenerator(es),chmanager(es) {
+GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),food(es),terrainGenerator(es),chunkManager(es) {
     essentials.camera.MovementSpeed = 60.0;
     int size = 700;
     timer.setTickrate(0.5);
@@ -11,8 +11,7 @@ GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),food(e
     water.create(terrain,{-100.f,0.f,-100.f},1.0f,size+200,{0, 0.337, 0.921},0.06f,0.15f,0.1);
     food.create(terrain,7000,1.0);
     terrainGenerator.setUpGenerator();
-    chmanager.create(&terrainGenerator,10,32);
-
+    chunkManager.create(&terrainGenerator);
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
 }
@@ -28,7 +27,6 @@ void GameOver::updateFrame(float& elapsed) {
 void GameOver::updateEntities(float& elapsed) {
     water.update(elapsed);
     food.update(elapsed);
-    chmanager.update(elapsed);
 }
 
 void GameOver::processInputs(float& elapsed) {

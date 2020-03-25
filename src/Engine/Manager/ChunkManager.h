@@ -7,6 +7,7 @@
 #include "StateMachine/Essential.h"
 #include "Chunk.h"
 #include "Generators/TerrainGenerator.h"
+#include <stack>
 
 class ChunkManager : public Renderable {
 public:
@@ -20,13 +21,20 @@ public:
 
     glm::ivec2 chunkPositionPlayer;
 
-    ~ChunkManager() = default;
+    std::map<glm::ivec3,Chunk> bufferedChunks;
 
+    std::vector<glm::ivec3> frustumChunks;
+
+    std::vector<glm::ivec3> loadedChunks;
+
+    ~ChunkManager() = default;
 private:
+    std::stack<unsigned int*> unused_buffers;
+    std::vector<unsigned int> buffers;
     StateEssentials& stateEssentials;
     TerrainGenerator* terrainGenerator;
+    std::vector<glm::ivec3> generateVisibleChunks();
     unsigned int VAO,VBO, PROGRAMM, m_viewDistance;
-    std::map<glm::ivec3,Chunk> renderedChunks;
     int m_chunksize;
 protected:
 };

@@ -1,4 +1,0 @@
-
-
-#include "RenderManager.h"
-

@@ -11,6 +11,8 @@
 #include "Food.h"
 #include "Generators/TerrainGenerator.h"
 #include "Manager/ChunkManager.h"
+#include "glm/glm/gtx/rotate_vector.hpp"
+#include <cmath>
 
 class GameOver : public State {
 public:
@@ -28,7 +30,7 @@ private:
     float last_time;
     bool mouse_hold;
     Terrain terrain;
-    ChunkManager chmanager;
+    ChunkManager chunkManager;
     TerrainGenerator terrainGenerator;
     bool wire;
     SimpleTimer timer;

@@ -19,6 +19,9 @@ include_directories("src/")
 include_directories("libs/glm/glm/")
 include_directories("src/Engine/")
 include_directories("src/Engine/SpawnableObjects/")
+include_directories("src/Engine/StateMachine/")
+include_directories("src/Engine/Generators/")
+include_directories("src/Engine/Manager/")
 
 find_package(OpenGL REQUIRED)
 
