@@ -8,6 +8,7 @@
 #include "Chunk.h"
 #include "Generators/TerrainGenerator.h"
 #include <stack>
+#include "SimpleTimer.h"
 
 class ChunkManager : public Renderable {
 public:
@@ -35,7 +36,10 @@ private:
     TerrainGenerator* terrainGenerator;
     std::vector<glm::ivec3> generateVisibleChunks();
     unsigned int VAO,VBO, PROGRAMM, m_viewDistance;
+    unsigned int needed_buffers;
+    std::vector<glm::ivec3> startChunkPositions;
     int m_chunksize;
+    SimpleTimer timer;
 protected:
 };
 

@@ -13,6 +13,7 @@
 #include "Manager/ChunkManager.h"
 #include "glm/glm/gtx/rotate_vector.hpp"
 #include <cmath>
+#include "Timer.h"
 
 class GameOver : public State {
 public:

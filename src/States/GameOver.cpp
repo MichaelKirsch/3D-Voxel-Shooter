@@ -11,7 +11,7 @@ GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),food(e
     water.create(terrain,{-100.f,0.f,-100.f},1.0f,size+200,{0, 0.337, 0.921},0.06f,0.15f,0.1);
     food.create(terrain,7000,1.0);
     terrainGenerator.setUpGenerator();
-    chunkManager.create(&terrainGenerator);
+    chunkManager.create(&terrainGenerator,5,32);
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
 }
@@ -27,6 +27,7 @@ void GameOver::updateFrame(float& elapsed) {
 void GameOver::updateEntities(float& elapsed) {
     water.update(elapsed);
     food.update(elapsed);
+    chunkManager.update(elapsed);
 }
 
 void GameOver::processInputs(float& elapsed) {
