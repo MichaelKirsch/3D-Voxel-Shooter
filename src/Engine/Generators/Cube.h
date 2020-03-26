@@ -6,7 +6,7 @@
 
 enum class CUBE_SIDES
 {
-    up=0,down,right,left,front,back,air_block,not_used
+    up=0,down,right,left,front,back,air_block,liquid_block
 };
 
 struct CubeGraphicData

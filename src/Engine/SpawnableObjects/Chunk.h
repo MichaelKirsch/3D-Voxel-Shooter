@@ -10,13 +10,12 @@
 
 class Chunk : public Renderable {
 public:
-    Chunk(TerrainGenerator& gen, glm::ivec3 position,int& chunksize);
+    Chunk(TerrainGenerator* gen, glm::ivec3 pos,int& chunksize);
+    glm::ivec3 position;
     int active_blocks=0;
-    ~Chunk() = default;
     std::vector<Cube> Blocks;
     int microseconds_needed;
-private:
-protected:
+    ~Chunk() = default;
 };
 
 

@@ -3,8 +3,9 @@
 #include "Chunk.h"
 
 
-Chunk::Chunk(TerrainGenerator &gen, glm::ivec3 position, int &chunksize) {
+Chunk::Chunk(TerrainGenerator *gen, glm::ivec3 pos, int &chunksize) {
     auto start = std::chrono::steady_clock::now();
+    position=pos;
     auto amount_blocks = chunksize*chunksize*chunksize;
     //lets resize the vector to fit the chunk
     active_blocks = 0;
@@ -18,13 +19,12 @@ Chunk::Chunk(TerrainGenerator &gen, glm::ivec3 position, int &chunksize) {
             for(int y =0;y<chunksize;y++)
             {
                 glm::ivec3 worldpos = {(position.x*chunksize)+x,(position.y*chunksize)+y, (position.z*chunksize)+z};
-                gen.getCubeAtPosition(worldpos, Blocks[iterator]);
+                gen->getCubeAtPosition(worldpos, Blocks[iterator]);
                 Blocks[iterator].data.position = {x,y,z};
             }
         }
     }
     auto end = std::chrono::steady_clock::now();
-
    microseconds_needed = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 }
 

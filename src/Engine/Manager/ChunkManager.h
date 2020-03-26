@@ -3,12 +3,15 @@
 #pragma once
 
 #include <map>
+#include <unordered_map>
+#include <unordered_set>
 #include "Renderable.h"
 #include "StateMachine/Essential.h"
 #include "Chunk.h"
 #include "Generators/TerrainGenerator.h"
 #include <stack>
 #include "SimpleTimer.h"
+#include <StopWatch.h>
 
 class ChunkManager : public Renderable {
 public:
@@ -30,16 +33,20 @@ public:
 
     ~ChunkManager() = default;
 private:
+    void fillWorldInBeginning();
+    std::map<unsigned long,Chunk> loaded_chunks;
     std::stack<unsigned int*> unused_buffers;
     std::vector<unsigned int> buffers;
+    std::stack<std::pair<glm::ivec3,unsigned int>> chunks_to_delete;
     StateEssentials& stateEssentials;
     TerrainGenerator* terrainGenerator;
     std::vector<glm::ivec3> generateVisibleChunks();
-    unsigned int VAO,VBO, PROGRAMM, m_viewDistance;
+    unsigned int VAO,VBO, PROGRAMM;
     unsigned int needed_buffers;
     std::vector<glm::ivec3> startChunkPositions;
-    int m_chunksize;
+    int m_chunksize, m_viewDistance;
     SimpleTimer timer;
+    unsigned long hash_ivec(glm::ivec3 vector);
 protected:
 };
 

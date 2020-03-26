@@ -64,5 +64,5 @@ TerrainGenerator::TerrainGenerator(StateEssentials &es) : stateEssentials(es) {
 }
 
 int TerrainGenerator::getTerrain(int x, int y) {
-    return static_cast<int>(m_noise.GetNoise(x,y)*15.f);
+    return static_cast<int>(m_noise.GetNoise(static_cast<FN_DECIMAL>(x),static_cast<FN_DECIMAL>(y))*15.f);
 }

@@ -15,20 +15,21 @@ void ChunkManager::update(float &elapsed) {
     {
         auto starting_point_raw = stateEssentials.camera.Position;
         chunkPositionPlayer = glm::ivec2(starting_point_raw.x / m_chunksize, starting_point_raw.z / m_chunksize);
-        //std::cout << chunkPositionPlayer.x<< "|" << chunkPositionPlayer.y<<std::endl;
     }
 }
 
 void ChunkManager::create(TerrainGenerator *ter, unsigned int viewDistance, int chunksize) {
+    StopWatch watch;
     m_chunksize=chunksize;
     m_viewDistance = viewDistance;
+    terrainGenerator = ter;
     auto starting_point_raw = stateEssentials.camera.Position;
     auto starting_point_chunk = glm::ivec2(starting_point_raw.x / m_chunksize, starting_point_raw.z / m_chunksize);
     startChunkPositions = generateVisibleChunks();
     buffers.reserve(startChunkPositions.size());
     std::fill(buffers.begin(),buffers.end(),1);
     glGenBuffers(startChunkPositions.size(),buffers.data());
-    std::cout << "Chunks that will be buffered:"<<startChunkPositions.size();
+    fillWorldInBeginning();
 }
 
 std::vector<glm::ivec3> ChunkManager::generateVisibleChunks() {
@@ -49,6 +50,21 @@ std::vector<glm::ivec3> ChunkManager::generateVisibleChunks() {
     auto end = std::chrono::steady_clock::now();
     auto microseconds_needed = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
     return chunks_needed;
+}
+
+void ChunkManager::fillWorldInBeginning() {
+    StopWatch w;
+    for(auto& element:startChunkPositions)
+    {
+        loaded_chunks.insert(std::make_pair(hash_ivec(element),Chunk(terrainGenerator,element,m_chunksize)));
+    }
+    auto am = startChunkPositions.size();
+    auto tim = w.stop(StopWatch::milli);
+    std::cout << "Generated "<<am << " chunks in " <<tim/1000.f <<" seconds and it took ~"<< tim/am <<"ms per chunk"<<std::endl;
+}
+
+unsigned long ChunkManager::hash_ivec(glm::ivec3 vector) {
+    return std::hash<int>()(vector.x)+std::hash<int>()(vector.y)+std::hash<int>()(vector.z);
 }
 
 
