@@ -3,7 +3,7 @@
 #include "Chunk.h"
 
 
-Chunk::Chunk(TerrainGenerator *gen, glm::ivec3 pos, int &chunksize) {
+Chunk::Chunk(TerrainGenerator *gen, glm::ivec3 pos, int &chunksize, unsigned int i_VBO_ADRESS) {
     auto start = std::chrono::steady_clock::now();
     position=pos;
     auto amount_blocks = chunksize*chunksize*chunksize;
@@ -25,10 +25,10 @@ Chunk::Chunk(TerrainGenerator *gen, glm::ivec3 pos, int &chunksize) {
         }
     }
     auto end = std::chrono::steady_clock::now();
-   microseconds_needed = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
+    VBO_ADRESS = i_VBO_ADRESS;
+    glBindBuffer(GL_ARRAY_BUFFER,VBO_ADRESS);
+    glBufferData(GL_ARRAY_BUFFER,Blocks.size()*sizeof(Cube),Blocks.data(),GL_STATIC_DRAW);
+    microseconds_needed = std::chrono::duration_cast<std::chrono::microseconds>(end - start).count();
 }
-
-
-
 
 
