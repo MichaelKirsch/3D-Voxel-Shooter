@@ -50,47 +50,39 @@ std::vector<glm::ivec3> ChunkManager::generateChunkGrid() {
 }
 
 void ChunkManager::refactorChunkStructure() {
-    StopWatch w;
-    std::vector<glm::ivec3> chunksThatHaveToBeThere;
+    chunksThatHaveToBeThere.clear();
     for (auto &el:originChunkPositions) {
         chunksThatHaveToBeThere.emplace_back(glm::ivec3(el + chunkPositionPlayer));
     }
     for (auto &new_element:chunksThatHaveToBeThere) {
         bool is_in_there =false;
         for (auto& element:loaded_chunks) {
-            if (comparevector(element.first, new_element)) {
+            auto cpv =element.first;
+            if (comparevector(cpv, new_element)) {
                 is_in_there= true;
             }
             if(is_in_there)
                 break;
         }
-        if(is_in_there)
-            not_new.push(new_element);
-        else
+        if(!is_in_there)
             to_create.push(new_element);
     }
-    auto nnw = not_new.size();
-    while (!not_new.empty()) {
-        bool is_in_this_set=false;
-        for(auto& element_that_is_needed:chunksThatHaveToBeThere)
-        {
-            if(comparevector(element_that_is_needed,not_new.top()))
-            {
-                is_in_this_set=true;
-            }
-            if(is_in_this_set)
-                break;
-        }
-        if(!is_in_this_set)
-        {
-            to_delete.push(not_new.top());
-        }
 
-        not_new.pop();
+    for(auto& existing_elements:loaded_chunks) {
+        bool is_elemtent_there = false;
+        auto existing = existing_elements.first;
+        for (auto &needed:chunksThatHaveToBeThere) {
+            if (comparevector(existing, needed)) {
+                is_elemtent_there = true;
+            }
+            if (is_elemtent_there)
+                break;
+
+        }
+        if (!is_elemtent_there) {
+            to_delete.push(existing);
+        }
     }
-    auto time4 = w.stop();
-    std::cout << "To be: "<< chunksThatHaveToBeThere.size() <<" | To create: " << to_create.size() << " | To delete: " << to_delete.size() << " | Not new: "<< nnw << " | Loaded: "
-              << loaded_chunks.size()<< " | " << time4 << " microseconds" << std::endl;
 }
 
     void ChunkManager::deleteOldChunks() {
@@ -112,7 +104,7 @@ void ChunkManager::refactorChunkStructure() {
         }
     }
 
-    bool ChunkManager::comparevector(glm::ivec3 v1, glm::ivec3 v2) {
+    bool ChunkManager::comparevector(glm::ivec3& v1, glm::ivec3& v2) {
         return (v1.x == v2.x) & (v1.y == v2.y) & (v1.z == v2.z);
     }
 

@@ -37,7 +37,7 @@ private:
     std::stack<glm::ivec3 > not_new;
     std::stack<unsigned int> unused_buffers;
     std::vector<unsigned int> buffers;
-
+    std::vector<glm::ivec3> chunksThatHaveToBeThere;
     StateEssentials& stateEssentials;
     TerrainGenerator* terrainGenerator;
     std::vector<glm::ivec3> generateChunkGrid();
@@ -46,7 +46,7 @@ private:
     std::vector<glm::ivec3> originChunkPositions;
     int m_chunksize, m_viewDistance;
     SimpleTimer timer;
-    bool comparevector(glm::ivec3 v1,glm::ivec3 v2);
+    bool comparevector(glm::ivec3& v1,glm::ivec3& v2);
 protected:
 };
 
