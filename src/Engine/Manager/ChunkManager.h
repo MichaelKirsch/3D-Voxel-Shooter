@@ -14,6 +14,7 @@
 #include <StopWatch.h>
 #include <functional>
 #include <gtx/hash.hpp>
+#include <queue>
 
 class ChunkManager : public Renderable {
 public:
@@ -32,17 +33,13 @@ private:
     void deleteOldChunks();
     void createNewChunks();
     std::unordered_map<glm::ivec3,Chunk> loaded_chunks;
-    std::stack<glm::ivec3> to_create;
+    std::queue<glm::ivec3> to_create;
     std::stack<glm::ivec3> to_delete;
-    std::stack<glm::ivec3 > not_new;
-    std::stack<unsigned int> unused_buffers;
-    std::vector<unsigned int> buffers;
     std::vector<glm::ivec3> chunksThatHaveToBeThere;
     StateEssentials& stateEssentials;
     TerrainGenerator* terrainGenerator;
     std::vector<glm::ivec3> generateChunkGrid();
-    unsigned int VAO,VBO, PROGRAMM;
-    unsigned int needed_buffers;
+    unsigned int PROGRAMM;
     std::vector<glm::ivec3> originChunkPositions;
     int m_chunksize, m_viewDistance;
     SimpleTimer timer;

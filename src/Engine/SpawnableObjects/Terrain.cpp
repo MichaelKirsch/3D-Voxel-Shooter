@@ -17,10 +17,6 @@ void Terrain::render() {
     glBindVertexArray(0);
 }
 
-void Terrain::checkForCracks() {
-
-}
-
 float Terrain::calculateBorderFactor(float x, float y, int size, float border_thicccccnes) {
 
     float factor = 1.0;
@@ -80,7 +76,7 @@ void Terrain::create(glm::vec3 origin,int seed, int size, int height, float bord
             auto y = getY(x,z);
             if(y>-1)
             {
-                glm::ivec3 raw = glm::ivec3((int)x,(int)y,(int)z);
+                glm::ivec3 raw = glm::vec3((int)x,(int)y,(int)z);
                 raw+=origin;
                 BLOCK_TYPE type;
                 if(y==1)
@@ -93,7 +89,7 @@ void Terrain::create(glm::vec3 origin,int seed, int size, int height, float bord
                 setBlocktype(raw,type);
                 if(raw.y>1)
                 {
-                    setBlocktype(glm::ivec3(raw.x,raw.y-1,raw.z),type);
+                    setBlocktype(glm::vec3(raw.x,raw.y-1,raw.z),type);
                 }
             }
         }

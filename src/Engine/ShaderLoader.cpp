@@ -60,6 +60,8 @@ unsigned int ShaderLoader::createProgram(std::vector<unsigned int> shaders) {
     {
         glAttachShader(current_prog,shader);
     }
+    glBindAttribLocation(current_prog,2, "aPos");
+
     glLinkProgram(current_prog);
     //once we have linked we dont need the shaders anymore so lets delete them
     for(auto shader:shaders)

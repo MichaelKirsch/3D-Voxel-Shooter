@@ -7,26 +7,28 @@ GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),food(e
     essentials.camera.MovementSpeed = 60.0;
     int size = 700;
     timer.setTickrate(0.5);
-    terrain.create({0.f,0.f,0.f},400,size,25.f,0.3f,0.01f);
-    water.create(terrain,{-100.f,0.f,-100.f},1.0f,size+200,{0, 0.337, 0.921},0.06f,0.15f,0.1);
-    food.create(terrain,7000,1.0);
+    //terrain.create({0.f,0.f,0.f},400,size,25.f,0.3f,0.01f);
+    //water.create(terrain,{-100.f,0.f,-100.f},1.0f,size+200,{0, 0.337, 0.921},0.06f,0.15f,0.1);
+    //food.create(terrain,7000,1.0);
     terrainGenerator.setUpGenerator();
-    chunkManager.create(&terrainGenerator,10,32);
+    chunkManager.create(&terrainGenerator,15,32);
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
+    glPointSize(1);
 }
 
 void GameOver::updateFrame(float& elapsed) {
     essentials.windowManager.clearScreen();
-    water.render();
-    terrain.render();
-    food.render();
+    //water.render();
+    //terrain.render();
+    //food.render();
+    chunkManager.render();
     essentials.windowManager.swapBuffers();
 }
 
 void GameOver::updateEntities(float& elapsed) {
-    water.update(elapsed);
-    food.update(elapsed);
+    //water.update(elapsed);
+    //food.update(elapsed);
     chunkManager.update(elapsed);
 }
 

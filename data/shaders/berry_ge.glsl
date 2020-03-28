@@ -4,6 +4,8 @@ layout (triangle_strip, max_vertices = 24) out;
 
 out vec3 finalColor;
 
+in vec4 v4pos[];
+
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
@@ -15,7 +17,7 @@ void createVertex(vec3 offset, vec3 faceNormal)
 {
     vec4 actualoffset = vec4(offset * size,0.0);
     actualoffset*=model;
-    vec4 worldposition = gl_in[0].gl_Position + actualoffset;
+    vec4 worldposition = v4pos[0] + actualoffset;
     vec4 pos = (projection*view) * worldposition;
     gl_Position = pos;
     float brightness = max(dot(-lightDirection,faceNormal),0.3);

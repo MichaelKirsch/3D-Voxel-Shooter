@@ -54,11 +54,12 @@ void Food::create(Terrain &ter, int amount, float respawntime) {
         }
         max_tries--;
     }
+
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER,VBO);
     glBufferData(GL_ARRAY_BUFFER,berries.size() * sizeof(Berry),berries.data(),GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+    glEnableVertexAttribArray(8);
+    glVertexAttribPointer(8, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
 }
 
 Food::Food(StateEssentials &es) :stateEssentials(es){

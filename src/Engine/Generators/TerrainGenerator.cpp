@@ -10,13 +10,13 @@ void TerrainGenerator::getCubeAtPosition(glm::ivec3 &position, Cube &cube ) {
     {
         //when the block is terrain then we can for sure set the top active
         setFace(cube,CUBE_SIDES::up);
-        cube.data.blockID = 1;
+        cube.blockID_and_sides = {1.0,0.0,0.0};
     }
     else if(getTerrainHeight <=position.y)
-        cube.data.blockID = 2;
+        cube.blockID_and_sides = {0.0,1.0,0.0};
     else
     {
-        cube.data.blockID = 0;
+        cube.blockID_and_sides = {0.0,0.0,0.1};
         setFace(cube,CUBE_SIDES::air_block);
         //it is an airblock, so all values will be zero
         return;
@@ -45,10 +45,10 @@ void TerrainGenerator::setUpGenerator(glm::ivec3 origin_offset, float freqency, 
 }
 
 void TerrainGenerator::setFace(Cube &cube, CUBE_SIDES face, bool status) {
-    if(status)
-        cube.data.activeFaces |= (1<<(glm::uint8)face);
-    else
-        cube.data.activeFaces &= ~(1<<(glm::uint8)face);
+    //if(status)
+    //    cube.activeFaces |= (1<<(GLubyte)face);
+    //else
+    //    cube.activeFaces &= ~(1<<(GLubyte)face);
 }
 
 bool TerrainGenerator::sideNeeded(glm::ivec3 offset, glm::ivec3 &position) {

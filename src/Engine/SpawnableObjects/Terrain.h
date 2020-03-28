@@ -33,7 +33,6 @@ private:
     float calculateBorderFactor(float x , float y, int size,float border_thiccccness=.2);
     float m_border_factor;
     int m_size,m_height,m_freq;
-    void checkForCracks();
     StateEssentials& essential;
     unsigned int VAO,VBO,ProgrammID;
     std::vector<glm::vec3> positions;

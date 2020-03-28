@@ -1,10 +1,11 @@
 #version 330
-layout (location = 0) in vec3 aPos;
+layout (location = 8) in vec3 aPos;
 
 in vec3 finalColor;
 
 out vec3 finCol;
 
+out vec4 v4pos;
 out vec3 position;
 
 uniform mat4 model;

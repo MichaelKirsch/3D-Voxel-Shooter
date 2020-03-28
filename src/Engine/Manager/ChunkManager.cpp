@@ -4,18 +4,36 @@
 
 ChunkManager::ChunkManager(StateEssentials &es) : stateEssentials(es) {
     timer.setTickrate(5);
+
+    PROGRAMM =  stateEssentials.loader.createProgram({
+                                                      {"chunk_fragment.glsl",ShaderLoader::FRAGMENT},
+                                                             {"chunk_vertex.glsl",ShaderLoader::VERTEX}});
 }
 
 void ChunkManager::render() {
 
+    for(auto& ind_chunk:loaded_chunks)
+    {
+        stateEssentials.loader.useProgramm(PROGRAMM);
+        glBindVertexArray(ind_chunk.second.VAO);
+        stateEssentials.loader.setUniform(ind_chunk.second.position,"chunkPosition");
+        stateEssentials.loader.setUniform((float)m_chunksize,"chunkSize");
+        stateEssentials.loader.setUniform(stateEssentials.camera.GetViewMatrix(),"view");
+        stateEssentials.loader.setUniform(stateEssentials.windowManager.perspectiveProjection,"projection");
+        glm::mat4 model = glm::mat4(1.0);
+        glDrawArrays(GL_POINTS,0,ind_chunk.second.Blocks.size());
+        glBindVertexArray(0);
+    }
 }
 
 void ChunkManager::update(float &elapsed) {
+    //determin if the player has moved and when yes delete old chunks. then every frame build a couple of the new chunks so nothing get clogged up
     auto starting_point_raw = stateEssentials.camera.Position;
     chunkPositionPlayer = glm::ivec3(starting_point_raw.x / m_chunksize, 0, starting_point_raw.z / m_chunksize);
     refactorChunkStructure();
     deleteOldChunks();
     createNewChunks();
+
 }
 
 void ChunkManager::create(TerrainGenerator *ter, unsigned int viewDistance, int chunksize) {
@@ -26,15 +44,7 @@ void ChunkManager::create(TerrainGenerator *ter, unsigned int viewDistance, int 
     auto starting_point_raw = stateEssentials.camera.Position;
     auto starting_point_chunk = glm::ivec3(starting_point_raw.x / m_chunksize, 0, starting_point_raw.z / m_chunksize);
     originChunkPositions = generateChunkGrid();
-    buffers.resize(originChunkPositions.size());
-    std::fill(buffers.begin(), buffers.end(), 1);
-    glGenBuffers(originChunkPositions.size(), buffers.data());
-
-    for (auto unused:buffers) {
-        unused_buffers.push(unused);
-    }
-    std::cout << "Generated " << unused_buffers.size() << " unused buffers and " << to_create.size()
-              << " chunks that are not buffered yet" << std::endl;
+    std::cout << "chunks: "<<originChunkPositions.size()<<" Blocks: "<< m_chunksize*m_chunksize*m_chunksize*originChunkPositions.size()<<std::endl;
 }
 
 std::vector<glm::ivec3> ChunkManager::generateChunkGrid() {
@@ -86,20 +96,16 @@ void ChunkManager::refactorChunkStructure() {
 }
 
     void ChunkManager::deleteOldChunks() {
-        while (!to_delete.empty()) {
-            unsigned int buffer_thats_freeed =loaded_chunks.at(to_delete.top()).VBO_ADRESS;
-            unused_buffers.push(buffer_thats_freeed);
+        if (!to_delete.empty()) {
             loaded_chunks.erase(to_delete.top());
             to_delete.pop();
         }
     }
 
     void ChunkManager::createNewChunks() {
-        while (!to_create.empty()) {
-            unsigned int buf = unused_buffers.top();
-            auto position_of_to_create = to_create.top();
-            loaded_chunks.insert(std::make_pair(position_of_to_create,Chunk(terrainGenerator, position_of_to_create, m_chunksize, buf)));
-            unused_buffers.pop();
+        if (!to_create.empty()) {
+            auto position_of_to_create = to_create.back();
+            loaded_chunks.insert(std::make_pair(position_of_to_create,Chunk(terrainGenerator, position_of_to_create, m_chunksize, PROGRAMM)));
             to_create.pop();
         }
     }
