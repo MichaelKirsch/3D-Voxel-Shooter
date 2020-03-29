@@ -7,7 +7,8 @@ ChunkManager::ChunkManager(StateEssentials &es) : stateEssentials(es) {
 
     PROGRAMM =  stateEssentials.loader.createProgram({
                                                       {"chunk_fragment.glsl",ShaderLoader::FRAGMENT},
-                                                             {"chunk_vertex.glsl",ShaderLoader::VERTEX}});
+                                                             {"chunk_vertex.glsl",ShaderLoader::VERTEX},
+                                                      {"chunk_geometry.glsl",ShaderLoader::GEOMETRY}});
 }
 
 void ChunkManager::render() {
@@ -15,7 +16,7 @@ void ChunkManager::render() {
     for(auto& ind_chunk:loaded_chunks)
     {
         stateEssentials.loader.useProgramm(PROGRAMM);
-        glBindVertexArray(ind_chunk.second.VAO);
+        glBindVertexArray(ind_chunk.second.m_VAO);
         stateEssentials.loader.setUniform(ind_chunk.second.position,"chunkPosition");
         stateEssentials.loader.setUniform((float)m_chunksize,"chunkSize");
         stateEssentials.loader.setUniform(stateEssentials.camera.GetViewMatrix(),"view");
@@ -87,7 +88,6 @@ void ChunkManager::refactorChunkStructure() {
             }
             if (is_elemtent_there)
                 break;
-
         }
         if (!is_elemtent_there) {
             to_delete.push(existing);
@@ -97,15 +97,22 @@ void ChunkManager::refactorChunkStructure() {
 
     void ChunkManager::deleteOldChunks() {
         if (!to_delete.empty()) {
-            loaded_chunks.erase(to_delete.top());
-            to_delete.pop();
+            if(loaded_chunks.find(to_delete.top())!=loaded_chunks.end())
+            {
+                loaded_chunks.at(to_delete.top()).deleteBuffers();
+                loaded_chunks.erase(to_delete.top());
+                to_delete.pop();
+            }
         }
     }
 
     void ChunkManager::createNewChunks() {
         if (!to_create.empty()) {
             auto position_of_to_create = to_create.back();
-            loaded_chunks.insert(std::make_pair(position_of_to_create,Chunk(terrainGenerator, position_of_to_create, m_chunksize, PROGRAMM)));
+            Chunk buf = Chunk(terrainGenerator, position_of_to_create, m_chunksize);
+            chunksizes+=buf.size;
+            created_chunks++;
+            loaded_chunks.insert(std::make_pair(position_of_to_create,buf));
             to_create.pop();
         }
     }
@@ -113,6 +120,14 @@ void ChunkManager::refactorChunkStructure() {
     bool ChunkManager::comparevector(glm::ivec3& v1, glm::ivec3& v2) {
         return (v1.x == v2.x) & (v1.y == v2.y) & (v1.z == v2.z);
     }
+
+int ChunkManager::getAverage() {
+    return chunksizes/created_chunks;
+}
+
+int ChunkManager::getCreated() {
+    return created_chunks;
+}
 
 
 

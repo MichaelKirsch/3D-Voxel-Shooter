@@ -26,7 +26,8 @@ public:
     void create(TerrainGenerator* ter,unsigned int viewDistance=10, int chunksize=32);
 
     glm::ivec3 chunkPositionPlayer;
-
+    int getAverage();
+    int getCreated();
     ~ChunkManager() = default;
 private:
     void refactorChunkStructure();
@@ -43,7 +44,10 @@ private:
     std::vector<glm::ivec3> originChunkPositions;
     int m_chunksize, m_viewDistance;
     SimpleTimer timer;
+
     bool comparevector(glm::ivec3& v1,glm::ivec3& v2);
+    unsigned int created_chunks, chunksizes;
+    unsigned int average_chunksize;
 protected:
 };
 

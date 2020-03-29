@@ -2,67 +2,77 @@
 
 #include "TerrainGenerator.h"
 
-
-
-void TerrainGenerator::getCubeAtPosition(glm::ivec3 &position, Cube &cube ) {
-    auto getTerrainHeight = getTerrain(position.x,position.z);
-    if(getTerrainHeight == position.y)
-    {
-        //when the block is terrain then we can for sure set the top active
-        setFace(cube,CUBE_SIDES::up);
-        cube.blockID_and_sides = {1.0,0.0,0.0};
-    }
-    else if(getTerrainHeight <=position.y)
-        cube.blockID_and_sides = {0.0,1.0,0.0};
-    else
-    {
-        cube.blockID_and_sides = {0.0,0.0,0.1};
-        setFace(cube,CUBE_SIDES::air_block);
-        //it is an airblock, so all values will be zero
-        return;
-    }
-    if(sideNeeded({1,0,0},position))
-    {
-        setFace(cube,CUBE_SIDES::right);
-    }
-    if(sideNeeded({-1,0,0},position))
-    {
-        setFace(cube,CUBE_SIDES::left);
-    }
-    if(sideNeeded({0,1,0},position))
-    {
-        setFace(cube,CUBE_SIDES::front);
-    }
-    if(sideNeeded({0,-1,0},position))
-    {
-        setFace(cube,CUBE_SIDES::back);
-    }
-}
-
-void TerrainGenerator::setUpGenerator(glm::ivec3 origin_offset, float freqency, FastNoise::NoiseType noiseType) {
-    m_noise.SetFrequency(freqency);
-    m_noise.SetNoiseType(noiseType);
-}
-
-void TerrainGenerator::setFace(Cube &cube, CUBE_SIDES face, bool status) {
-    //if(status)
-    //    cube.activeFaces |= (1<<(GLubyte)face);
-    //else
-    //    cube.activeFaces &= ~(1<<(GLubyte)face);
-}
-
-bool TerrainGenerator::sideNeeded(glm::ivec3 offset, glm::ivec3 &position) {
-    auto get_terrain_at_check_pos = getTerrain(position.x+offset.x,position.z+offset.z);
-    if(get_terrain_at_check_pos<position.y)
-        return true;
-    //when the next block is under the current block we will need a side
-    return false;
-}
-
 TerrainGenerator::TerrainGenerator(StateEssentials &es) : stateEssentials(es) {
 
 }
 
-int TerrainGenerator::getTerrain(int x, int y) {
-    return static_cast<int>(m_noise.GetNoise(static_cast<FN_DECIMAL>(x),static_cast<FN_DECIMAL>(y))*15.f);
+void TerrainGenerator::setUpGenerator(glm::ivec3 origin_offset, float freqency, int terrain_height,
+                                      FastNoise::NoiseType noiseType) {
+    m_noise.SetFrequency(freqency);
+    m_noise.SetNoiseType(noiseType);
+    m_maxTerrainHeight = terrain_height;
 }
+
+
+bool TerrainGenerator::generateCube(glm::ivec3 &position, Cube &cube,glm::ivec3& positionInChunk) {
+    auto terrainHeightAtThisPos = getTerrain(position.x,position.z);
+
+    cube_pos_and_sides cubeEssential;
+
+
+    if(terrainHeightAtThisPos<=position.y) //cube is under or on Terrain
+    {
+        if(terrainHeightAtThisPos==position.y)
+        {
+            //cube is the terrain, so we will need the top side;
+            setFace(cubeEssential.activeSides,CUBE_SIDES::up);
+        }
+        if(sideNeeded({-1,0,0},position))
+            setFace(cubeEssential.activeSides,CUBE_SIDES::left);
+        if(sideNeeded({1,0,0},position))
+            setFace(cubeEssential.activeSides,CUBE_SIDES::right);
+        if(sideNeeded({0,0,-1},position))
+            setFace(cubeEssential.activeSides,CUBE_SIDES::back);
+        if(sideNeeded({0,0,1},position))
+            setFace(cubeEssential.activeSides,CUBE_SIDES::front);
+        //im not having overhangs atm so lets not check that
+        //if(sideNeeded({0,-1,0},position))
+        //    setFace(cubeEssential.activeSides,CUBE_SIDES::down);
+        if(cubeEssential.activeSides==0)
+            return false; //burried block
+
+        //lets bitshift all the information into the cubes float
+        unsigned int bufferCubeInfo = glm::uint8(positionInChunk.x);
+        bufferCubeInfo = (bufferCubeInfo<<8)+glm::uint8(positionInChunk.y);
+        bufferCubeInfo = (bufferCubeInfo<<8)+glm::uint8(positionInChunk.z);
+        bufferCubeInfo = (bufferCubeInfo<<8)+cubeEssential.activeSides;
+        //we encode everything in float as GPUs like floats
+        cube.position_and_sides = glm::uintBitsToFloat(bufferCubeInfo);
+        return true;
+    }
+    return false; //airblock
+}
+
+
+
+bool TerrainGenerator::sideNeeded(glm::ivec3 offset, glm::ivec3 &position) {
+    return getTerrain(position.x + offset.x, position.z + offset.z) < position.y;
+}
+
+
+
+int TerrainGenerator::getTerrain(int x, int y) {
+    return static_cast<int>(m_noise.GetNoise(static_cast<FN_DECIMAL>(x), static_cast<FN_DECIMAL>(y)) * m_maxTerrainHeight);
+}
+
+
+void TerrainGenerator::setFace(glm::uint8 &var, CUBE_SIDES face, bool status) {
+    if (status)
+        var |= (1 << (GLubyte) face);
+    else
+        var &= ~(1 << (GLubyte) face);
+}
+
+
+
+

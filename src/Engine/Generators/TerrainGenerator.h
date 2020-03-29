@@ -8,20 +8,43 @@
 #include "StateMachine/Essential.h"
 #include "FastNoise/FastNoise.h"
 #include "Cube.h"
+
 class TerrainGenerator {
 public:
-    TerrainGenerator(StateEssentials& es);
-    void setUpGenerator(glm::ivec3 origin_offset= {0,0,0},float freqency=0.015f, FastNoise::NoiseType noiseType = FastNoise::Simplex);
-    void getCubeAtPosition(glm::ivec3& position, Cube& cube);
-    ~TerrainGenerator() = default;
-    void setFace(Cube& cube, CUBE_SIDES face,bool status=true);
+    TerrainGenerator(StateEssentials &es);
+
+    enum CUBE_SIDES {
+        up = 0, down, right, left, front, back, free_slot1, free_slot2
+    };
+
+    void setUpGenerator(glm::ivec3 origin_offset = {0, 0, 0}, float freqency = 0.015f, int i_max_terrain_height = 50,
+                        FastNoise::NoiseType noiseType = FastNoise::Simplex);
+
+    bool generateCube(glm::ivec3 &position, Cube& cube,glm::ivec3& positionInChunk);
+
     int getTerrain(int x, int y);
+
+    ~TerrainGenerator() = default;
+
 private:
-    StateEssentials& stateEssentials;
+
+    struct cube_pos_and_sides {
+        glm::u8vec3 cubePosInChunk;
+        glm::uint8 activeSides;
+    };
+    struct cube_id_and_rest {
+        glm::uint16 cubeID;
+        glm::uint16 notUsed;
+    };
+    StateEssentials &stateEssentials;
     FastNoise m_noise;
-    bool sideNeeded(glm::ivec3 offset,glm::ivec3& position);
+    int m_maxTerrainHeight;
+
+    bool sideNeeded(glm::ivec3 offset, glm::ivec3 &position);
+    void setFace(glm::uint8 &var, CUBE_SIDES face, bool status = true);
 protected:
 };
+
 
 
 

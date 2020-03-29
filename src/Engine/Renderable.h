@@ -7,7 +7,7 @@ public:
     virtual void render(){};
     virtual void update(float& elapsed){};
     virtual void create(){};
-    ~Renderable() = default;
+    //~Renderable() = default;
 private:
 protected:
 };

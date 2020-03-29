@@ -134,6 +134,7 @@ void Terrain::create(glm::vec3 origin,int seed, int size, int height, float bord
                                                          {"terrain_geometry.glsl",ShaderLoader::GEOMETRY}});
 
     glGenVertexArrays(1,&VAO);
+    std::cout << "terrain vao:" <<VAO<<std::endl;
     glGenBuffers(1,&VBO);
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER,VBO);

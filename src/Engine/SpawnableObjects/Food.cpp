@@ -67,6 +67,7 @@ Food::Food(StateEssentials &es) :stateEssentials(es){
                                       {"berry_ge.glsl",ShaderLoader::GEOMETRY},
                                       {"berry_ve.glsl",ShaderLoader::VERTEX}});
     glGenVertexArrays(1,&VAO);
+    std::cout << "food vao:" << VAO<< std::endl;
     glGenBuffers(1,&VBO);
     model = glm::mat4(1.f);
 }
