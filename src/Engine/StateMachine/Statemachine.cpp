@@ -19,18 +19,25 @@ void Statemachine::run() {
         updateTimer.setElapsed(elapsed);
         frameTimer.setElapsed(elapsed);
         inputTimer.setElapsed(elapsed);
-
-        if(frameTimer.getState())
+        if(essential.windowManager.getWindow().hasFocus())
         {
-            m_playedState->updateFrame(elapsed);
-        }
-        if(inputTimer.getState())
+            if(frameTimer.getState())
+            {
+                m_playedState->updateFrame(elapsed);
+            }
+            if(inputTimer.getState())
+            {
+                m_playedState->processInputs(elapsed);
+            }
+            if(updateTimer.getState())
+            {
+                m_playedState->updateEntities(elapsed);
+            }
+        } else
         {
-            m_playedState->processInputs(elapsed);
-        }
-        if(updateTimer.getState())
-        {
-            m_playedState->updateEntities(elapsed);
+            sf::Event e;
+            while (essential.windowManager.getWindow().pollEvent(e))
+            {}
         }
     }
 }

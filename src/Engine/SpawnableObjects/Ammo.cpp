@@ -6,19 +6,25 @@ void Ammo::render() {
     stateEssentials.loader.useProgramm(PROGRAMM);
     glBindVertexArray(VAO);
     stateEssentials.loader.setUniform(stateEssentials.camera.GetViewMatrix(),"view");
+    stateEssentials.loader.setUniform(stateEssentials.camera.Position,"cameraPos");
     stateEssentials.loader.setUniform(stateEssentials.windowManager.perspectiveProjection,"projection");
     stateEssentials.loader.setUniform(model,"model");
-    glDrawArrays(GL_LINES, 0, Graphicsbuffer.size()/2);
+    glDrawArrays(GL_POINTS, 0, Graphicsbuffer.size()/2);
     glBindVertexArray(0);
 }
 
 void Ammo::update(float &elapsed) {
     model = glm::rotate(model,0.06f,glm::vec3(0.f,1.f,0.f));
-    if(need_refactor)
-        Graphicsbuffer.clear();
+    bool buffer_cleared =false;
     for(auto& pkg:packages)
     {
-        pkg.update(elapsed);
+
+        pkg.update(elapsed,need_refactor);
+        if(!buffer_cleared&&need_refactor)
+        {
+            Graphicsbuffer.clear();
+            buffer_cleared= true;
+        }
         if(need_refactor)
         {
             Graphicsbuffer.emplace_back(pkg.position);
@@ -94,8 +100,9 @@ void Ammo::create(Terrain &ter, int amount, float respawntime) {
     glBindBuffer(GL_ARRAY_BUFFER,VBO);
     glBufferData(GL_ARRAY_BUFFER,Graphicsbuffer.size() * sizeof(glm::vec3), Graphicsbuffer.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(8);
-    glVertexAttribPointer(8, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
-
+    glVertexAttribPointer(8, 3, GL_FLOAT, GL_FALSE, 2*sizeof(glm::vec3), (void*)0);
+    glEnableVertexAttribArray(7);
+    glVertexAttribPointer(7, 3, GL_FLOAT, GL_FALSE, 2*sizeof(glm::vec3), (void*)sizeof(glm::vec3));
 }
 
 Ammo::Ammo(StateEssentials &es) : stateEssentials(es){

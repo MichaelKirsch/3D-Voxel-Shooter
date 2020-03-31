@@ -3,16 +3,16 @@
 #include "GameOver.h"
 
 
-GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),ammo(es),terrainGenerator(es) {
-    essentials.camera.MovementSpeed = 60.0;
+GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),ammo(es),terrainGenerator(es),player(terrain,es) {
+    essentials.camera.MovementSpeed = 20.f;
     int size = 700;
     timer.setTickrate(0.5);
-    terrain.create({0.f,0.f,0.f},400,size,25.f,0.3f,0.01f);
+    terrain.create({0.f,0.f,0.f},400,size,25.f,0.3f,0.005f);
     water.create(terrain,{-100.f,0.f,-100.f},1.0f,size+200,{0, 0.337, 0.921},0.06f,0.15f,0.1);
     ammo.create(terrain,700,1.0);
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
-    glPointSize(1);
+    player.respawn({10,10,10}, false);
 }
 
 void GameOver::updateFrame(float& elapsed) {
@@ -24,103 +24,39 @@ void GameOver::updateFrame(float& elapsed) {
 }
 
 void GameOver::updateEntities(float& elapsed) {
+    player.update(elapsed);
     water.update(elapsed);
+
     for(auto& package:ammo.packages)
     {
         auto dist = glm::distance(package.position,essentials.camera.Position);
 
         if(dist<10.f)
         {
-            package.take();
-            ammo.need_refactor = true;
+            if(m_Mouse.isButtonPressed(sf::Mouse::Left))
+            {
+                package.take();
+                ammo.need_refactor = true;
+            }
         }
     }
-    ammo.update(elapsed);
+    float test= 0.05f;
+    ammo.update(test);
 }
 
 void GameOver::processInputs(float& elapsed) {
+
     sf::Event ev;
-    float time = 0.02;
+    player.processInputs();
+    essentials.camera.Position = glm::vec3(player.playerPos.x,player.playerPos.y+4,player.playerPos.z);
 
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::W)) {
-        essentials.camera.ProcessKeyboard(FORWARD,time);
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::A)) {
-        essentials.camera.ProcessKeyboard(LEFT,time);
-    }
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S)) {
-        essentials.camera.ProcessKeyboard(BACKWARD,time);
-    }
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D)) {
-        essentials.camera.ProcessKeyboard(RIGHT,time);
-    }
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space)) {
-        if(wire)
-            wire =0;
-        else
-            wire =1;
-        if(wire)
-        {
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num1)) {
             glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
         }
-        else
-        {
-            glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
-        }
 
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Num0)) {
+        glPolygonMode( GL_FRONT_AND_BACK, GL_FILL);
     }
-
-
-    float yaw,pitch;
-    float x_percent =  (1.f/essentials.windowManager.getWindow().getSize().x) * m_Mouse.getPosition(essentials.windowManager.getWindow()).x;
-    float y_percent =  (1.f/essentials.windowManager.getWindow().getSize().y) * m_Mouse.getPosition(essentials.windowManager.getWindow()).y;
-
-    x_percent-=0.5f;
-    y_percent-=0.5f;
-    x_percent*=2;
-    y_percent*=2;
-    yaw = 180.f*x_percent;
-    pitch = 180.f*-y_percent;
-
-
-    if(m_Mouse.isButtonPressed(sf::Mouse::Right))
-    {
-
-        essentials.windowManager.getWindow().setMouseCursorVisible(false);
-        essentials.camera.ProcessMouseMovement(yaw,pitch);
-        m_Mouse.setPosition({static_cast<int>(essentials.windowManager.getWindow().getSize().x/2),static_cast<int>(essentials.windowManager.getWindow().getSize().y/2)},essentials.windowManager.getWindow());
-
-    } else
-    {
-        const float mouse_boundaries = 0.03f;
-        auto bound_pixels_x = mouse_boundaries*essentials.windowManager.getWindow().getSize().x;
-        auto bound_pixels_y = mouse_boundaries*essentials.windowManager.getWindow().getSize().y;
-        if(m_Mouse.getPosition(essentials.windowManager.getWindow()).x<bound_pixels_x)
-        {
-            essentials.camera.ProcessKeyboard(LEFT,time);
-        }
-        if(m_Mouse.getPosition(essentials.windowManager.getWindow()).x>essentials.windowManager.getWindow().getSize().x-bound_pixels_x)
-        {
-            essentials.camera.ProcessKeyboard(RIGHT,time);
-        }
-
-        if(m_Mouse.getPosition(essentials.windowManager.getWindow()).y<bound_pixels_y)
-        {
-            essentials.camera.ProcessKeyboard(FORWARD,time);
-        }
-        if(m_Mouse.getPosition(essentials.windowManager.getWindow()).y>essentials.windowManager.getWindow().getSize().y-bound_pixels_y)
-        {
-            essentials.camera.ProcessKeyboard(BACKWARD,time);
-        }
-
-        mouse_hold = false;
-        essentials.windowManager.getWindow().setMouseCursorVisible(true);
-    }
-
-
-
 
     while(essentials.windowManager.getWindow().pollEvent(ev))
     {
@@ -131,7 +67,7 @@ void GameOver::processInputs(float& elapsed) {
         if(ev.type == sf::Event::MouseWheelMoved)
         {
             int deltamouse = ev.mouseWheel.delta;
-            essentials.camera.ProcessMouseScroll(deltamouse,10.5);
+            essentials.camera.ProcessMouseScroll(deltamouse,1.5f);
         }
     }
 }

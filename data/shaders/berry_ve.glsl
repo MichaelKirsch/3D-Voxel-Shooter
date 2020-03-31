@@ -1,7 +1,6 @@
 #version 330
 layout (location = 8) in vec3 aPos;
-
-in vec3 finalColor;
+layout (location = 7) in vec3 aCol;
 
 out vec3 finCol;
 
@@ -14,7 +13,6 @@ uniform mat4 projection;
 
 void main()
 {
-    position = aPos;
-    finCol = finalColor;
-    gl_Position = vec4(aPos, 1.0);
+    v4pos = vec4(aPos,1.0);
+    finCol = aCol;
 }

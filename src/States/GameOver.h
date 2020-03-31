@@ -13,6 +13,7 @@
 #include "glm/glm/gtx/rotate_vector.hpp"
 #include <cmath>
 #include "Timer.h"
+#include "Player.h"
 
 
 class GameOver : public State {
@@ -27,6 +28,7 @@ private:
     unsigned int programm;
     Water water;
     Ammo ammo;
+    Player player;
     sf::Mouse m_Mouse;
     float last_time;
     bool mouse_hold;

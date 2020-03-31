@@ -35,13 +35,14 @@ struct AmmoPackage {
                 break;
         }
     }
-    void update(float& elapsed)
+    void update(float& elapsed,bool& refactor)
     {
         if(isRespawning)
         {
             respawnTimer-=elapsed;
             if(respawnTimer<0.f)
             {
+                refactor = true;
                 switch (m_type)
                 {
                     case AmmoType ::light:

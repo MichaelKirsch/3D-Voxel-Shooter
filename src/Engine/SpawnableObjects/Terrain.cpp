@@ -67,7 +67,7 @@ void Terrain::create(glm::vec3 origin,int seed, int size, int height, float bord
     chunkData.resize(possible_blocks);
     std::fill(chunkData.begin(),chunkData.end(),BLOCK_TYPE::NONE);
     noise.SetNoiseType(FastNoise::Simplex);
-    noise.SetFrequency(0.01f);
+    noise.SetFrequency(frequency);
     for(int x =0;x<size;x++)
     {
         for(int z =0;z<size;z++)
