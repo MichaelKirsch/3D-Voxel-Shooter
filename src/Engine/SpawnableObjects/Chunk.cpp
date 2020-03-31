@@ -13,19 +13,18 @@ Chunk::Chunk(TerrainGenerator *gen, glm::ivec3 pos, int chunksize) {
 
     auto amount_blocks = chunksize * chunksize * chunksize;
     Blocks.reserve(amount_blocks);
-    bool discard = false;
-    for (int iteration = 0;iteration<amount_blocks;iteration++) {
-        glm::ivec3 v;
-        v.x = iteration % chunksize;
-        v.y = (iteration / chunksize) % chunksize;
-        v.z = iteration / (chunksize * chunksize);
-        auto position_in_World = glm::ivec3(v+worldpos);
-        Cube buf;
-        if(gen->generateCube(position_in_World,Cube,v);)
-        {
-            Blocks.emplace_back(buf);
-        }
+
+    for(int x =0;x<chunksize;x++)
+    {
+            for(int z=0;z<chunksize;z++)
+            {
+                glm::ivec3 posInChunk = {x,0,z};
+                auto position_in_World = glm::ivec3(posInChunk+worldpos);
+                auto new_collum = gen->generateCubesBelow(position_in_World,posInChunk,chunksize);
+                Blocks.insert(Blocks.end(),new_collum.begin(),new_collum.end());
+            }
     }
+
     Blocks.shrink_to_fit();
     glBindVertexArray(m_VAO);
     if(m_VAO == 0)

@@ -8,12 +8,12 @@
 #include "SFML/Graphics.hpp"
 #include "Terrain.h"
 #include "StateMachine/SimpleTimer.h"
-#include "Food.h"
+#include "Ammo.h"
 #include "Generators/TerrainGenerator.h"
-#include "Manager/ChunkManager.h"
 #include "glm/glm/gtx/rotate_vector.hpp"
 #include <cmath>
 #include "Timer.h"
+
 
 class GameOver : public State {
 public:
@@ -26,14 +26,14 @@ public:
 private:
     unsigned int programm;
     Water water;
-    Food food;
+    Ammo ammo;
     sf::Mouse m_Mouse;
     float last_time;
     bool mouse_hold;
     Terrain terrain;
-    ChunkManager chunkManager;
     TerrainGenerator terrainGenerator;
     bool wire;
+
     SimpleTimer timer;
 protected:
 };

@@ -7,8 +7,8 @@
 
 struct Cube
 {
-    float blockID;
     float position_and_sides;
+    float blockID;
 };
 
 

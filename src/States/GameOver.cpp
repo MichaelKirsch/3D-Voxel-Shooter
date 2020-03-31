@@ -3,36 +3,39 @@
 #include "GameOver.h"
 
 
-GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),food(es),terrainGenerator(es),chunkManager(es) {
+GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),ammo(es),terrainGenerator(es) {
     essentials.camera.MovementSpeed = 60.0;
     int size = 700;
     timer.setTickrate(0.5);
     terrain.create({0.f,0.f,0.f},400,size,25.f,0.3f,0.01f);
     water.create(terrain,{-100.f,0.f,-100.f},1.0f,size+200,{0, 0.337, 0.921},0.06f,0.15f,0.1);
-    food.create(terrain,7000,1.0);
-    terrainGenerator.setUpGenerator();
-    chunkManager.create(&terrainGenerator,20,32);
+    ammo.create(terrain,700,1.0);
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
     glPointSize(1);
 }
 
 void GameOver::updateFrame(float& elapsed) {
-    StopWatch w;
     essentials.windowManager.clearScreen();
     water.render();
     terrain.render();
-    food.render();
-    chunkManager.render();
+    ammo.render();
     essentials.windowManager.swapBuffers();
-    std::cout << "frametime:"<< w.stop(StopWatch::milli)<<std::endl;
 }
 
 void GameOver::updateEntities(float& elapsed) {
     water.update(elapsed);
-    food.update(elapsed);
-    chunkManager.update(elapsed);
-   std::cout <<"\nAverage:" << chunkManager.getAverage();
+    for(auto& package:ammo.packages)
+    {
+        auto dist = glm::distance(package.position,essentials.camera.Position);
+
+        if(dist<10.f)
+        {
+            package.take();
+            ammo.need_refactor = true;
+        }
+    }
+    ammo.update(elapsed);
 }
 
 void GameOver::processInputs(float& elapsed) {

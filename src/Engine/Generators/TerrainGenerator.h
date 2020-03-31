@@ -8,19 +8,20 @@
 #include "StateMachine/Essential.h"
 #include "FastNoise/FastNoise.h"
 #include "Cube.h"
+#include <bitset>
 
 class TerrainGenerator {
 public:
-    TerrainGenerator(StateEssentials &es);
+    TerrainGenerator(StateEssentials &es) : stateEssentials(es) {};
 
     enum CUBE_SIDES {
         up = 0, down, right, left, front, back, free_slot1, free_slot2
     };
 
-    void setUpGenerator(glm::ivec3 origin_offset = {0, 0, 0}, float freqency = 0.015f, int i_max_terrain_height = 50,
+    void setUpGenerator(float freqency = 0.0015f, int i_max_terrain_height = 50,
                         FastNoise::NoiseType noiseType = FastNoise::Simplex);
 
-    bool generateCube(glm::ivec3 &position, Cube& cube,glm::ivec3& positionInChunk);
+    std::vector<Cube> generateCubesBelow(glm::ivec3 &worldPos,glm::ivec3 &positionInChunk, int& chunksize);
 
     int getTerrain(int x, int y);
 
@@ -40,8 +41,9 @@ private:
     FastNoise m_noise;
     int m_maxTerrainHeight;
 
-    bool sideNeeded(glm::ivec3 offset, glm::ivec3 &position);
+    bool sideNeeded(int x_offset,int z_offset, glm::ivec3 &position, int& ownheight);
     void setFace(glm::uint8 &var, CUBE_SIDES face, bool status = true);
+
 protected:
 };
 

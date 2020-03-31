@@ -12,18 +12,20 @@ ChunkManager::ChunkManager(StateEssentials &es) : stateEssentials(es) {
 }
 
 void ChunkManager::render() {
-
+    stateEssentials.loader.useProgramm(PROGRAMM);
     for(auto& ind_chunk:loaded_chunks)
     {
-        stateEssentials.loader.useProgramm(PROGRAMM);
-        glBindVertexArray(ind_chunk.second.m_VAO);
-        stateEssentials.loader.setUniform(ind_chunk.second.position,"chunkPosition");
-        stateEssentials.loader.setUniform((float)m_chunksize,"chunkSize");
-        stateEssentials.loader.setUniform(stateEssentials.camera.GetViewMatrix(),"view");
-        stateEssentials.loader.setUniform(stateEssentials.windowManager.perspectiveProjection,"projection");
-        glm::mat4 model = glm::mat4(1.0);
-        glDrawArrays(GL_POINTS,0,ind_chunk.second.Blocks.size());
-        glBindVertexArray(0);
+        if(ind_chunk.second.size>0)
+        {
+            glBindVertexArray(ind_chunk.second.m_VAO);
+            stateEssentials.loader.setUniform(ind_chunk.second.position,"chunkPosition");
+            stateEssentials.loader.setUniform((float)m_chunksize,"chunkSize");
+            stateEssentials.loader.setUniform(stateEssentials.camera.GetViewMatrix(),"view");
+            stateEssentials.loader.setUniform(stateEssentials.windowManager.perspectiveProjection,"projection");
+            glm::mat4 model = glm::mat4(1.0);
+            glDrawArrays(GL_POINTS,0,ind_chunk.second.size);
+            glBindVertexArray(0);
+        }
     }
 }
 
@@ -54,7 +56,7 @@ std::vector<glm::ivec3> ChunkManager::generateChunkGrid() {
         int x = steps;
         int z = std::sqrt((std::pow(m_viewDistance, 2) - std::pow(x, 2)));
         for (int iter = -z; iter <= z; iter++) {
-            chunks_needed.emplace_back(glm::ivec3(x, 0, iter));
+                chunks_needed.emplace_back(glm::ivec3(x, 0, iter));
         }
     }
     return chunks_needed;

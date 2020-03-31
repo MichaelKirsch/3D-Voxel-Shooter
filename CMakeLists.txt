@@ -5,6 +5,7 @@ set(PROJECT_NAME PUSHY)
 project(${PROJECT_NAME})
 link_libraries(stdc++fs) #link the filesystem
 
+
 set(SFML_DIR "${CMAKE_CURRENT_LIST_DIR}/libs/SFML-2.5.1/lib/cmake/SFML")
 file(GLOB_RECURSE SOURCES "src/*.cpp" "src/*.hpp") #glob all the source files intp one place
 file(GLOB_RECURSE REQUIRED_DLLS_FOR_SFML "libs/SFML-2.5.1/bin/*.dll" "libs/required_dll/*.dll") #glob all the source files intp one place

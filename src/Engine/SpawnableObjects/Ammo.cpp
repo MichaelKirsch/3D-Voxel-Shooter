@@ -1,22 +1,39 @@
 
 
-#include "Food.h"
+#include "Ammo.h"
 
-void Food::render() {
+void Ammo::render() {
     stateEssentials.loader.useProgramm(PROGRAMM);
     glBindVertexArray(VAO);
     stateEssentials.loader.setUniform(stateEssentials.camera.GetViewMatrix(),"view");
     stateEssentials.loader.setUniform(stateEssentials.windowManager.perspectiveProjection,"projection");
     stateEssentials.loader.setUniform(model,"model");
-    glDrawArrays(GL_LINES, 0, berries.size());
+    glDrawArrays(GL_LINES, 0, Graphicsbuffer.size()/2);
     glBindVertexArray(0);
 }
 
-void Food::update(float &elapsed) {
+void Ammo::update(float &elapsed) {
     model = glm::rotate(model,0.06f,glm::vec3(0.f,1.f,0.f));
+    if(need_refactor)
+        Graphicsbuffer.clear();
+    for(auto& pkg:packages)
+    {
+        pkg.update(elapsed);
+        if(need_refactor)
+        {
+            Graphicsbuffer.emplace_back(pkg.position);
+            Graphicsbuffer.emplace_back(pkg.color);
+        }
+    }
+    if(need_refactor)
+    {
+        glBindBuffer(GL_ARRAY_BUFFER,VBO);
+        glBufferSubData(GL_ARRAY_BUFFER,0, Graphicsbuffer.size()* sizeof(glm::vec3) , Graphicsbuffer.data());
+        need_refactor = false;
+    }
 }
 
-void Food::create(Terrain &ter, int amount, float respawntime) {
+void Ammo::create(Terrain &ter, int amount, float respawntime) {
     int found_places = amount;
     int max_tries = 10*amount;
     auto terrain = ter.getTerrainData();
@@ -29,17 +46,28 @@ void Food::create(Terrain &ter, int amount, float respawntime) {
             int y = ter.getY(x,z);
             BLOCK_TYPE buf = ter.getBlocktype({x,y,z});
             y++;
-            Berry buffer;
+            AmmoPackage buffer;
             buffer.position=glm::vec3(x,y,z);
-            //std::cout << x <<"|" << y << "|" << z <<std::endl;
             if(buf==BLOCK_TYPE::SAND)
+            {
                 buffer.color={0.321, 0.588, 1};
+                buffer.m_type = AmmoType::light;
+            }
+
             else if(buf==BLOCK_TYPE::GRASS)
+            {
                 buffer.color={1, 0.396, 0.2};
+                buffer.m_type = AmmoType::heavy;
+            }
+
             else
+            {
+                buffer.m_type = AmmoType::sniper;
                 buffer.color={1, 0.721, 0.321};
+            }
+
             bool alreadyplaced = false;
-            for(auto& ber:berries)
+            for(auto& ber:packages)
             {
                 if(ber.position.x==x && ber.position.z == z)
                 {
@@ -48,21 +76,29 @@ void Food::create(Terrain &ter, int amount, float respawntime) {
             }
             if(!alreadyplaced)
             {
-                berries.emplace_back(buffer);
+                packages.emplace_back(buffer);
                 found_places--;
             }
         }
         max_tries--;
     }
 
+    for(auto& graphics_data:packages)
+    {
+        Graphicsbuffer.emplace_back(graphics_data.position);
+        Graphicsbuffer.emplace_back(graphics_data.color);
+    }
+
+
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER,VBO);
-    glBufferData(GL_ARRAY_BUFFER,berries.size() * sizeof(Berry),berries.data(),GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER,Graphicsbuffer.size() * sizeof(glm::vec3), Graphicsbuffer.data(), GL_STATIC_DRAW);
     glEnableVertexAttribArray(8);
     glVertexAttribPointer(8, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+
 }
 
-Food::Food(StateEssentials &es) :stateEssentials(es){
+Ammo::Ammo(StateEssentials &es) : stateEssentials(es){
     PROGRAMM=stateEssentials.loader.createProgram({{"berry_fr.glsl",ShaderLoader::FRAGMENT},
                                       {"berry_ge.glsl",ShaderLoader::GEOMETRY},
                                       {"berry_ve.glsl",ShaderLoader::VERTEX}});
