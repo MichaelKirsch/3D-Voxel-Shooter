@@ -13,6 +13,20 @@ GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),ammo(e
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
     player.respawn({10,10,10}, false);
+    bool found = 0;
+    while(!found)
+    {
+        auto x = rand()%terrain.getSize();
+        auto z = rand()%terrain.getSize();
+        if(terrain.getY(x,z)>4)
+        {
+            found=true;
+            player.respawn({x,terrain.getY(x,z),z});
+        }
+    }
+
+
+
 }
 
 void GameOver::updateFrame(float& elapsed) {
@@ -33,9 +47,14 @@ void GameOver::updateEntities(float& elapsed) {
 
         if(dist<10.f)
         {
-            if(m_Mouse.isButtonPressed(sf::Mouse::Left))
+            if(sf::Keyboard::isKeyPressed(sf::Keyboard::E))
             {
-                package.take();
+                if(package.respawnTimer<=0.01)
+                {
+                    package.take();
+                    ammo.playPickup();
+                }
+
                 ammo.need_refactor = true;
             }
         }

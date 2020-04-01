@@ -25,7 +25,8 @@ void Ammo::update(float &elapsed) {
             Graphicsbuffer.clear();
             buffer_cleared= true;
         }
-        if(need_refactor)
+        if(need_refactor&&pkg.respawnTimer<0.01
+        )
         {
             Graphicsbuffer.emplace_back(pkg.position);
             Graphicsbuffer.emplace_back(pkg.color);
@@ -112,7 +113,16 @@ Ammo::Ammo(StateEssentials &es) : stateEssentials(es){
     glGenVertexArrays(1,&VAO);
     std::cout << "food vao:" << VAO<< std::endl;
     glGenBuffers(1,&VBO);
+    auto path_to_shader_dir = std::experimental::filesystem::current_path().parent_path().string();
+    path_to_shader_dir +="/data/sounds/";
+    pickupsound.loadFromFile(path_to_shader_dir+"pickup_ammo.wav");
+
     model = glm::mat4(1.f);
+}
+
+void Ammo::playPickup() {
+    sound.setBuffer(pickupsound);
+    sound.play();
 }
 
 

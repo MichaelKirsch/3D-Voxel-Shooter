@@ -81,7 +81,7 @@ void Player::processInputs() {
     y_percent-=0.5f;
     x_percent*=2;
     y_percent*=2;
-    const float mouse_sensitivity = 2.5f;
+    const float mouse_sensitivity = 5.5f;
     yaw = (180.f*x_percent)*mouse_sensitivity;
     pitch = (180.f*-y_percent)*mouse_sensitivity;
     if(!m_Mouse.isButtonPressed(sf::Mouse::Right))

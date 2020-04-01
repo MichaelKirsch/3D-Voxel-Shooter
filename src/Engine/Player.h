@@ -19,7 +19,7 @@ public:
     virtual void update(float &elapsed);
 
     virtual void create();
-
+    
     glm::vec3 playerPos;
     glm::vec3 lookingAt;
     float vertical_velocity;
@@ -29,6 +29,7 @@ public:
 
 private:
     sf::Mouse m_Mouse;
+    unsigned int VAO, VBO;
     glm::vec3 up = {0.f,1.f,0.f};
     Terrain& ter;
     StateEssentials& essentials;

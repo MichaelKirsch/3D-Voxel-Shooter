@@ -7,6 +7,8 @@
 #include "Terrain.h"
 #include "FastNoise/FastNoise.h"
 #include "Hitbox.h"
+#include <experimental/filesystem>
+#include "SFML/Audio.hpp"
 
 enum class AmmoType {
     light, heavy, sniper
@@ -67,6 +69,8 @@ public:
 
     Ammo(StateEssentials &es);
 
+    void playPickup();
+
     void render() override;
 
     void update(float &elapsed) override;
@@ -78,6 +82,8 @@ public:
     ~Ammo() = default;
     bool need_refactor;
 private:
+    sf::Sound sound;
+    sf::SoundBuffer pickupsound;
     glm::mat4 model;
     unsigned int VAO, VBO, PROGRAMM;
     StateEssentials &stateEssentials;
