@@ -4,6 +4,7 @@
 
 void Ammo::render() {
     stateEssentials.loader.useProgramm(PROGRAMM);
+    glDisable(GL_BLEND);
     glBindVertexArray(VAO);
     stateEssentials.loader.setUniform(stateEssentials.camera.GetViewMatrix(),"view");
     stateEssentials.loader.setUniform(stateEssentials.camera.Position,"cameraPos");
@@ -11,6 +12,7 @@ void Ammo::render() {
     stateEssentials.loader.setUniform(model,"model");
     glDrawArrays(GL_POINTS, 0, Graphicsbuffer.size()/2);
     glBindVertexArray(0);
+    glEnable(GL_BLEND);
 }
 
 void Ammo::update(float &elapsed) {
@@ -113,9 +115,10 @@ Ammo::Ammo(StateEssentials &es) : stateEssentials(es){
     glGenVertexArrays(1,&VAO);
     std::cout << "food vao:" << VAO<< std::endl;
     glGenBuffers(1,&VBO);
+
     auto path_to_shader_dir = std::experimental::filesystem::current_path().parent_path().string();
-    path_to_shader_dir +="/data/sounds/";
-    pickupsound.loadFromFile(path_to_shader_dir+"pickup_ammo.wav");
+    path_to_shader_dir +="/data/";
+    pickupsound.loadFromFile(path_to_shader_dir+"sounds/pickup_ammo.wav");
 
     model = glm::mat4(1.f);
 }

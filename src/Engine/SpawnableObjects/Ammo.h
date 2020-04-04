@@ -85,9 +85,8 @@ private:
     sf::Sound sound;
     sf::SoundBuffer pickupsound;
     glm::mat4 model;
-    unsigned int VAO, VBO, PROGRAMM;
+    unsigned int VAO, VBO, PROGRAMM,texture;
     StateEssentials &stateEssentials;
-
 protected:
 };
 

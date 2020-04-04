@@ -11,6 +11,8 @@ void Player::render() {
 }
 
 void Player::update(float &elapsed) {
+    if(playerPos.y >1000.f)
+        vertical_velocity =-10;
 
     if(playerPos.y > ter.getY(playerPos.x,playerPos.z))
         vertical_velocity-=0.04f;

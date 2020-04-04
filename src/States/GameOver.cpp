@@ -10,15 +10,19 @@ GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),ammo(e
     terrain.create({0.f,0.f,0.f},400,size,25.f,0.3f,0.005f);
     water.create(terrain,{-100.f,0.f,-100.f},1.0f,size+200,{0, 0.337, 0.921},0.06f,0.15f,0.1);
     ammo.create(terrain,700,1.0);
+    text.create(es,"JetBrainsMono-Medium.ttf");
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
-    player.respawn({10,10,10}, false);
+    //glEnable(GL_BLEND);
+    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //player.respawn({10,10,10}, false);
+    player.horizontal_velocity =0.f;
     bool found = 0;
     while(!found)
     {
         auto x = rand()%terrain.getSize();
         auto z = rand()%terrain.getSize();
-        if(terrain.getY(x,z)>4)
+        if(terrain.getY(x,z)>4&&terrain.getY(x,z)<100)
         {
             found=true;
             player.respawn({x,terrain.getY(x,z),z});
@@ -34,13 +38,14 @@ void GameOver::updateFrame(float& elapsed) {
     water.render();
     terrain.render();
     ammo.render();
+    text.render();
     essentials.windowManager.swapBuffers();
 }
 
 void GameOver::updateEntities(float& elapsed) {
     player.update(elapsed);
     water.update(elapsed);
-
+    std::cout << player.playerPos.x << "|" << player.playerPos.y << "|" << player.playerPos.z << std::endl;
     for(auto& package:ammo.packages)
     {
         auto dist = glm::distance(package.position,essentials.camera.Position);
