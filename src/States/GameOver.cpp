@@ -93,6 +93,7 @@ void GameOver::processInputs(float& elapsed) {
         {
             int deltamouse = ev.mouseWheel.delta;
             essentials.camera.ProcessMouseScroll(deltamouse,1.5f);
+            //
         }
     }
 }
