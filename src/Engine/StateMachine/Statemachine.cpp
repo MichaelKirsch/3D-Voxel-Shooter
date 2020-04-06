@@ -4,7 +4,7 @@
 
 Statemachine::Statemachine() {
     running = true;
-    essential.windowManager.create({1000,1000}, false);
+    essential.windowManager.create({1920,1080}, false);
     updateTimer.setTickrate(40);
     frameTimer.setTickrate(60);
     inputTimer.setTickrate(60);

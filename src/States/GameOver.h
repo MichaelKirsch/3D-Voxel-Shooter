@@ -27,7 +27,7 @@ public:
 
 private:
     Font font;
-    SimpleText text;
+    SimpleText text,text2;
     unsigned int programm;
     Water water;
     Ammo ammo;

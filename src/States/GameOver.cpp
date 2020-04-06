@@ -3,7 +3,7 @@
 #include "GameOver.h"
 
 
-GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),ammo(es),terrainGenerator(es),player(terrain,es),text(es) {
+GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),ammo(es),terrainGenerator(es),player(terrain,es),text(es),text2(es) {
     essentials.camera.MovementSpeed = 20.f;
     int size = 700;
     timer.setTickrate(0.5);
@@ -11,15 +11,13 @@ GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),ammo(e
     water.create(terrain,{-100.f,0.f,-100.f},1.0f,size+200,{0, 0.337, 0.921},0.06f,0.15f,0.1);
     ammo.create(terrain,700,1.0);
 
-    font.loadNewFont("JetBrainsMono-Bold.ttf",60);
-    text.create({0.1,0.1},&font,60,"Hello");
-
+    font.loadNewFont("JetBrainsMono-Regular.ttf",50);
+    text.create({-0.9,0.8},&font,50,"Player:");
+    text2.create({-0.9,0.9},&font,50,"HELLO WORLD");
 
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
-    //glEnable(GL_BLEND);
-    //glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    //player.respawn({10,10,10}, false);
+
     player.horizontal_velocity =0.f;
     bool found = 0;
     while(!found)
@@ -32,9 +30,6 @@ GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),ammo(e
             player.respawn({x,terrain.getY(x,z),z});
         }
     }
-
-
-
 }
 
 void GameOver::updateFrame(float& elapsed) {
@@ -43,6 +38,7 @@ void GameOver::updateFrame(float& elapsed) {
     terrain.render();
     ammo.render();
     text.render();
+    text2.render();
     essentials.windowManager.swapBuffers();
 }
 
@@ -70,6 +66,7 @@ void GameOver::updateEntities(float& elapsed) {
     }
     float test= 0.05f;
     ammo.update(test);
+    text.setText("Player:"+std::to_string(player.playerPos.x)+"X "+std::to_string(player.playerPos.y)+"Y "+std::to_string(player.playerPos.z)+"Z");
 }
 
 void GameOver::processInputs(float& elapsed) {
