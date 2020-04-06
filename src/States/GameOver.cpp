@@ -12,8 +12,8 @@ GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),ammo(e
     ammo.create(terrain,700,1.0);
 
     font.loadNewFont("JetBrainsMono-Regular.ttf",50);
-    text.create({-0.9,0.8},&font,50,"Player:");
-    text2.create({-0.9,0.9},&font,50,"HELLO WORLD");
+    text.create({-0.9,0.8},&font,120,"Player:");
+    text2.create({-0.9,0.9},&font,120,"HELLO WORLD");
 
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
