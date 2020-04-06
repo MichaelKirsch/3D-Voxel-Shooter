@@ -1,4 +1,0 @@
-
-
-#include "TextRenderer.h"
-

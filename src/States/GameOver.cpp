@@ -3,14 +3,18 @@
 #include "GameOver.h"
 
 
-GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),ammo(es),terrainGenerator(es),player(terrain,es) {
+GameOver::GameOver(StateEssentials &es) : State(es),water(es),terrain(es),ammo(es),terrainGenerator(es),player(terrain,es),text(es) {
     essentials.camera.MovementSpeed = 20.f;
     int size = 700;
     timer.setTickrate(0.5);
     terrain.create({0.f,0.f,0.f},400,size,25.f,0.3f,0.005f);
     water.create(terrain,{-100.f,0.f,-100.f},1.0f,size+200,{0, 0.337, 0.921},0.06f,0.15f,0.1);
     ammo.create(terrain,700,1.0);
-    text.create(es,"JetBrainsMono-Medium.ttf");
+
+    font.loadNewFont("JetBrainsMono-Bold.ttf",60);
+    text.create({0.1,0.1},&font,60,"Hello");
+
+
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
     //glEnable(GL_BLEND);
@@ -45,7 +49,7 @@ void GameOver::updateFrame(float& elapsed) {
 void GameOver::updateEntities(float& elapsed) {
     player.update(elapsed);
     water.update(elapsed);
-    std::cout << player.playerPos.x << "|" << player.playerPos.y << "|" << player.playerPos.z << std::endl;
+    //std::cout << player.playerPos.x << "|" << player.playerPos.y << "|" << player.playerPos.z << std::endl;
     for(auto& package:ammo.packages)
     {
         auto dist = glm::distance(package.position,essentials.camera.Position);

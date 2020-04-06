@@ -14,7 +14,8 @@
 #include <cmath>
 #include "Timer.h"
 #include "Player.h"
-#include "Text/TextBox.h"
+#include "TextStuff/Font.h"
+#include "TextStuff/SimpleText.h"
 
 class GameOver : public State {
 public:
@@ -25,7 +26,8 @@ public:
     ~GameOver() = default;
 
 private:
-    TextBox text;
+    Font font;
+    SimpleText text;
     unsigned int programm;
     Water water;
     Ammo ammo;
