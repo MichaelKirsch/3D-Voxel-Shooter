@@ -6,7 +6,7 @@ void SimpleText::create(glm::vec2 topleft,Font* font, int txtsize, std::string t
     glGenTextures(1,&TEXTURE);
     glGenVertexArrays(1,&VAO);
     glGenBuffers(1,&VBO);
-    PROGRAMM = essentials->loader.createProgram({{"text_vertex.glsl",ShaderLoader::VERTEX},
+    PROGRAMM = StateEssentials::get().loader.createProgram({{"text_vertex.glsl",ShaderLoader::VERTEX},
                                                  {"text_fragment.glsl",ShaderLoader::FRAGMENT}});
 
 
@@ -43,14 +43,13 @@ void SimpleText::create(glm::vec2 topleft,Font* font, int txtsize, std::string t
     glBindVertexArray(0);
 }
 
-SimpleText::SimpleText(StateEssentials &es) {
-    essentials = &es;
+SimpleText::SimpleText() {
 }
 
 void SimpleText::render() {
-    essentials->loader.useProgramm(PROGRAMM);
-    essentials->loader.setUniform(essentials->windowManager.perspectiveProjection,"projection");
-    essentials->loader.setUniform(essentials->camera.GetViewMatrix(),"view");
+    StateEssentials::get().loader.useProgramm(PROGRAMM);
+    StateEssentials::get().loader.setUniform(StateEssentials::get().windowManager.perspectiveProjection,"projection");
+    StateEssentials::get().loader.setUniform(StateEssentials::get().camera.GetViewMatrix(),"view");
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_CULL_FACE);
@@ -74,11 +73,11 @@ void SimpleText::setText(std::string newText) {
         float percTexture =  1.f/getTextureSize;
         sf::Vector2f topLeftCalculated = {tempGlyph.textureRect.left*percTexture,(tempGlyph.textureRect.top*percTexture)};
         sf::Vector2f widthHeightCalculated = {tempGlyph.textureRect.width*percTexture,tempGlyph.textureRect.height*percTexture};
-        auto adjustedAdvance = (1.0f/essentials->windowManager.getWindow().getSize().x)*tempGlyph.advance;
+        auto adjustedAdvance = (1.0f/StateEssentials::get().windowManager.getWindow().getSize().x)*tempGlyph.advance;
 
-        auto adjustedheight = (1.0f/essentials->windowManager.getWindow().getSize().y)*tempGlyph.bounds.height;
-        auto adjustedwidth = (1.0f/essentials->windowManager.getWindow().getSize().x)*tempGlyph.bounds.width;
-        auto adjustedtop = (1.0f/essentials->windowManager.getWindow().getSize().y)*tempGlyph.bounds.top;
+        auto adjustedheight = (1.0f/StateEssentials::get().windowManager.getWindow().getSize().y)*tempGlyph.bounds.height;
+        auto adjustedwidth = (1.0f/StateEssentials::get().windowManager.getWindow().getSize().x)*tempGlyph.bounds.width;
+        auto adjustedtop = (1.0f/StateEssentials::get().windowManager.getWindow().getSize().y)*tempGlyph.bounds.top;
 
 
         std::vector<float> temp = {

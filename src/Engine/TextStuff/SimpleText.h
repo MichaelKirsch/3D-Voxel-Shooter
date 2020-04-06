@@ -4,7 +4,7 @@
 #include "Font.h"
 class SimpleText {
 public:
-    SimpleText(StateEssentials& es);
+    SimpleText();
     void create(glm::vec2 topleft,Font* font, int textsize ,std::string text);
     void setText(std::string newText);
     void render();
@@ -14,7 +14,6 @@ public:
 private:
     std::vector<float> vertices;
     unsigned int VAO,VBO, PROGRAMM, TEXTURE;
-    StateEssentials* essentials;
     float cursorPosition;
     int textsize;
     FontTexture* ft;

@@ -67,7 +67,7 @@ struct AmmoPackage {
 class Ammo : public Renderable {
 public:
 
-    Ammo(StateEssentials &es);
+    Ammo();
 
     void playPickup();
 
@@ -86,7 +86,6 @@ private:
     sf::SoundBuffer pickupsound;
     glm::mat4 model;
     unsigned int VAO, VBO, PROGRAMM,texture;
-    StateEssentials &stateEssentials;
 protected:
 };
 

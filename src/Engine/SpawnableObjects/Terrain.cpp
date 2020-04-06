@@ -2,17 +2,17 @@
 
 #include "Terrain.h"
 
-Terrain::Terrain(StateEssentials &es) :essential(es) {
+Terrain::Terrain() {
 
 }
 
 void Terrain::render() {
-    essential.loader.useProgramm(ProgrammID);
+    StateEssentials::get().loader.useProgramm(ProgrammID);
     glBindVertexArray(VAO);
     glm::mat4 model = glm::mat4(1.f);
-    essential.loader.setUniform(essential.camera.GetViewMatrix(),"view");
-    essential.loader.setUniform(essential.windowManager.perspectiveProjection,"projection");
-    essential.loader.setUniform(model,"model");
+    StateEssentials::get().loader.setUniform(StateEssentials::get().camera.GetViewMatrix(),"view");
+    StateEssentials::get().loader.setUniform(StateEssentials::get().windowManager.perspectiveProjection,"projection");
+    StateEssentials::get().loader.setUniform(model,"model");
     glDrawArrays(GL_LINES, 0, positions.size());
     glBindVertexArray(0);
 }
@@ -128,7 +128,7 @@ void Terrain::create(glm::vec3 origin,int seed, int size, int height, float bord
     }
 
 
-    ProgrammID = essential.loader.createProgram({
+    ProgrammID = StateEssentials::get().loader.createProgram({
                                                          {"terrain_fragment.glsl",ShaderLoader::FRAGMENT}
                                                         ,{"terrain_vertex.glsl",ShaderLoader::VERTEX},
                                                          {"terrain_geometry.glsl",ShaderLoader::GEOMETRY}});

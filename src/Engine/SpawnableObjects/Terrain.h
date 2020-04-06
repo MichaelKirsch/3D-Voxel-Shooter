@@ -13,7 +13,7 @@ enum class BLOCK_TYPE
 
 class Terrain : public Renderable {
 public:
-    Terrain(StateEssentials& es);
+    Terrain();
     void create(glm::vec3 origin ={0.f,0.f,0.f},int seed=100, int size=300,int height = 30.f,float border_width=0.2f,float frequency = 0.01);
     void render() override;
     int getHeight(){ return m_height;};
@@ -33,7 +33,6 @@ private:
     float calculateBorderFactor(float x , float y, int size,float border_thiccccness=.2);
     float m_border_factor;
     int m_size,m_height,m_freq;
-    StateEssentials& essential;
     unsigned int VAO,VBO,ProgrammID;
     std::vector<glm::vec3> positions;
     std::vector<BLOCK_TYPE>chunkData;

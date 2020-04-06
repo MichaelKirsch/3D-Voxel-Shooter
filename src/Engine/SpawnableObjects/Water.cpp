@@ -2,17 +2,17 @@
 
 #include "Water.h"
 
-Water::Water(StateEssentials &es) :essentials(es){
+Water::Water(){
 }
 
 void Water::render() {
-    essentials.loader.useProgramm(PROGRAMM);
-    essentials.loader.setUniform(m_waterColor,"WaterColor");
-    essentials.loader.setUniform(essentials.windowManager.perspectiveProjection,"projection");
-    essentials.loader.setUniform(essentials.camera.GetViewMatrix(),"view");
-    essentials.loader.setUniform(m_degrees,"degrees");
-    essentials.loader.setUniform(m_waveheight,"waveheight");
-    essentials.loader.setUniform(essentials.camera.Position,"cameraPos");
+    StateEssentials::get().loader.useProgramm(PROGRAMM);
+    StateEssentials::get().loader.setUniform(m_waterColor,"WaterColor");
+    StateEssentials::get().loader.setUniform(StateEssentials::get().windowManager.perspectiveProjection,"projection");
+    StateEssentials::get().loader.setUniform(StateEssentials::get().camera.GetViewMatrix(),"view");
+    StateEssentials::get().loader.setUniform(m_degrees,"degrees");
+    StateEssentials::get().loader.setUniform(m_waveheight,"waveheight");
+    StateEssentials::get().loader.setUniform(StateEssentials::get().camera.Position,"cameraPos");
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES,0,waterVertices.size()/3);
     glBindVertexArray(1);
@@ -74,7 +74,7 @@ void Water::create(Terrain& ter,glm::vec3 origin, float WaveSize, float WaterBod
     }
     waterVertices.shrink_to_fit();
 
-    PROGRAMM=essentials.loader.createProgram({{"water_vertex.glsl",ShaderLoader::VERTEX},
+    PROGRAMM=StateEssentials::get().loader.createProgram({{"water_vertex.glsl",ShaderLoader::VERTEX},
                                               {"water_fragment.glsl",ShaderLoader::FRAGMENT}});
 
     glGenVertexArrays(1,&VAO);

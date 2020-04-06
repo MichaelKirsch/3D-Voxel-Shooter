@@ -2,7 +2,7 @@
 
 #include "Player.h"
 
-Player::Player(Terrain &terrain, StateEssentials& es) : ter(terrain), essentials(es){
+Player::Player(Terrain &terrain) : ter(terrain){
 
 }
 
@@ -32,7 +32,7 @@ void Player::respawn(glm::vec3 respawnPosition, bool bindToTerrain) {
 
 void Player::processInputs() {
 
-    glm::vec3 playerMovementFront = glm::normalize(glm::cross(up,essentials.camera.Right));
+    glm::vec3 playerMovementFront = glm::normalize(glm::cross(up,StateEssentials::get().camera.Right));
     glm::vec3 playerMovementSide = glm::normalize(glm::cross(up,playerMovementFront));
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
@@ -76,8 +76,8 @@ void Player::processInputs() {
     //if(playerPos.y < ter.getY(futurePlayerPos.x,futurePlayerPos.z))
         //playerPos.y =  ter.getY(futurePlayerPos.x,futurePlayerPos.z);
     float yaw,pitch;
-    float x_percent =  (1.f/essentials.windowManager.getWindow().getSize().x) * m_Mouse.getPosition(essentials.windowManager.getWindow()).x;
-    float y_percent =  (1.f/essentials.windowManager.getWindow().getSize().y) * m_Mouse.getPosition(essentials.windowManager.getWindow()).y;
+    float x_percent =  (1.f/StateEssentials::get().windowManager.getWindow().getSize().x) * m_Mouse.getPosition(StateEssentials::get().windowManager.getWindow()).x;
+    float y_percent =  (1.f/StateEssentials::get().windowManager.getWindow().getSize().y) * m_Mouse.getPosition(StateEssentials::get().windowManager.getWindow()).y;
 
     x_percent-=0.5f;
     y_percent-=0.5f;
@@ -89,11 +89,11 @@ void Player::processInputs() {
     if(!m_Mouse.isButtonPressed(sf::Mouse::Right))
     {
 
-        essentials.windowManager.getWindow().setMouseCursorVisible(false);
-        essentials.camera.ProcessMouseMovement(yaw,pitch);
-        m_Mouse.setPosition({static_cast<int>(essentials.windowManager.getWindow().getSize().x/2),
-                             static_cast<int>(essentials.windowManager.getWindow().getSize().y/2)},
-                essentials.windowManager.getWindow());
+        StateEssentials::get().windowManager.getWindow().setMouseCursorVisible(false);
+        StateEssentials::get().camera.ProcessMouseMovement(yaw,pitch);
+        m_Mouse.setPosition({static_cast<int>(StateEssentials::get().windowManager.getWindow().getSize().x/2),
+                             static_cast<int>(StateEssentials::get().windowManager.getWindow().getSize().y/2)},
+                            StateEssentials::get().windowManager.getWindow());
     }
 
 }

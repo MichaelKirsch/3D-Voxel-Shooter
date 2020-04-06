@@ -5,14 +5,11 @@
 
 class State {
 public:
-    State(StateEssentials& essentials) : essentials(essentials){};
-    StateEssentials& essentials;
+    State(){};
     virtual void updateFrame(float& elapsed){};
     virtual void updateEntities(float& elapsed){};
     virtual void processInputs(float& elapsed){};
     ~State()= default;
-private:
-protected:
 };
 
 

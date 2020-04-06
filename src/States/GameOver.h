@@ -19,7 +19,7 @@
 
 class GameOver : public State {
 public:
-    GameOver(StateEssentials& es);
+    GameOver();
     void updateFrame(float& elapsed);
     void updateEntities(float& elapsed);
     void processInputs(float& elapsed);
@@ -36,7 +36,6 @@ private:
     float last_time;
     bool mouse_hold;
     Terrain terrain;
-    TerrainGenerator terrainGenerator;
     bool wire;
 
     SimpleTimer timer;

@@ -2,24 +2,26 @@
 
 #include "Statemachine.h"
 
+StateEssentials StateEssentials::s_Instance;
+
 Statemachine::Statemachine() {
     running = true;
-    essential.windowManager.create({1920,1080}, false);
+    StateEssentials::get().windowManager.create({1920,1080}, false);
     updateTimer.setTickrate(40);
     frameTimer.setTickrate(60);
     inputTimer.setTickrate(60);
-    m_playedState = std::make_unique<GameOver>(essential);
-    essential.shouldClose = false;
+    m_playedState = std::make_unique<GameOver>();
+    StateEssentials::get().shouldClose = false;
 }
 
 void Statemachine::run() {
-    while(!essential.shouldClose)
+    while(!StateEssentials::get().shouldClose)
     {
         elapsed = m_clock.restart().asSeconds();
         updateTimer.setElapsed(elapsed);
         frameTimer.setElapsed(elapsed);
         inputTimer.setElapsed(elapsed);
-        if(essential.windowManager.getWindow().hasFocus())
+        if(StateEssentials::get().windowManager.getWindow().hasFocus())
         {
             if(frameTimer.getState())
             {
@@ -36,7 +38,7 @@ void Statemachine::run() {
         } else
         {
             sf::Event e;
-            while (essential.windowManager.getWindow().pollEvent(e))
+            while (StateEssentials::get().windowManager.getWindow().pollEvent(e))
             {}
         }
     }

@@ -8,7 +8,7 @@
 
 class Player : public Renderable{
 public:
-    Player(Terrain& terrain, StateEssentials& es);
+    Player(Terrain& terrain);
 
     void respawn(glm::vec3 respawnPosition, bool bindToTerrain=true);
 
@@ -32,7 +32,6 @@ private:
     unsigned int VAO, VBO;
     glm::vec3 up = {0.f,1.f,0.f};
     Terrain& ter;
-    StateEssentials& essentials;
 protected:
 };
 
