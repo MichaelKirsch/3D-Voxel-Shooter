@@ -1,4 +1,0 @@
-
-
-#include "SimpleCube.h"
-
