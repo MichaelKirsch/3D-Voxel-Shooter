@@ -3,14 +3,26 @@
 #include "Player.h"
 
 Player::Player(Terrain &terrain) : ter(terrain){
-
+    create();
 }
 
 void Player::render() {
+    ShaderLoader::useProgramm(PROGRAMM);
 
+    glDisable(GL_CULL_FACE);
+    glBindVertexArray(VAO);
+    ShaderLoader::setUniform(PROGRAMM,color_according_to_armor,"armorColor");
+    ShaderLoader::setUniform(PROGRAMM,glm::vec4(playerPos,1.0),"worldPos");
+    ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().camera.GetViewMatrix(),"view");
+    ShaderLoader::setUniform(PROGRAMM,model,"model");
+    ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().windowManager.perspectiveProjection,"projection");
+    glDrawElements(GL_TRIANGLES,playerIndices.size(),GL_UNSIGNED_INT,0);
+    glBindVertexArray(0);
+    glEnable(GL_CULL_FACE);
 }
 
 void Player::update(float &elapsed) {
+    model = glm::rotate(model,glm::radians(1.f),{0.f,1.f,0.f});
     if(playerPos.y >1000.f)
         vertical_velocity =-10;
 
@@ -21,7 +33,18 @@ void Player::update(float &elapsed) {
 }
 
 void Player::create() {
-
+    PROGRAMM = ShaderLoader::createProgram({{"player_fragment.glsl",ShaderLoader::FRAGMENT},{"player_vertex.glsl",ShaderLoader::VERTEX}});
+    glGenVertexArrays(1,&VAO);
+    glGenBuffers(1,&VBO);
+    glGenBuffers(1,&EBO);
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER,playerIndices.size()* sizeof(unsigned int),playerIndices.data(),GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER,VBO);
+    glBufferData(GL_ARRAY_BUFFER,playerVertices.size()*sizeof(glm::vec3),playerVertices.data(),GL_STATIC_DRAW);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,3* sizeof(float),(void*)0);
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
 }
 
 void Player::respawn(glm::vec3 respawnPosition, bool bindToTerrain) {
@@ -50,8 +73,6 @@ void Player::processInputs() {
         vertical_velocity +=0.45f;
     }
 
-
-
     glm::vec3 futurePlayerPos = playerPos;
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::W))
@@ -67,10 +88,9 @@ void Player::processInputs() {
     if(playerPos.y>=(ter.getY(futurePlayerPos.x,futurePlayerPos.z))){
         playerPos = futurePlayerPos;
     }
-        //vertical_velocity +=0.2f;
     else
     {
-
+        //TODO: need some sliding function here so no stops occure when the player is not perpendicular
     }
 
     //if(playerPos.y < ter.getY(futurePlayerPos.x,futurePlayerPos.z))

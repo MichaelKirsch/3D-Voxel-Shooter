@@ -31,6 +31,7 @@ GameOver::GameOver() : player(terrain){
             player.respawn({x,terrain.getY(x,z),z});
         }
     }
+    player.respawn({20,20,20});
 }
 
 void GameOver::updateFrame(float& elapsed) {
@@ -38,6 +39,7 @@ void GameOver::updateFrame(float& elapsed) {
     water.render();
     terrain.render();
     ammo.render();
+    player.render();
     text.render();
     text2.render();
     StateEssentials::get().windowManager.swapBuffers();
