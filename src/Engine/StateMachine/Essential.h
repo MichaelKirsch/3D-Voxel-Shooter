@@ -12,7 +12,6 @@ class StateEssentials {
 public:
     //StateEssentials(const StateEssentials&) = delete;
     WindowManager windowManager;
-    ShaderLoader loader;
     Camera camera;
 
     static StateEssentials &get() {

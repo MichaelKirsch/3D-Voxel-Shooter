@@ -7,12 +7,12 @@ Terrain::Terrain() {
 }
 
 void Terrain::render() {
-    StateEssentials::get().loader.useProgramm(ProgrammID);
+    ShaderLoader::useProgramm(ProgrammID);
     glBindVertexArray(VAO);
     glm::mat4 model = glm::mat4(1.f);
-    StateEssentials::get().loader.setUniform(StateEssentials::get().camera.GetViewMatrix(),"view");
-    StateEssentials::get().loader.setUniform(StateEssentials::get().windowManager.perspectiveProjection,"projection");
-    StateEssentials::get().loader.setUniform(model,"model");
+    ShaderLoader::setUniform(ProgrammID,StateEssentials::get().camera.GetViewMatrix(),"view");
+    ShaderLoader::setUniform(ProgrammID,StateEssentials::get().windowManager.perspectiveProjection,"projection");
+    ShaderLoader::setUniform(ProgrammID,model,"model");
     glDrawArrays(GL_LINES, 0, positions.size());
     glBindVertexArray(0);
 }
@@ -128,7 +128,7 @@ void Terrain::create(glm::vec3 origin,int seed, int size, int height, float bord
     }
 
 
-    ProgrammID = StateEssentials::get().loader.createProgram({
+    ProgrammID = ShaderLoader::createProgram({
                                                          {"terrain_fragment.glsl",ShaderLoader::FRAGMENT}
                                                         ,{"terrain_vertex.glsl",ShaderLoader::VERTEX},
                                                          {"terrain_geometry.glsl",ShaderLoader::GEOMETRY}});

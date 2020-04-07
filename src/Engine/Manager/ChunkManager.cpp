@@ -5,23 +5,23 @@
 ChunkManager::ChunkManager(StateEssentials &es) : stateEssentials(es) {
     timer.setTickrate(5);
 
-    PROGRAMM =  stateEssentials.loader.createProgram({
+    PROGRAMM =  ShaderLoader::createProgram({
                                                       {"chunk_fragment.glsl",ShaderLoader::FRAGMENT},
                                                              {"chunk_vertex.glsl",ShaderLoader::VERTEX},
                                                       {"chunk_geometry.glsl",ShaderLoader::GEOMETRY}});
 }
 
 void ChunkManager::render() {
-    stateEssentials.loader.useProgramm(PROGRAMM);
+    ShaderLoader::useProgramm(PROGRAMM);
     for(auto& ind_chunk:loaded_chunks)
     {
         if(ind_chunk.second.size>0)
         {
             glBindVertexArray(ind_chunk.second.m_VAO);
-            stateEssentials.loader.setUniform(ind_chunk.second.position,"chunkPosition");
-            stateEssentials.loader.setUniform((float)m_chunksize,"chunkSize");
-            stateEssentials.loader.setUniform(stateEssentials.camera.GetViewMatrix(),"view");
-            stateEssentials.loader.setUniform(stateEssentials.windowManager.perspectiveProjection,"projection");
+            ShaderLoader::setUniform(PROGRAMM,ind_chunk.second.position,"chunkPosition");
+            ShaderLoader::setUniform(PROGRAMM,(float)m_chunksize,"chunkSize");
+            ShaderLoader::setUniform(PROGRAMM,stateEssentials.camera.GetViewMatrix(),"view");
+            ShaderLoader::setUniform(PROGRAMM,stateEssentials.windowManager.perspectiveProjection,"projection");
             glm::mat4 model = glm::mat4(1.0);
             glDrawArrays(GL_POINTS,0,ind_chunk.second.size);
             glBindVertexArray(0);

@@ -3,13 +3,13 @@
 #include "Ammo.h"
 
 void Ammo::render() {
-    StateEssentials::get().loader.useProgramm(PROGRAMM);
+    ShaderLoader::useProgramm(PROGRAMM);
     glDisable(GL_BLEND);
     glBindVertexArray(VAO);
-    StateEssentials::get().loader.setUniform(StateEssentials::get().camera.GetViewMatrix(),"view");
-    StateEssentials::get().loader.setUniform(StateEssentials::get().camera.Position,"cameraPos");
-    StateEssentials::get().loader.setUniform(StateEssentials::get().windowManager.perspectiveProjection,"projection");
-    StateEssentials::get().loader.setUniform(model,"model");
+    ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().camera.GetViewMatrix(),"view");
+    ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().camera.Position,"cameraPos");
+    ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().windowManager.perspectiveProjection,"projection");
+    ShaderLoader::setUniform(PROGRAMM,model,"model");
     glDrawArrays(GL_POINTS, 0, Graphicsbuffer.size()/2);
     glBindVertexArray(0);
     glEnable(GL_BLEND);
@@ -109,7 +109,7 @@ void Ammo::create(Terrain &ter, int amount, float respawntime) {
 }
 
 Ammo::Ammo() {
-    PROGRAMM=StateEssentials::get().loader.createProgram({{"berry_fr.glsl",ShaderLoader::FRAGMENT},
+    PROGRAMM=ShaderLoader::createProgram({{"berry_fr.glsl",ShaderLoader::FRAGMENT},
                                       {"berry_ge.glsl",ShaderLoader::GEOMETRY},
                                       {"berry_ve.glsl",ShaderLoader::VERTEX}});
     glGenVertexArrays(1,&VAO);

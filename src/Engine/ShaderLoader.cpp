@@ -4,15 +4,6 @@
 
 #include "ShaderLoader.h"
 
-ShaderLoader::ShaderLoader(std::string path_to_shaderfolder) {
-    path_to_shader_dir = path_to_shaderfolder;
-}
-
-ShaderLoader::ShaderLoader() {
-    path_to_shader_dir = std::experimental::filesystem::current_path().parent_path().string();
-    path_to_shader_dir +="/data/shaders/";
-}
-
 unsigned int ShaderLoader::loadAndCompileShader(ShaderObject obj) {
     unsigned int shaderID;
     switch(obj.type)
@@ -27,6 +18,8 @@ unsigned int ShaderLoader::loadAndCompileShader(ShaderObject obj) {
             shaderID = glCreateShader(GL_GEOMETRY_SHADER);
             break;
     }
+    std::string path_to_shader_dir = std::experimental::filesystem::current_path().parent_path().string();
+    path_to_shader_dir +="/data/shaders/";
     std::string path_to_shader = path_to_shader_dir+obj.name;
     std::ifstream input (path_to_shader);
     std::string shadercode((std::istreambuf_iterator<char>(input)),
@@ -55,86 +48,85 @@ unsigned int ShaderLoader::createProgram(std::vector<ShaderObject> shaders_to_at
 }
 
 unsigned int ShaderLoader::createProgram(std::vector<unsigned int> shaders) {
-    unsigned int current_prog = glCreateProgram();
+    unsigned int progID = glCreateProgram();
     for(auto shader:shaders)
     {
-        glAttachShader(current_prog,shader);
+        glAttachShader(progID,shader);
     }
-    glBindAttribLocation(current_prog,2, "aPos");
+    glBindAttribLocation(progID,2, "aPos");
 
-    glLinkProgram(current_prog);
+    glLinkProgram(progID);
     //once we have linked we dont need the shaders anymore so lets delete them
     for(auto shader:shaders)
     {
         glDeleteShader(shader);
     }
-    return current_prog;
+    return progID;
 }
 
-int ShaderLoader::setUniform(glm::fvec4 input,const std::string &name) {
-    int vertexColorLocation = glGetUniformLocation(current_prog, name.c_str());
+int ShaderLoader::setUniform(unsigned int& progID, glm::fvec4 input,const std::string &name) {
+    int vertexColorLocation = glGetUniformLocation(progID, name.c_str());
     glUniform4f(vertexColorLocation,input.x,input.y,input.z,input.w);
     return vertexColorLocation;
 }
 
-int ShaderLoader::setUniform(int input,const std::string &name) {
-    int vertexColorLocation = glGetUniformLocation(current_prog, name.c_str());
+int ShaderLoader::setUniform(unsigned int& progID,int input,const std::string &name) {
+    int vertexColorLocation = glGetUniformLocation(progID, name.c_str());
     glUniform1i(vertexColorLocation,input);
     return vertexColorLocation;
 }
 
-int ShaderLoader::setUniform(float input,const std::string &name) {
-    int vertexColorLocation = glGetUniformLocation(current_prog, name.c_str());
+int ShaderLoader::setUniform(unsigned int& progID,float input,const std::string &name) {
+    int vertexColorLocation = glGetUniformLocation(progID, name.c_str());
     glUniform1f(vertexColorLocation,input);
     return vertexColorLocation;
 }
 
-int ShaderLoader::setUniform(double input,const std::string &name) {
-    int vertexColorLocation = glGetUniformLocation(current_prog, name.c_str());
+int ShaderLoader::setUniform(unsigned int& progID,double input,const std::string &name) {
+    int vertexColorLocation = glGetUniformLocation(progID, name.c_str());
     glUniform1d(vertexColorLocation,input);
     return vertexColorLocation;
 }
 
-int ShaderLoader::setUniform(unsigned int input,const std::string &name) {
-    int vertexColorLocation = glGetUniformLocation(current_prog, name.c_str());
+int ShaderLoader::setUniform(unsigned int& progID,unsigned int input,const std::string &name) {
+    int vertexColorLocation = glGetUniformLocation(progID, name.c_str());
     glUniform1ui(vertexColorLocation,input);
     return vertexColorLocation;
 }
 
-int ShaderLoader::setUniform(glm::ivec3 input,const std::string &name) {
-    int vertexColorLocation = glGetUniformLocation(current_prog, name.c_str());
+int ShaderLoader::setUniform(unsigned int& progID,glm::ivec3 input,const std::string &name) {
+    int vertexColorLocation = glGetUniformLocation(progID, name.c_str());
     glUniform3i(vertexColorLocation,input.x,input.y,input.z);
     return vertexColorLocation;
 }
 
-int ShaderLoader::setUniform(glm::fvec3 input,const std::string &name) {
-    int vertexColorLocation = glGetUniformLocation(current_prog, name.c_str());
+int ShaderLoader::setUniform(unsigned int& progID,glm::fvec3 input,const std::string &name) {
+    int vertexColorLocation = glGetUniformLocation(progID, name.c_str());
     glUniform3f(vertexColorLocation,input.x,input.y,input.z);
     return vertexColorLocation;
 }
 
-int ShaderLoader::setUniform(glm::ivec4 input,const std::string &name) {
-    int vertexColorLocation = glGetUniformLocation(current_prog, name.c_str());
+int ShaderLoader::setUniform(unsigned int& progID,glm::ivec4 input,const std::string &name) {
+    int vertexColorLocation = glGetUniformLocation(progID, name.c_str());
     glUniform4i(vertexColorLocation,input.x,input.y,input.z,input.w);
     return vertexColorLocation;
 }
 
 
-int ShaderLoader::setUniform(std::vector<glm::vec4> input, const std::string &name) {
+int ShaderLoader::setUniform(unsigned int& progID,std::vector<glm::vec4> input, const std::string &name) {
     int counter =0;
     for(auto el:input)
     {
-        setUniform(input[counter],(name+"["+std::to_string(counter)+"]"));
+        setUniform(progID,input[counter],(name+"["+std::to_string(counter)+"]"));
         counter++;
     }
 }
 
 void ShaderLoader::useProgramm(unsigned int id) {
-    current_prog = id;
     glUseProgram(id);
 }
 
-int ShaderLoader::setUniform(glm::mat4 input, const std::string &name) {
-    int vertexColorLocation = glGetUniformLocation(current_prog, name.c_str());
+int ShaderLoader::setUniform(unsigned int& progID,glm::mat4 input, const std::string &name) {
+    int vertexColorLocation = glGetUniformLocation(progID, name.c_str());
     glUniformMatrix4fv(vertexColorLocation, 1, GL_FALSE, glm::value_ptr(input));
 }

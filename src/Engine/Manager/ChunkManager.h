@@ -15,6 +15,7 @@
 #include <functional>
 #include <gtx/hash.hpp>
 #include <queue>
+#include "ShaderLoader.h"
 
 class ChunkManager : public Renderable {
 public:

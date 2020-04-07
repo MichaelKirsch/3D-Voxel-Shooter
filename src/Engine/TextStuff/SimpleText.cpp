@@ -6,11 +6,8 @@ void SimpleText::create(glm::vec2 topleft,Font* font, int txtsize, std::string t
     glGenTextures(1,&TEXTURE);
     glGenVertexArrays(1,&VAO);
     glGenBuffers(1,&VBO);
-    PROGRAMM = StateEssentials::get().loader.createProgram({{"text_vertex.glsl",ShaderLoader::VERTEX},
+    PROGRAMM = ShaderLoader::createProgram({{"text_vertex.glsl",ShaderLoader::VERTEX},
                                                  {"text_fragment.glsl",ShaderLoader::FRAGMENT}});
-
-
-
     baselinex = topleft.x;
     baseliney = topleft.y;
     vertices.clear();
@@ -47,9 +44,9 @@ SimpleText::SimpleText() {
 }
 
 void SimpleText::render() {
-    StateEssentials::get().loader.useProgramm(PROGRAMM);
-    StateEssentials::get().loader.setUniform(StateEssentials::get().windowManager.perspectiveProjection,"projection");
-    StateEssentials::get().loader.setUniform(StateEssentials::get().camera.GetViewMatrix(),"view");
+    ShaderLoader::useProgramm(PROGRAMM);
+    ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().windowManager.perspectiveProjection,"projection");
+    ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().camera.GetViewMatrix(),"view");
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glDisable(GL_CULL_FACE);
