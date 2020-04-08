@@ -62,6 +62,7 @@ private:
     float m_noiseFrequency, m_borderTHICCCCNES;
     unsigned int VBO,VAO,EBO,PROGRAMM;
     const int max_terrain_height = 20;
+    //////
 };
 
 
