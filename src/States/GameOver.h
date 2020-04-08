@@ -31,7 +31,7 @@ private:
     unsigned int programm;
     Water water;
     Ammo ammo;
-    Player player;
+    Player player,bot;
     sf::Mouse m_Mouse;
     float last_time;
     bool mouse_hold;

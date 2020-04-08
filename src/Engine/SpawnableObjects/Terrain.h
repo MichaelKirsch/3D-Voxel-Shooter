@@ -25,10 +25,12 @@ public:
     glm::ivec3 getPosFromInt(int pos);
     std::vector<BLOCK_TYPE>& getTerrainData(){ return chunkData;};
     int getY(int x, int z);
+    float getSmoothY(float x,float z);
     bool isTerrain(int x, int z);
     ~Terrain() = default;
 
 private:
+    glm::fvec2 center;
     int getPosInChunk(glm::ivec3 position);
     float calculateBorderFactor(float x , float y, int size,float border_thiccccness=.2);
     float m_border_factor;

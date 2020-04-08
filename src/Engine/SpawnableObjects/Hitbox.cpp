@@ -28,3 +28,9 @@ bool Hitbox::collisionDetectionPoint(glm::vec3 point) {
            (point.y >= miny && point.y <= maxy) &&
            (point.z >= minz && point.z <= maxz);
 }
+
+
+
+void Hitbox::setPos(glm::vec3 position) {
+    createHitbox(position,size);
+}

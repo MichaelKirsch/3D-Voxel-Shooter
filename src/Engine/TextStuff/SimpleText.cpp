@@ -6,8 +6,7 @@ void SimpleText::create(glm::vec2 topleft,Font* font, int txtsize, std::string t
     glGenTextures(1,&TEXTURE);
     glGenVertexArrays(1,&VAO);
     glGenBuffers(1,&VBO);
-    PROGRAMM = ShaderLoader::createProgram({{"text_vertex.glsl",ShaderLoader::VERTEX},
-                                                 {"text_fragment.glsl",ShaderLoader::FRAGMENT}});
+    PROGRAMM = ShaderLoader::createProgram({{"text.vert"},{"text.frag"}});
     baselinex = topleft.x;
     baseliney = topleft.y;
     vertices.clear();

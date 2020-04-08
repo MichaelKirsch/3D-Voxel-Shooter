@@ -5,10 +5,7 @@
 ChunkManager::ChunkManager(StateEssentials &es) : stateEssentials(es) {
     timer.setTickrate(5);
 
-    PROGRAMM =  ShaderLoader::createProgram({
-                                                      {"chunk_fragment.glsl",ShaderLoader::FRAGMENT},
-                                                             {"chunk_vertex.glsl",ShaderLoader::VERTEX},
-                                                      {"chunk_geometry.glsl",ShaderLoader::GEOMETRY}});
+    PROGRAMM =  ShaderLoader::createProgram({{"chunk.frag"},{"chunk.vert"},{"chunk.geom"}});
 }
 
 void ChunkManager::render() {

@@ -3,37 +3,54 @@
 #include "Player.h"
 
 Player::Player(Terrain &terrain) : ter(terrain){
+    ammoStorage.insert(std::make_pair(AmmoType::light,0));
+    ammoStorage.insert(std::make_pair(AmmoType::heavy,0));
+    ammoStorage.insert(std::make_pair(AmmoType::sniper,0));
+
+    respawn({50,50,50});
     create();
 }
 
 void Player::render() {
-    ShaderLoader::useProgramm(PROGRAMM);
-
     glDisable(GL_CULL_FACE);
-    glBindVertexArray(VAO);
+    ShaderLoader::useProgramm(PROGRAMM);
+    model = glm::mat4(1.f);
+    model = glm::translate(model,{playerPos.x,playerPos.y+3,playerPos.z});
     ShaderLoader::setUniform(PROGRAMM,color_according_to_armor,"armorColor");
-    ShaderLoader::setUniform(PROGRAMM,glm::vec4(playerPos,1.0),"worldPos");
+    ShaderLoader::setUniform(PROGRAMM,glm::fvec3(playerPos),"cameraPos");
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().camera.GetViewMatrix(),"view");
     ShaderLoader::setUniform(PROGRAMM,model,"model");
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().windowManager.perspectiveProjection,"projection");
+    glBindVertexArray(VAO);
     glDrawElements(GL_TRIANGLES,playerIndices.size(),GL_UNSIGNED_INT,0);
     glBindVertexArray(0);
     glEnable(GL_CULL_FACE);
 }
 
 void Player::update(float &elapsed) {
-    model = glm::rotate(model,glm::radians(1.f),{0.f,1.f,0.f});
-    if(playerPos.y >1000.f)
-        vertical_velocity =-10;
+    //model = glm::rotate(model,glm::radians(1.f),{0.f,1.f,0.f});
 
-    if(playerPos.y > ter.getY(playerPos.x,playerPos.z))
-        vertical_velocity-=0.04f;
+    if(playerPos.y >1000.f)
+    {
+        playerPos.y = 100.f;
+        vertical_velocity =-10;
+    }
+    playerPos.y+=vertical_velocity;
+    hitbox.setPos({playerPos.x,playerPos.y+3,playerPos.z});
+
+    if(playerPos.y > ter.getSmoothY(playerPos.x,playerPos.z))
+        if(playerPos.y <=-1.0f)
+        {
+            vertical_velocity+=0.01f;
+        } else
+            vertical_velocity-=0.035f;
     else
         vertical_velocity =0;
+
 }
 
 void Player::create() {
-    PROGRAMM = ShaderLoader::createProgram({{"player_fragment.glsl",ShaderLoader::FRAGMENT},{"player_vertex.glsl",ShaderLoader::VERTEX}});
+    PROGRAMM = ShaderLoader::createProgram({{"player.frag"},{"player.vert"}});
     glGenVertexArrays(1,&VAO);
     glGenBuffers(1,&VBO);
     glGenBuffers(1,&EBO);
@@ -45,11 +62,15 @@ void Player::create() {
     glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,3* sizeof(float),(void*)0);
     glEnableVertexAttribArray(0);
     glBindVertexArray(0);
+    hitbox.createHitbox(playerPos,1.0f);
 }
 
 void Player::respawn(glm::vec3 respawnPosition, bool bindToTerrain) {
     if(bindToTerrain)
-        respawnPosition.y = ter.getY(respawnPosition.x,respawnPosition.y);
+    {
+        respawnPosition.y = ter.getSmoothY(respawnPosition.x,respawnPosition.y);
+    }
+
     playerPos = respawnPosition;
 }
 
@@ -57,20 +78,21 @@ void Player::processInputs() {
 
     glm::vec3 playerMovementFront = glm::normalize(glm::cross(up,StateEssentials::get().camera.Right));
     glm::vec3 playerMovementSide = glm::normalize(glm::cross(up,playerMovementFront));
-
+    //playerPos.y+=vertical_velocity;
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-        playerSpeed = 0.27;
+        playerSpeed = 0.5f;
     else
-        playerSpeed =0.16;
+        playerSpeed =0.2;
 
-    playerPos.y+=vertical_velocity;
 
-    if(playerPos.y<ter.getY(playerPos.x,playerPos.z))
-        playerPos.y = ter.getY(playerPos.x,playerPos.z);
 
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)&&playerPos.y==ter.getY(playerPos.x,playerPos.z))
+
+    if(playerPos.y<ter.getSmoothY(playerPos.x,playerPos.z))
+        playerPos.y = ter.getSmoothY(playerPos.x,playerPos.z);
+
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)&&playerPos.y<=ter.getSmoothY(playerPos.x,playerPos.z)+0.1f)
     {
-        vertical_velocity +=0.45f;
+        vertical_velocity +=0.55f;
     }
 
     glm::vec3 futurePlayerPos = playerPos;
@@ -85,7 +107,7 @@ void Player::processInputs() {
         futurePlayerPos +=playerMovementSide*playerSpeed;
     //playerPos = futurePlayerPos;
 
-    if(playerPos.y>=(ter.getY(futurePlayerPos.x,futurePlayerPos.z))){
+    if(playerPos.y>=(ter.getSmoothY(futurePlayerPos.x,futurePlayerPos.z))){
         playerPos = futurePlayerPos;
     }
     else
@@ -116,4 +138,8 @@ void Player::processInputs() {
                             StateEssentials::get().windowManager.getWindow());
     }
 
+}
+
+void Player::stockUp(AmmoType type) {
+    ammoStorage.at(type)++;
 }

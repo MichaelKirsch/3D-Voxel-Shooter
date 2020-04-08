@@ -74,8 +74,7 @@ void Water::create(Terrain& ter,glm::vec3 origin, float WaveSize, float WaterBod
     }
     waterVertices.shrink_to_fit();
 
-    PROGRAMM=ShaderLoader::createProgram({{"water_vertex.glsl",ShaderLoader::VERTEX},
-                                              {"water_fragment.glsl",ShaderLoader::FRAGMENT}});
+    PROGRAMM=ShaderLoader::createProgram({{"water.vert"},{"water.frag"}});
 
     glGenVertexArrays(1,&VAO);
     glGenBuffers(1,&VBO);

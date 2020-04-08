@@ -7,7 +7,7 @@ StateEssentials StateEssentials::s_Instance;
 Statemachine::Statemachine() {
     running = true;
     StateEssentials::get().windowManager.create({1920,1080}, false);
-    updateTimer.setTickrate(40);
+    updateTimer.setTickrate(60);
     frameTimer.setTickrate(60);
     inputTimer.setTickrate(60);
     m_playedState = std::make_unique<GameOver>();

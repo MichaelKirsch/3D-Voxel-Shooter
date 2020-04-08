@@ -55,7 +55,7 @@ float Terrain::calculateBorderFactor(float x, float y, int size, float border_th
     }
 
 
-    return factor;
+    return factor ;
 }
 
 void Terrain::create(glm::vec3 origin,int seed, int size, int height, float border_width,float frequency) {
@@ -63,11 +63,13 @@ void Terrain::create(glm::vec3 origin,int seed, int size, int height, float bord
     m_freq=frequency;
     m_height = height;
     m_border_factor=border_width;
+    center = {m_size/2.f,m_size/2.f};
     auto possible_blocks = size*size*height;
     chunkData.resize(possible_blocks);
     std::fill(chunkData.begin(),chunkData.end(),BLOCK_TYPE::NONE);
     noise.SetNoiseType(FastNoise::Simplex);
     noise.SetFrequency(frequency);
+    noise.SetSeed(seed);
     for(int x =0;x<size;x++)
     {
         for(int z =0;z<size;z++)
@@ -127,11 +129,7 @@ void Terrain::create(glm::vec3 origin,int seed, int size, int height, float bord
         }
     }
 
-
-    ProgrammID = ShaderLoader::createProgram({
-                                                         {"terrain_fragment.glsl",ShaderLoader::FRAGMENT}
-                                                        ,{"terrain_vertex.glsl",ShaderLoader::VERTEX},
-                                                         {"terrain_geometry.glsl",ShaderLoader::GEOMETRY}});
+    ProgrammID = ShaderLoader::createProgram({{"terrain.frag"},{"terrain.vert"},{"terrain.geom"}});
 
     glGenVertexArrays(1,&VAO);
     std::cout << "terrain vao:" <<VAO<<std::endl;
@@ -189,6 +187,13 @@ bool Terrain::isTerrain(int x, int z) {
             isTerrain = true;
     }
     return isTerrain;
+}
+
+float Terrain::getSmoothY(float x, float z) {
+    auto y = static_cast<int>((noise.GetNoise(x,z))*m_height);
+    y*=calculateBorderFactor(x,z,m_size,m_border_factor);
+    y-=3.f;
+    return y;
 }
 
 

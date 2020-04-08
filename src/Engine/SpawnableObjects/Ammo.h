@@ -24,16 +24,15 @@ struct AmmoPackage {
     float respawnTimer;
     void take() {
         isRespawning = true;
-        color = {1.0,1.0,1.0};
         switch (m_type) {
             case AmmoType::sniper:
-                respawnTimer = 5.f;
+                respawnTimer = 15.f;
                 break;
             case AmmoType::light:
-                respawnTimer = 5.f;
+                respawnTimer = 15.f;
                 break;
             case AmmoType::heavy:
-                respawnTimer = 5.f;
+                respawnTimer = 15.f;
                 break;
         }
     }
@@ -45,18 +44,6 @@ struct AmmoPackage {
             if(respawnTimer<0.f)
             {
                 refactor = true;
-                switch (m_type)
-                {
-                    case AmmoType ::light:
-                        color = {0.321, 0.588, 1};
-                        break;
-                    case AmmoType ::heavy:
-                        color = {1, 0.396, 0.2};
-                        break;
-                    case AmmoType ::sniper:
-                        color = {1, 0.721, 0.321};
-                        break;
-                }
                 isRespawning = false;
             }
 

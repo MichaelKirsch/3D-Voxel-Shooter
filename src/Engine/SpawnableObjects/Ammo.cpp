@@ -57,22 +57,26 @@ void Ammo::create(Terrain &ter, int amount, float respawntime) {
             y++;
             AmmoPackage buffer;
             buffer.position=glm::vec3(x,y,z);
-            if(buf==BLOCK_TYPE::SAND)
-            {
-                buffer.color={0.321, 0.588, 1};
-                buffer.m_type = AmmoType::light;
-            }
 
-            else if(buf==BLOCK_TYPE::GRASS)
+            int randomChance = rand()%100;
+
+            if(randomChance<30)
             {
-                buffer.color={1, 0.396, 0.2};
+                //heavy
+                buffer.color={0.058, 1, 0.447};
                 buffer.m_type = AmmoType::heavy;
             }
-
-            else
+            if(randomChance>=30&&randomChance<=80)
             {
+                //light
+                buffer.color={1, 0.317, 0.058};
+                buffer.m_type = AmmoType::light;
+            }
+            if(randomChance>70)
+            {
+                //sniper
                 buffer.m_type = AmmoType::sniper;
-                buffer.color={1, 0.721, 0.321};
+                buffer.color={0.058, 0.074, 1};
             }
 
             bool alreadyplaced = false;
@@ -98,7 +102,6 @@ void Ammo::create(Terrain &ter, int amount, float respawntime) {
         Graphicsbuffer.emplace_back(graphics_data.color);
     }
 
-
     glBindVertexArray(VAO);
     glBindBuffer(GL_ARRAY_BUFFER,VBO);
     glBufferData(GL_ARRAY_BUFFER,Graphicsbuffer.size() * sizeof(glm::vec3), Graphicsbuffer.data(), GL_STATIC_DRAW);
@@ -109,11 +112,9 @@ void Ammo::create(Terrain &ter, int amount, float respawntime) {
 }
 
 Ammo::Ammo() {
-    PROGRAMM=ShaderLoader::createProgram({{"berry_fr.glsl",ShaderLoader::FRAGMENT},
-                                      {"berry_ge.glsl",ShaderLoader::GEOMETRY},
-                                      {"berry_ve.glsl",ShaderLoader::VERTEX}});
+    PROGRAMM=ShaderLoader::createProgram({{"berry.frag"},{"berry.geom"},{"berry.vert"}});
     glGenVertexArrays(1,&VAO);
-    std::cout << "food vao:" << VAO<< std::endl;
+    std::cout << "Ammo vao:" << VAO<< std::endl;
     glGenBuffers(1,&VBO);
 
     auto path_to_shader_dir = std::experimental::filesystem::current_path().parent_path().string();

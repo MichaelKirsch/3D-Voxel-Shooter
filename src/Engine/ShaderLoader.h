@@ -16,18 +16,8 @@
 
 namespace ShaderLoader
 {
-    enum SHADERTYPE{
-        VERTEX,GEOMETRY,FRAGMENT
-    };
-
-    struct ShaderObject
-    {
-        std::string name;
-        SHADERTYPE type;
-    };
-
-    unsigned int loadAndCompileShader(ShaderObject obj);
-    unsigned int createProgram(std::vector<ShaderObject> shaders_to_attach);
+    unsigned int loadAndCompileShader(std::string name);
+    unsigned int createProgram(std::vector<std::string> shaders_to_attach);
     unsigned int createProgram(std::vector<unsigned int> shaders);
     void useProgramm(unsigned int id);
     int setUniform(unsigned int &progID, int input,const std::string &name);

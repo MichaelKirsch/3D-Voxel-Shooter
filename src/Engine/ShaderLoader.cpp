@@ -4,27 +4,37 @@
 
 #include "ShaderLoader.h"
 
-unsigned int ShaderLoader::loadAndCompileShader(ShaderObject obj) {
+unsigned int ShaderLoader::loadAndCompileShader(std::string obj) {
     unsigned int shaderID;
-    switch(obj.type)
+    std::string last_4_digits = obj.substr(obj.find('.')+1,4);
+    bool valid_name = false;
+
+    if(last_4_digits == "vert")
     {
-        case SHADERTYPE::VERTEX:
-            shaderID = glCreateShader(GL_VERTEX_SHADER);
-            break;
-        case SHADERTYPE::FRAGMENT:
-            shaderID = glCreateShader(GL_FRAGMENT_SHADER);
-            break;
-        case SHADERTYPE::GEOMETRY:
-            shaderID = glCreateShader(GL_GEOMETRY_SHADER);
-            break;
+        shaderID = glCreateShader(GL_VERTEX_SHADER);
+        valid_name = true;
     }
+    if(last_4_digits == "frag" && !valid_name)
+    {
+        shaderID = glCreateShader(GL_FRAGMENT_SHADER);
+        valid_name = true;
+    }
+    if(last_4_digits == "geom" && !valid_name)
+    {
+        shaderID = glCreateShader(GL_GEOMETRY_SHADER);
+        valid_name = true;
+    }
+    if(!valid_name)
+        throw std::runtime_error("Shader "+ obj + " not valid");
+
     std::string path_to_shader_dir = std::experimental::filesystem::current_path().parent_path().string();
     path_to_shader_dir +="/data/shaders/";
-    std::string path_to_shader = path_to_shader_dir+obj.name;
+    std::string path_to_shader = path_to_shader_dir+obj;
     std::ifstream input (path_to_shader);
     std::string shadercode((std::istreambuf_iterator<char>(input)),
                            std::istreambuf_iterator<char>());
     const GLchar * ch_buf = shadercode.c_str(); //convert the string to a char array
+
     glShaderSource(shaderID, 1, &ch_buf, NULL);
     glCompileShader(shaderID);
     char infoLog[512];
@@ -33,12 +43,12 @@ unsigned int ShaderLoader::loadAndCompileShader(ShaderObject obj) {
     if(!success)
     {
         glGetShaderInfoLog(shaderID, 512, NULL, infoLog);
-        throw std::runtime_error("Shader Failed to load\n\n"+std::string(infoLog));
+        throw std::runtime_error("Shader "+ obj + " Failed to load\n\n"+std::string(infoLog) + "\n\nLoaded Code:\n" + shadercode);
     }
     return shaderID;
 }
 
-unsigned int ShaderLoader::createProgram(std::vector<ShaderObject> shaders_to_attach) {
+unsigned int ShaderLoader::createProgram(std::vector<std::string> shaders_to_attach) {
     std::vector<unsigned int> shaderIDs;
     for(auto sh:shaders_to_attach)
     {

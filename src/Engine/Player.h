@@ -6,12 +6,18 @@
 #include "Essential.h"
 #include "Renderable.h"
 #include "Hitbox.h"
+#include "Ammo.h"
+
 
 class Player : public Renderable{
 public:
     Player(Terrain& terrain);
 
-    void respawn(glm::vec3 respawnPosition, bool bindToTerrain=true);
+    void respawn(glm::vec3 respawnPosition, bool bindToTerrain= false);
+
+    void stockUp(AmmoType type);
+
+    int getAmmoAmount(AmmoType type){ return ammoStorage.at(type);};
 
     void processInputs();
 
@@ -28,12 +34,14 @@ public:
     float playerSpeed;
     float playerHorizontalSpeed;
     ~Player() = default;
-
+    void setColor(glm::vec3 newCol){color_according_to_armor=newCol;};
+    Hitbox hitbox;
 private:
+    std::map<AmmoType,int> ammoStorage;
     glm::mat4 model = glm::mat4(1.0);
     glm::vec3 color_according_to_armor = {0, 0.960, 0.145 };
     sf::Mouse m_Mouse;
-    Hitbox hitbox;
+
     unsigned int VAO, VBO, EBO, PROGRAMM;
     glm::vec3 up = {0.f,1.f,0.f};
     Terrain& ter;
