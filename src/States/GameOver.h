@@ -16,6 +16,7 @@
 #include "Player.h"
 #include "TextStuff/Font.h"
 #include "TextStuff/SimpleText.h"
+#include "Terrain/ImprovedTerrain.h"
 
 class GameOver : public State {
 public:
@@ -26,6 +27,7 @@ public:
     ~GameOver() = default;
 
 private:
+    ImprovedTerrain new_terrain;
     Font font;
     SimpleText text,text2;
     unsigned int programm;

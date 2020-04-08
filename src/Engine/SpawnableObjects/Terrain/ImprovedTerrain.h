@@ -5,10 +5,11 @@
 #include "ShaderLoader.h"
 #include "Renderable.h"
 #include "FastNoise/FastNoise.h"
+#include <bitset>
 
 enum active_sides
 {
-    left,right,up,down,front,back,underwater,_spare_bit
+    left=0,right,up,down,front,back,underwater,_spare_bit
 };
 
 struct Vertex
@@ -17,38 +18,50 @@ struct Vertex
     glm::uint8 color_red;
     glm::uint8 color_green;
     glm::uint8 color_blue;
-    glm::uint8 active_sides;
+    glm::uint8 normal;
 
     //float 2
-    glm::int16 position_x;
-    glm::int16 position_y;
+    glm::int16 center_x;
+    glm::int16 center_y;
 
-    //float 3
-    glm::int16 position_z;
-    glm::int16 _spare;
+    //float3
+    glm::int16 center_z;
+    glm::uint8 which_vertex;
+    glm::uint8 _spare;
 };
 
 class ImprovedTerrain : public Renderable{
 public:
     ImprovedTerrain();
+    ~ImprovedTerrain();
 
-    void create();
+    void create(unsigned int i_size=600, float i_freq=0.001, float border=0.25f);
 
     void render() override;
 
     void update(float &elapsed) override;
 
-    glm::vec3 convertVertexToDatastream(Vertex& vertex);
+    std::vector<Vertex> generateMeshDownwardsThisPoint(int x, int z);
 
-    ~ImprovedTerrain();
+    glm::vec3 convertMeshToVec3(Vertex& vertex);
 
+    std::vector<Vertex> generateMeshOfSingleBlock(int x, int y,int z);
+
+    int getHeightOfTerrain(int x,int z);
+
+    std::vector<Vertex> generateSide(glm::vec3 center, active_sides side, std::vector<int>order);
+
+    std::bitset<6> determineBlockVisibility(int x, int y, int z);
+
+    std::vector<glm::vec3> m_VertexData;
 private:
+    glm::vec2 centerOfTerrain;
+    unsigned int m_size;
     FastNoise m_noise;
-    int m_noiseSeed;
-    float m_noiseFrequency;
+    int m_noiseSeed, m_terrainHeight;
+    float m_noiseFrequency, m_borderTHICCCCNES;
     unsigned int VBO,VAO,EBO,PROGRAMM;
-
-protected:
+    const int max_terrain_height = 20;
 };
 
 
