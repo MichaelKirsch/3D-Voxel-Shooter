@@ -142,14 +142,13 @@ std::vector<Vertex> ImprovedTerrain::generateMeshOfSingleBlock(int x, int y, int
     return buf;
 }
 
-std::vector<Vertex> ImprovedTerrain::generateSide(glm::vec3 center, active_sides side, std::vector<int> order) {
+std::vector<Vertex> ImprovedTerrain::generateSide(glm::vec3 center, sides side, std::vector<int> order) {
     std::vector<Vertex> buf;
 
     Vertex bufferVertex;
     bufferVertex.center_x = center.x;
     bufferVertex.center_y = center.y;
     bufferVertex.center_z = center.z;
-
     bufferVertex.normal = side;
 
     for(auto which:order)

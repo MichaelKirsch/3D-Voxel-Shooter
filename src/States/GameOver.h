@@ -29,7 +29,7 @@ public:
 private:
     ImprovedTerrain new_terrain;
     Font font;
-    SimpleText text,text2;
+    SimpleText text,text2,text3,text4;
     unsigned int programm;
     Water water;
     Ammo ammo;

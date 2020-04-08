@@ -7,7 +7,7 @@
 #include "FastNoise/FastNoise.h"
 #include <bitset>
 
-enum active_sides
+enum sides
 {
     left=0,right,up,down,front,back,underwater,_spare_bit
 };
@@ -49,7 +49,7 @@ public:
 
     int getHeightOfTerrain(int x,int z);
 
-    std::vector<Vertex> generateSide(glm::vec3 center, active_sides side, std::vector<int>order);
+    std::vector<Vertex> generateSide(glm::vec3 center, sides side, std::vector<int>order);
 
     std::bitset<6> determineBlockVisibility(int x, int y, int z);
 

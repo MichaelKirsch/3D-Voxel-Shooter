@@ -16,7 +16,8 @@ GameOver::GameOver() : player(terrain),bot(terrain){
     font.loadNewFont("JetBrainsMono-Regular.ttf",50);
     text.create({-0.9,0.8},&font,120,"Player:");
     text2.create({-0.9,0.9},&font,120,"HELLO WORLD");
-
+    text3.create({-0.9,0.7},&font,120,"HELLO WORLD");
+    text4.create({-0.9,0.6},&font,120,"HELLO WORLD");
     std::cout <<"new ter:" << new_terrain.m_VertexData.size()<<std::endl;
 
 
@@ -40,6 +41,7 @@ void GameOver::updateFrame(float& elapsed) {
     StateEssentials::get().windowManager.clearScreen();
     StateEssentials::get().camera.Position = glm::vec3(player.playerPos.x,player.playerPos.y+4,player.playerPos.z); //needs to be here because of artifacts
     water.render();
+    new_terrain.render();
     terrain.render();
     ammo.render();
     player.render();
