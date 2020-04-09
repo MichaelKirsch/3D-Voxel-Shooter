@@ -1,23 +1,23 @@
 
 
+#include <Engine/StateMachine/Essential.h>
 #include "ImprovedTerrain.h"
 
 ImprovedTerrain::ImprovedTerrain() {
-    PROGRAMM = ShaderLoader::createProgram({{"imp_terrain.vert"},{"imp_terrain.frag"}});
+    PROGRAMM = ShaderLoader::createProgram({{"imp_terrain.frag"},{"imp_terrain.vert"}});
     glGenVertexArrays(1,&VAO);
     glGenBuffers(1,&VBO);
-    glGenBuffers(1,&EBO);
 }
 
 ImprovedTerrain::~ImprovedTerrain() {
     glDeleteVertexArrays(1,&VAO);
     glDeleteBuffers(1,&VBO);
-    glDeleteBuffers(1,&EBO);
 }
 
 void ImprovedTerrain::create(unsigned int i_size, float i_freq, float border) {
     m_size = i_size;
     m_noise.SetFrequency(i_freq);
+    m_noiseFrequency = i_freq;
     m_noise.SetNoiseType(FastNoise::Simplex);
     for(int x =0;x<i_size;x++)
     {
@@ -30,9 +30,28 @@ void ImprovedTerrain::create(unsigned int i_size, float i_freq, float border) {
             }
         }
     }
+    glBindVertexArray(VAO);
+    glBindBuffer(GL_ARRAY_BUFFER,VBO);
+    glBufferData(GL_ARRAY_BUFFER,m_VertexData.size() * sizeof(glm::vec3),m_VertexData.data(),GL_STATIC_DRAW);
+    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE, sizeof(glm::vec3),(void*)0);
+    glEnableVertexAttribArray(0);
+    glBindVertexArray(0);
 }
 
 void ImprovedTerrain::render() {
+    glDisable(GL_CULL_FACE);
+    glDisable(GL_BLEND);
+    //glPointSize(13);
+    ShaderLoader::useProgramm(PROGRAMM);
+    glBindVertexArray(VAO);
+    glm::mat4 model = glm::mat4(1.f);
+    ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().camera.GetViewMatrix(),"view");
+    ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().windowManager.perspectiveProjection,"projection");
+    ShaderLoader::setUniform(PROGRAMM,model,"model");
+    glDrawArrays(GL_TRIANGLES,0,m_VertexData.size());
+    glBindVertexArray(0);
+    glEnable(GL_CULL_FACE);
+    glEnable(GL_BLEND);
 }
 
 void ImprovedTerrain::update(float &elapsed) {

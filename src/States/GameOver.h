@@ -17,6 +17,7 @@
 #include "TextStuff/Font.h"
 #include "TextStuff/SimpleText.h"
 #include "Terrain/ImprovedTerrain.h"
+#include "StopWatch.h"
 
 class GameOver : public State {
 public:

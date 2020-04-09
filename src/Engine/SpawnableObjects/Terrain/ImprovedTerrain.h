@@ -21,11 +21,11 @@ struct Vertex
     glm::uint8 normal;
 
     //float 2
-    glm::int16 center_x;
-    glm::int16 center_y;
+    glm::uint16 center_x;
+    glm::uint16 center_y;
 
     //float3
-    glm::int16 center_z;
+    glm::uint16 center_z;
     glm::uint8 which_vertex;
     glm::uint8 _spare;
 };
@@ -62,7 +62,6 @@ private:
     float m_noiseFrequency, m_borderTHICCCCNES;
     unsigned int VBO,VAO,EBO,PROGRAMM;
     const int max_terrain_height = 20;
-    //////
 };
 
 
