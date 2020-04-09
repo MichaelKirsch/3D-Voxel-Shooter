@@ -18,7 +18,7 @@ void ImprovedTerrain::create(unsigned int i_size, float i_freq, float border) {
     m_size = i_size;
     m_noise.SetFrequency(i_freq);
     m_noiseFrequency = i_freq;
-    m_noise.SetNoiseType(FastNoise::Simplex);
+    m_noise.SetNoiseType(FastNoise::SimplexFractal);
     for(int x =0;x<i_size;x++)
     {
         for(int z=0;z<i_size;z++)
@@ -39,7 +39,7 @@ void ImprovedTerrain::create(unsigned int i_size, float i_freq, float border) {
 }
 
 void ImprovedTerrain::render() {
-    glDisable(GL_CULL_FACE);
+    //glDisable(GL_CULL_FACE);
     glDisable(GL_BLEND);
     //glPointSize(13);
     ShaderLoader::useProgramm(PROGRAMM);
@@ -48,9 +48,10 @@ void ImprovedTerrain::render() {
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().camera.GetViewMatrix(),"view");
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().windowManager.perspectiveProjection,"projection");
     ShaderLoader::setUniform(PROGRAMM,model,"model");
+    ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().windowManager.getClearColor(),"fogColor");
     glDrawArrays(GL_TRIANGLES,0,m_VertexData.size());
     glBindVertexArray(0);
-    glEnable(GL_CULL_FACE);
+    //glEnable(GL_CULL_FACE);
     glEnable(GL_BLEND);
 }
 
@@ -165,6 +166,9 @@ std::vector<Vertex> ImprovedTerrain::generateSide(glm::vec3 center, sides side, 
     std::vector<Vertex> buf;
 
     Vertex bufferVertex;
+    bufferVertex.color_red = rand()%255;
+    bufferVertex.color_green = rand()%255;
+    bufferVertex.color_blue = rand()%255;
     bufferVertex.center_x = center.x;
     bufferVertex.center_y = center.y;
     bufferVertex.center_z = center.z;

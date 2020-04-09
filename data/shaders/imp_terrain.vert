@@ -2,9 +2,9 @@
 
 layout (location = 0) in vec3 data;
 
-//left=0,right,up,down,front,back,underwater,_spare_bit
-
 out vec3 outColor;
+out vec3 normalOut;
+out vec3 fragPos;
 
 uniform mat4 model;
 uniform mat4 view;
@@ -31,7 +31,7 @@ void main() {
     uint which_vertex = position_z_which_spare>>(8) & mask8bit;
     uint spare = position_z_which_spare>>(0) & mask8bit;
 
-    outColor = vec3(1.0,0.5,0.0);
+    outColor = vec3(color_red,color_green,color_red);
 
     vec3 rawPosition = vec3(posx,posy,posz);
 
@@ -80,7 +80,35 @@ void main() {
         rawPosition+=vec3(-size,size,-size);
     }
 
+    //left=0,right,up,down,front,back,underwater,_spare_bit
 
-    gl_Position = projection*view* vec4(rawPosition,1.0);
+    if(normal==0)
+    {
+        normalOut=vec3(-1.0,0.0,0.0);
+    }
+    if(normal==1)
+    {
+        normalOut=vec3(1.0,0.0,0.0);
+    }
+    if(normal==2)
+    {
+        normalOut=vec3(0.0,1.0,0.0);
+    }
+    if(normal==3)
+    {
+        normalOut=vec3(0.0,-1.0,0.0);
+    }
+    if(normal==4)
+    {
+        normalOut=vec3(0.0,0.0,1.0);
+    }
+    if(normal==5)
+    {
+        normalOut=vec3(0.0,0.0,-1.0);
+    }
+
+    vec4 pos = projection*view* vec4(rawPosition,1.0);
+    gl_Position = pos;
+    fragPos = pos.xyz;
 
 }

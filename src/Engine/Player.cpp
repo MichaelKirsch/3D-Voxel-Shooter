@@ -2,7 +2,7 @@
 
 #include "Player.h"
 
-Player::Player(Terrain &terrain) : ter(terrain){
+Player::Player(ImprovedTerrain &terrain) : ter(terrain){
     ammoStorage.insert(std::make_pair(AmmoType::light,0));
     ammoStorage.insert(std::make_pair(AmmoType::heavy,0));
     ammoStorage.insert(std::make_pair(AmmoType::sniper,0));
@@ -38,7 +38,7 @@ void Player::update(float &elapsed) {
     playerPos.y+=vertical_velocity;
     hitbox.setPos({playerPos.x,playerPos.y+3,playerPos.z});
 
-    if(playerPos.y > ter.getSmoothY(playerPos.x,playerPos.z))
+    if(playerPos.y > ter.getHeightOfTerrain(playerPos.x,playerPos.z))
         if(playerPos.y <=-1.0f)
         {
             vertical_velocity+=0.01f;
@@ -68,7 +68,7 @@ void Player::create() {
 void Player::respawn(glm::vec3 respawnPosition, bool bindToTerrain) {
     if(bindToTerrain)
     {
-        respawnPosition.y = ter.getSmoothY(respawnPosition.x,respawnPosition.y);
+        respawnPosition.y = ter.getHeightOfTerrain(respawnPosition.x,respawnPosition.y);
     }
 
     playerPos = respawnPosition;
@@ -87,10 +87,10 @@ void Player::processInputs() {
 
 
 
-    if(playerPos.y<ter.getSmoothY(playerPos.x,playerPos.z))
-        playerPos.y = ter.getSmoothY(playerPos.x,playerPos.z);
+    if(playerPos.y<ter.getHeightOfTerrain(playerPos.x,playerPos.z))
+        playerPos.y = ter.getHeightOfTerrain(playerPos.x,playerPos.z);
 
-    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)&&playerPos.y<=ter.getSmoothY(playerPos.x,playerPos.z)+0.1f)
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)&&playerPos.y<=ter.getHeightOfTerrain(playerPos.x,playerPos.z)+0.1f)
     {
         vertical_velocity +=0.55f;
     }
@@ -107,7 +107,7 @@ void Player::processInputs() {
         futurePlayerPos +=playerMovementSide*playerSpeed;
     //playerPos = futurePlayerPos;
 
-    if(playerPos.y>=(ter.getSmoothY(futurePlayerPos.x,futurePlayerPos.z))){
+    if(playerPos.y>=(ter.getHeightOfTerrain(futurePlayerPos.x,futurePlayerPos.z))){
         playerPos = futurePlayerPos;
     }
     else

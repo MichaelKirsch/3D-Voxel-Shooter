@@ -12,16 +12,9 @@ void ChunkManager::render() {
     ShaderLoader::useProgramm(PROGRAMM);
     for(auto& ind_chunk:loaded_chunks)
     {
-        if(ind_chunk.second.size>0)
+        if(ind_chunk.second.m_VertexData.size()>0)
         {
-            glBindVertexArray(ind_chunk.second.m_VAO);
-            ShaderLoader::setUniform(PROGRAMM,ind_chunk.second.position,"chunkPosition");
-            ShaderLoader::setUniform(PROGRAMM,(float)m_chunksize,"chunkSize");
-            ShaderLoader::setUniform(PROGRAMM,stateEssentials.camera.GetViewMatrix(),"view");
-            ShaderLoader::setUniform(PROGRAMM,stateEssentials.windowManager.perspectiveProjection,"projection");
-            glm::mat4 model = glm::mat4(1.0);
-            glDrawArrays(GL_POINTS,0,ind_chunk.second.size);
-            glBindVertexArray(0);
+            ind_chunk.second.render();
         }
     }
 }
@@ -36,11 +29,10 @@ void ChunkManager::update(float &elapsed) {
 
 }
 
-void ChunkManager::create(TerrainGenerator *ter, unsigned int viewDistance, int chunksize) {
+void ChunkManager::create(unsigned int viewDistance, int chunksize) {
     StopWatch watch;
     m_chunksize = chunksize;
     m_viewDistance = viewDistance;
-    terrainGenerator = ter;
     auto starting_point_raw = stateEssentials.camera.Position;
     auto starting_point_chunk = glm::ivec3(starting_point_raw.x / m_chunksize, 0, starting_point_raw.z / m_chunksize);
     originChunkPositions = generateChunkGrid();
@@ -98,7 +90,6 @@ void ChunkManager::refactorChunkStructure() {
         if (!to_delete.empty()) {
             if(loaded_chunks.find(to_delete.top())!=loaded_chunks.end())
             {
-                loaded_chunks.at(to_delete.top()).deleteBuffers();
                 loaded_chunks.erase(to_delete.top());
                 to_delete.pop();
             }
@@ -108,10 +99,8 @@ void ChunkManager::refactorChunkStructure() {
     void ChunkManager::createNewChunks() {
         if (!to_create.empty()) {
             auto position_of_to_create = to_create.back();
-            Chunk buf = Chunk(terrainGenerator, position_of_to_create, m_chunksize);
-            chunksizes+=buf.size;
             created_chunks++;
-            loaded_chunks.insert(std::make_pair(position_of_to_create,buf));
+            //loaded_chunks.insert(std::make_pair(position_of_to_create,ImprovedTerrain ));
             to_create.pop();
         }
     }

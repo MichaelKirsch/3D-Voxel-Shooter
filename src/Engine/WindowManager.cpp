@@ -26,6 +26,7 @@ WindowManager::WindowManager() {
 }
 
 void WindowManager::create(sf::Vector2u resolution , bool fullscreen,float fov, float range) {
+    clearColor = {0, 0.874, 1,1.0};
     sf::ContextSettings settings;
     m_range = range;
     m_fov = fov;
@@ -47,7 +48,7 @@ void WindowManager::create(sf::Vector2u resolution , bool fullscreen,float fov, 
         std::runtime_error("Glad is not loading");
     }
     glViewport(0, 0, m_Window.getSize().x,m_Window.getSize().y);
-    glClearColor(0.027f, 0.7f, 0.9f, 1.0f);
+    glClearColor(clearColor.x,clearColor.y,clearColor.z,clearColor.a);
     glEnable(GL_DEPTH_TEST);
 }
 
@@ -58,6 +59,11 @@ void WindowManager::setRange(float newrange) {
 
 void WindowManager::refactorProjection() {
     perspectiveProjection = glm::perspective(glm::radians(m_fov), (float)m_resolution.x/(float)m_resolution.y, 0.1f, m_range);
+}
+
+void WindowManager::setClearColor(glm::vec4 color) {
+    clearColor = color;
+    glClearColor(color.x,color.y,color.z,1.0);
 }
 
 

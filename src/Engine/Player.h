@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Terrain.h"
+#include "Terrain/ImprovedTerrain.h"
 #include "Essential.h"
 #include "Renderable.h"
 #include "Hitbox.h"
@@ -11,7 +11,7 @@
 
 class Player : public Renderable{
 public:
-    Player(Terrain& terrain);
+    Player(ImprovedTerrain& terrain);
 
     void respawn(glm::vec3 respawnPosition, bool bindToTerrain= false);
 
@@ -44,7 +44,7 @@ private:
 
     unsigned int VAO, VBO, EBO, PROGRAMM;
     glm::vec3 up = {0.f,1.f,0.f};
-    Terrain& ter;
+    ImprovedTerrain& ter;
 
     const float size = 0.5f;
     std::vector<glm::vec3> playerVertices={

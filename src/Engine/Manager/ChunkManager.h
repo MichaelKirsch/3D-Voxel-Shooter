@@ -16,6 +16,7 @@
 #include <gtx/hash.hpp>
 #include <queue>
 #include "ShaderLoader.h"
+#include "Terrain/ImprovedTerrain.h"
 
 class ChunkManager : public Renderable {
 public:
@@ -24,7 +25,7 @@ public:
 
     void update(float &elapsed) override;
 
-    void create(TerrainGenerator* ter,unsigned int viewDistance=10, int chunksize=32);
+    void create(unsigned int viewDistance=10, int chunksize=32);
 
     glm::ivec3 chunkPositionPlayer;
     int getAverage();
@@ -34,7 +35,7 @@ private:
     void refactorChunkStructure();
     void deleteOldChunks();
     void createNewChunks();
-    std::unordered_map<glm::ivec3,Chunk> loaded_chunks;
+    std::unordered_map<glm::ivec3,ImprovedTerrain> loaded_chunks;
     std::queue<glm::ivec3> to_create;
     std::stack<glm::ivec3> to_delete;
     std::vector<glm::ivec3> chunksThatHaveToBeThere;

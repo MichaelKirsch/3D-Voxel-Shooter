@@ -3,26 +3,25 @@
 #include "GameOver.h"
 
 
-GameOver::GameOver() : player(terrain),bot(terrain){
+GameOver::GameOver() : player(new_terrain),bot(new_terrain){
 
     StateEssentials::get().camera.MovementSpeed = 20.f;
     int size = 700;
-
+    StateEssentials::get().windowManager.setClearColor({0.850, 0.850, 0.850,1.0});
     timer.setTickrate(0.5);
     StopWatch watch;
-    new_terrain.create(800,0.01);
+    new_terrain.create(1000,0.004);
     std::cout << "Took: " << std::to_string(watch.stop(StopWatch::seconds))<< " seconds to build "<< new_terrain.m_VertexData.size() << " Vertices"<< std::endl;
     terrain.create({0.f,0.f,0.f},rand()%1000,size,25.f,0.3f,0.004f);
     water.create(terrain,{-100.f,0.f,-100.f},1.0f,size+200,{0, 0.337, 0.921},0.06f,0.15f,0.1);
     ammo.create(terrain,800,1.0);
 
-    font.loadNewFont("JetBrainsMono-Regular.ttf",50);
+    font.loadNewFont("JetBrainsMono-Regular.ttf",200);
     text.create({-0.9,0.8},&font,120,"Player:");
     text2.create({-0.9,0.9},&font,120,"HELLO WORLD");
     text3.create({-0.9,0.7},&font,120,"HELLO WORLD");
     text4.create({-0.9,0.6},&font,120,"HELLO WORLD");
     std::cout <<"new ter:" << new_terrain.m_VertexData.size()<<std::endl;
-
 
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
@@ -43,12 +42,12 @@ GameOver::GameOver() : player(terrain),bot(terrain){
 void GameOver::updateFrame(float& elapsed) {
     StateEssentials::get().windowManager.clearScreen();
     StateEssentials::get().camera.Position = glm::vec3(player.playerPos.x,player.playerPos.y+4,player.playerPos.z); //needs to be here because of artifacts
-    water.render();
+    //water.render();
     new_terrain.render();
-    terrain.render();
-    ammo.render();
-    player.render();
-    bot.render();
+    //terrain.render();
+    //ammo.render();
+    //player.render();
+    //bot.render();
     text.render();
     text2.render();
     StateEssentials::get().windowManager.swapBuffers();
