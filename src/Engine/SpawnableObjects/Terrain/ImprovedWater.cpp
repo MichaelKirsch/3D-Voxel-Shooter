@@ -7,7 +7,7 @@
 void ImprovedWater::create(ImprovedTerrain &r_terrain, float waterlevel) {
     p_terrain = &r_terrain;
     m_noise.SetNoiseType(FastNoise::Simplex);
-    m_noise.SetFrequency(0.5f);
+    m_noise.SetFrequency(0.1f);
     m_waterlevel = r_terrain.getMaxTerrainHeight()*waterlevel;
     for(int x=0;x<r_terrain.getSize();x++)
     {
@@ -51,35 +51,35 @@ WaterTile ImprovedWater::generateTile(int x, int z) {
 void ImprovedWater::convertWatertileToFloatAndAddToVBOdata(WaterTile tile) {
 
     WaterVertex vert_nw,vert_ne,vert_sw,vert_se;
-    vert_nw.posy_own = m_noise.GetNoise(tile.x_pos_base-size,tile.z_pos_base+size);
+    vert_nw.posy_own = m_noise.GetNoise(tile.x_pos_base-size,tile.z_pos_base-size);
     vert_nw.posx = tile.x_pos_base;
     vert_nw.posz = tile.z_pos_base;
     vert_nw.vertex = nw;
 
-    vert_ne.posy_own = m_noise.GetNoise(tile.x_pos_base+size,tile.z_pos_base+size);
+    vert_ne.posy_own = m_noise.GetNoise(tile.x_pos_base+size,tile.z_pos_base-size);
     vert_ne.posx = tile.x_pos_base;
     vert_ne.posz = tile.z_pos_base;
     vert_ne.vertex = ne;
 
-    vert_sw.posy_own = m_noise.GetNoise(tile.x_pos_base-size,tile.z_pos_base-size);
+    vert_sw.posy_own = m_noise.GetNoise(tile.x_pos_base-size,tile.z_pos_base+size);
     vert_sw.posx = tile.x_pos_base;
     vert_sw.posz = tile.z_pos_base;
     vert_sw.vertex = sw;
 
-    vert_se.posy_own = m_noise.GetNoise(tile.x_pos_base+size,tile.z_pos_base-size);
+    vert_se.posy_own = m_noise.GetNoise(tile.x_pos_base+size,tile.z_pos_base+size);
     vert_se.posx = tile.x_pos_base;
     vert_se.posz = tile.z_pos_base;
     vert_se.vertex = se;
 
     //triangle one
-    std::vector<glm::vec3> triangle1={waterVertexToRaw(vert_nw),waterVertexToRaw(vert_ne),waterVertexToRaw(vert_sw),
-                                      waterVertexToRaw(vert_ne),waterVertexToRaw(vert_nw),waterVertexToRaw(vert_sw),
-                                      waterVertexToRaw(vert_sw),waterVertexToRaw(vert_nw),waterVertexToRaw(vert_ne)};
+    std::vector<glm::vec3> triangle1={waterVertexToRaw(vert_nw),waterVertexToRaw(vert_sw),waterVertexToRaw(vert_ne),
+                                      waterVertexToRaw(vert_sw),waterVertexToRaw(vert_ne),waterVertexToRaw(vert_nw),
+                                      waterVertexToRaw(vert_ne),waterVertexToRaw(vert_nw),waterVertexToRaw(vert_sw)};
 
     //triangle two
     std::vector<glm::vec3> triangle2={waterVertexToRaw(vert_se),waterVertexToRaw(vert_ne),waterVertexToRaw(vert_sw),
-                                      waterVertexToRaw(vert_sw),waterVertexToRaw(vert_ne),waterVertexToRaw(vert_se),
-                                      waterVertexToRaw(vert_ne),waterVertexToRaw(vert_se),waterVertexToRaw(vert_sw)};
+                                      waterVertexToRaw(vert_ne),waterVertexToRaw(vert_sw),waterVertexToRaw(vert_ne),
+                                      waterVertexToRaw(vert_sw),waterVertexToRaw(vert_se),waterVertexToRaw(vert_ne)};
 
     vbo_data.insert(vbo_data.end(),triangle1.begin(),triangle1.end());
     vbo_data.insert(vbo_data.end(),triangle2.begin(),triangle2.end());
@@ -117,6 +117,8 @@ void ImprovedWater::render() {
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().camera.GetViewMatrix(),"view");
     ShaderLoader::setUniform(PROGRAMM,(float)m_waterlevel,"waterlevel");
     ShaderLoader::setUniform(PROGRAMM,glm::vec3(0.141, 0.752, 1),"waterColor");
+    ShaderLoader::setUniform(PROGRAMM,0.1f,"waveheight");
+    ShaderLoader::setUniform(PROGRAMM,degrees,"degrees");
     glBindVertexArray(VAO);
     glDrawArrays(GL_TRIANGLES,0,vbo_data.size()/3);
     glBindVertexArray(0);
@@ -129,7 +131,7 @@ ImprovedWater::~ImprovedWater() {
 }
 
 void ImprovedWater::update(float &elapsed) {
-    Renderable::update(elapsed);
+    degrees+=0.04f;
 }
 
 

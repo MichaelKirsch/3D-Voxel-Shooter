@@ -1,5 +1,5 @@
 #version 330
-
+#define M_PI 3.1415926535897932384626433832795
 layout (location = 0) in vec3 vertex1;
 layout (location = 1) in vec3 vertex2;
 layout (location = 2) in vec3 vertex3;
@@ -11,14 +11,15 @@ out vec3 position;
 uniform mat4 view;
 uniform mat4 projection;
 uniform float waterlevel;
-
+uniform float degrees;
+uniform float waveheight;
 vec3 unpackvertex(vec3 data)
 {
     vec3 to_return;
     uint positionxz= floatBitsToUint(data.x);
     uint posx = positionxz>>(16) & mask16bit;
     uint posz = positionxz>>(0) & mask16bit;
-    to_return.y = data.y+waterlevel;
+    to_return.y = (sin((data.y*2*M_PI)+degrees)*waveheight)+waterlevel;
     uint whichside_and_unused = floatBitsToUint(data.z);
     uint whichside = (whichside_and_unused>>24);
     if(whichside==0) //nw
@@ -52,7 +53,7 @@ void main() {
 
     vec3 ab = vert2-vert1;
     vec3 ac = vert3-vert1;
-    normals = cross(ab,ac);
+    normals = normalize(cross(ab,ac));
     vec4 pos = projection*view*vec4(vert1, 1.0);
     gl_Position = pos;
     position = pos.xyz;

@@ -15,5 +15,5 @@ void main() {
     float specular = specularStrength * spec ;
 
     float brightness = max(dot(-lightDirection,normalize(normals)),0.3);
-    FragColor = vec4(waterColor*(brightness+specular),1.0);
+    FragColor = vec4(waterColor*(brightness+specular),0.7);
 }

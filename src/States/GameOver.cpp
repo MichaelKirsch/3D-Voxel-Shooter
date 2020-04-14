@@ -43,6 +43,7 @@ void GameOver::updateFrame(float& elapsed) {
 }
 
 void GameOver::updateEntities(float& elapsed) {
+    new_water.update(elapsed);
     player.update(elapsed);
     bot.update(elapsed);
     //std::cout << player.playerPos.x << "|" << player.playerPos.y << "|" << player.playerPos.z << std::endl;
