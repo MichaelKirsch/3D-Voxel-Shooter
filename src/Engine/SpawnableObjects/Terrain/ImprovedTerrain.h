@@ -57,7 +57,7 @@ private:
     FastNoise m_noise;
     int m_seed;
     unsigned int VBO,VAO,PROGRAMM;
-    int max_terrain_height;
+    int max_terrain_height;//
 };
 
 
