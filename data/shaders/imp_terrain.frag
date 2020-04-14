@@ -9,10 +9,11 @@ in vec3 fragPos;
 const vec3 lightDirection = normalize(vec3(0.4,-1.0,0.8));
 uniform vec3 playerPos;
 uniform vec4 fogColor;
-const float fogdistance = 400;
+uniform float fogdistance;
+const float perc = 1.0/255;
 
 void main() {
-    const float perc = 1.0/255;
+
     float brightness = max(dot(-lightDirection,normalOut),0.3);
 
 
@@ -21,6 +22,7 @@ void main() {
 
     float dist = distance(fragPos.xz,playerPos.xz);
     vec4 nomrmalColor = vec4(outColor,1.0)*perc*brightness;
+
     if(dist>fogdistance)
         nomrmalColor = fogColor;
 

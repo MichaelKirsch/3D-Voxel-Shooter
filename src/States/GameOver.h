@@ -17,6 +17,7 @@
 #include "TextStuff/Font.h"
 #include "TextStuff/SimpleText.h"
 #include "Terrain/ImprovedTerrain.h"
+#include "Terrain/ImprovedWater.h"
 #include "StopWatch.h"
 
 class GameOver : public State {
@@ -29,16 +30,15 @@ public:
 
 private:
     ImprovedTerrain new_terrain;
+    ImprovedWater new_water;
     Font font;
     SimpleText text,text2,text3,text4;
     unsigned int programm;
-    Water water;
-    Ammo ammo;
     Player player,bot;
     sf::Mouse m_Mouse;
     float last_time;
     bool mouse_hold;
-    Terrain terrain;
+
     bool wire;
 
     SimpleTimer timer;

@@ -14,11 +14,15 @@ ImprovedTerrain::~ImprovedTerrain() {
     glDeleteBuffers(1,&VBO);
 }
 
-void ImprovedTerrain::create(unsigned int i_size, float i_freq, float border) {
+void ImprovedTerrain::create(glm::vec3 offset,unsigned int i_size,int height,int seed, float i_freq, float border) {
+    m_offset = offset;
+    max_terrain_height = height;
     m_size = i_size;
     m_noise.SetFrequency(i_freq);
-    m_noiseFrequency = i_freq;
+    m_seed = seed;
+    m_noise.SetSeed(m_seed);
     m_noise.SetNoiseType(FastNoise::SimplexFractal);
+    m_noise.SetFractalOctaves(4);
     for(int x =0;x<i_size;x++)
     {
         for(int z=0;z<i_size;z++)
@@ -41,13 +45,14 @@ void ImprovedTerrain::create(unsigned int i_size, float i_freq, float border) {
 void ImprovedTerrain::render() {
     //glDisable(GL_CULL_FACE);
     glDisable(GL_BLEND);
-    //glPointSize(13);
     ShaderLoader::useProgramm(PROGRAMM);
     glBindVertexArray(VAO);
     glm::mat4 model = glm::mat4(1.f);
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().camera.GetViewMatrix(),"view");
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().windowManager.perspectiveProjection,"projection");
     ShaderLoader::setUniform(PROGRAMM,model,"model");
+    ShaderLoader::setUniform(PROGRAMM,m_offset,"chunkOffset");
+    ShaderLoader::setUniform(PROGRAMM,(float)m_size,"fogdistance");
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().windowManager.getClearColor(),"fogColor");
     glDrawArrays(GL_TRIANGLES,0,m_VertexData.size());
     glBindVertexArray(0);
@@ -85,7 +90,7 @@ glm::vec3 ImprovedTerrain::convertMeshToVec3(Vertex &vertex) {
 std::vector<Vertex> ImprovedTerrain::generateMeshDownwardsThisPoint(int x, int z) {
     std::vector<Vertex> buf;
     auto starting_height_pillar = getHeightOfTerrain(x,z);
-    for(int y =0;y<=starting_height_pillar;y++)
+    for(int y =starting_height_pillar;y>=starting_height_pillar-5;y--)
     {
         auto t = generateMeshOfSingleBlock(x,y,z);
         buf.insert(buf.end(),t.begin(),t.end());
@@ -166,9 +171,9 @@ std::vector<Vertex> ImprovedTerrain::generateSide(glm::vec3 center, sides side, 
     std::vector<Vertex> buf;
 
     Vertex bufferVertex;
-    bufferVertex.color_red = rand()%255;
-    bufferVertex.color_green = rand()%255;
-    bufferVertex.color_blue = rand()%255;
+    bufferVertex.color_red = rand()%40;
+    bufferVertex.color_green = 100+rand()%155;
+    bufferVertex.color_blue = rand()%20;
     bufferVertex.center_x = center.x;
     bufferVertex.center_y = center.y;
     bufferVertex.center_z = center.z;
@@ -181,6 +186,7 @@ std::vector<Vertex> ImprovedTerrain::generateSide(glm::vec3 center, sides side, 
     }
     return buf;
 }
+
 
 
 

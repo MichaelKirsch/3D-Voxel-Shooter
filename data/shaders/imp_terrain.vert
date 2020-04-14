@@ -10,11 +10,14 @@ uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
 uniform vec3 cameraPos;
+uniform vec3 chunkOffset;
+const uint mask8bit = 255;
+const uint mask16bit = 65535;
+const float size = 0.5f;
 
 void main() {
 
-    const uint mask8bit = 255;
-    const uint mask16bit = 65535;
+
 
     uint position_x_y = floatBitsToUint(data.y);
     uint position_z_which_spare = floatBitsToUint(data.z);
@@ -35,7 +38,7 @@ void main() {
 
     vec3 rawPosition = vec3(posx,posy,posz);
 
-    const float size = 0.5f;
+
 
     if(which_vertex == 0)
     {
@@ -107,7 +110,7 @@ void main() {
         normalOut=vec3(0.0,0.0,-1.0);
     }
 
-    vec4 pos = projection*view* vec4(rawPosition,1.0);
+    vec4 pos =   projection*view*(vec4(rawPosition,1.0));
     gl_Position = pos;
     fragPos = pos.xyz;
 

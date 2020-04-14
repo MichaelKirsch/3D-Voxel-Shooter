@@ -18,6 +18,8 @@ uniform mat4 projection;
 uniform float waveheight;
 void main()
 {
+
+
     vec3 positionA = vec3(positionAraw.x,sin((positionAraw.y*2*M_PI)+degrees)*waveheight,positionAraw.z);
     vec3 positionB = vec3(positionBraw.x,sin((+positionBraw.y*2*M_PI)+degrees)*waveheight,positionBraw.z);
     vec3 positionC = vec3(positionCraw.x,sin((+positionCraw.y*2*M_PI)+degrees)*waveheight,positionCraw.z);

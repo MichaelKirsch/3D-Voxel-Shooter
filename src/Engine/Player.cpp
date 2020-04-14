@@ -15,7 +15,7 @@ void Player::render() {
     glDisable(GL_CULL_FACE);
     ShaderLoader::useProgramm(PROGRAMM);
     model = glm::mat4(1.f);
-    model = glm::translate(model,{playerPos.x,playerPos.y+3,playerPos.z});
+    model = glm::translate(model,{playerPos.x,playerPos.y+6,playerPos.z});
     ShaderLoader::setUniform(PROGRAMM,color_according_to_armor,"armorColor");
     ShaderLoader::setUniform(PROGRAMM,glm::fvec3(playerPos),"cameraPos");
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().camera.GetViewMatrix(),"view");
@@ -28,8 +28,6 @@ void Player::render() {
 }
 
 void Player::update(float &elapsed) {
-    //model = glm::rotate(model,glm::radians(1.f),{0.f,1.f,0.f});
-
     if(playerPos.y >1000.f)
     {
         playerPos.y = 100.f;
@@ -46,7 +44,6 @@ void Player::update(float &elapsed) {
             vertical_velocity-=0.035f;
     else
         vertical_velocity =0;
-
 }
 
 void Player::create() {
@@ -70,7 +67,6 @@ void Player::respawn(glm::vec3 respawnPosition, bool bindToTerrain) {
     {
         respawnPosition.y = ter.getHeightOfTerrain(respawnPosition.x,respawnPosition.y);
     }
-
     playerPos = respawnPosition;
 }
 
@@ -80,12 +76,9 @@ void Player::processInputs() {
     glm::vec3 playerMovementSide = glm::normalize(glm::cross(up,playerMovementFront));
     //playerPos.y+=vertical_velocity;
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-        playerSpeed = 0.5f;
+        playerSpeed = 10.5f;
     else
         playerSpeed =0.2;
-
-
-
 
     if(playerPos.y<ter.getHeightOfTerrain(playerPos.x,playerPos.z))
         playerPos.y = ter.getHeightOfTerrain(playerPos.x,playerPos.z);
@@ -93,6 +86,11 @@ void Player::processInputs() {
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)&&playerPos.y<=ter.getHeightOfTerrain(playerPos.x,playerPos.z)+0.1f)
     {
         vertical_velocity +=0.55f;
+    }
+
+    if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)&&sf::Keyboard::isKeyPressed(sf::Keyboard::LShift)&&playerPos.y<=ter.getHeightOfTerrain(playerPos.x,playerPos.z)+0.1f)
+    {
+        vertical_velocity +=4.55f;
     }
 
     glm::vec3 futurePlayerPos = playerPos;
@@ -115,8 +113,6 @@ void Player::processInputs() {
         //TODO: need some sliding function here so no stops occure when the player is not perpendicular
     }
 
-    //if(playerPos.y < ter.getY(futurePlayerPos.x,futurePlayerPos.z))
-        //playerPos.y =  ter.getY(futurePlayerPos.x,futurePlayerPos.z);
     float yaw,pitch;
     float x_percent =  (1.f/StateEssentials::get().windowManager.getWindow().getSize().x) * m_Mouse.getPosition(StateEssentials::get().windowManager.getWindow()).x;
     float y_percent =  (1.f/StateEssentials::get().windowManager.getWindow().getSize().y) * m_Mouse.getPosition(StateEssentials::get().windowManager.getWindow()).y;

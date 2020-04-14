@@ -6,7 +6,7 @@ StateEssentials StateEssentials::s_Instance;
 
 Statemachine::Statemachine() {
     running = true;
-    StateEssentials::get().windowManager.create({1920,1080}, false);
+    StateEssentials::get().windowManager.create({1920,1080}, false,45.f,4000.f);
     updateTimer.setTickrate(60);
     frameTimer.setTickrate(60);
     inputTimer.setTickrate(60);

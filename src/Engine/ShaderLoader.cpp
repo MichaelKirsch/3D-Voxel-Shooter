@@ -33,6 +33,9 @@ unsigned int ShaderLoader::loadAndCompileShader(std::string obj) {
     std::ifstream input (path_to_shader);
     std::string shadercode((std::istreambuf_iterator<char>(input)),
                            std::istreambuf_iterator<char>());
+
+    if(shadercode.size()<1)
+        throw std::runtime_error("Shadername " + obj+ " does not lead to a file!");
     const GLchar * ch_buf = shadercode.c_str(); //convert the string to a char array
 
     glShaderSource(shaderID, 1, &ch_buf, NULL);

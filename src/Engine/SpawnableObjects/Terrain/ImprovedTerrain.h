@@ -13,7 +13,7 @@ enum sides
 };
 
 struct Vertex
-{
+    {
     //float 1
     glm::uint8 color_red;
     glm::uint8 color_green;
@@ -35,33 +35,29 @@ public:
     ImprovedTerrain();
     ~ImprovedTerrain();
 
-    void create(unsigned int i_size=600, float i_freq=0.001, float border=0.25f);
+    void create(glm::vec3 offset,unsigned int i_size=600,int height=40,int seed=400, float i_freq=0.0001, float border=0.25f);
 
     void render() override;
 
     void update(float &elapsed) override;
-
-    std::vector<Vertex> generateMeshDownwardsThisPoint(int x, int z);
-
-    glm::vec3 convertMeshToVec3(Vertex& vertex);
-
-    std::vector<Vertex> generateMeshOfSingleBlock(int x, int y,int z);
+    int getSize(){ return m_size;};
+    int getMaxTerrainHeight(){ return max_terrain_height;};
 
     int getHeightOfTerrain(int x,int z);
 
-    std::vector<Vertex> generateSide(glm::vec3 center, sides side, std::vector<int>order);
-
-    std::bitset<6> determineBlockVisibility(int x, int y, int z);
-
     std::vector<glm::vec3> m_VertexData;
 private:
-    glm::vec2 centerOfTerrain;
+    std::vector<Vertex> generateMeshOfSingleBlock(int x, int y,int z);
+    std::vector<Vertex> generateMeshDownwardsThisPoint(int x, int z);
+    glm::vec3 convertMeshToVec3(Vertex& vertex);
+    std::vector<Vertex> generateSide(glm::vec3 center, sides side, std::vector<int>order);
+    std::bitset<6> determineBlockVisibility(int x, int y, int z);
+    glm::vec3 m_offset;
     unsigned int m_size;
     FastNoise m_noise;
-    int m_noiseSeed, m_terrainHeight;
-    float m_noiseFrequency, m_borderTHICCCCNES;
-    unsigned int VBO,VAO,EBO,PROGRAMM;
-    const int max_terrain_height = 50;
+    int m_seed;
+    unsigned int VBO,VAO,PROGRAMM;
+    int max_terrain_height;
 };
 
 
