@@ -106,7 +106,6 @@ std::vector<Vertex> ImprovedTerrain::generateMeshDownwardsThisPoint(int x, int z
 
 int ImprovedTerrain::getHeightOfTerrain(int x, int z) {
     auto raw_noise =  m_noise.GetNoise(x,z);
-
     raw_noise+=1.f;
     raw_noise/=2.f;
 
