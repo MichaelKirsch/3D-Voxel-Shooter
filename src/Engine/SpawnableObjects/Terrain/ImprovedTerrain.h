@@ -34,11 +34,11 @@ class ImprovedTerrain : public Renderable{
 public:
     ImprovedTerrain();
     ~ImprovedTerrain();
-
-    void create(glm::vec3 offset,unsigned int i_size=600,int height=40,int seed=400, float i_freq=0.0001, float border=0.25f);
+    int getWaterlevel();
+    void create(glm::vec3 offset,unsigned int i_size=600,int height=40,int seed=400, float i_freq=0.0001, float waterle=0.25f,float border=0.04f);
 
     void render() override;
-
+    bool isBorder(int x,int z){ return borderFactor(x,z)<1.f;};
     void update(float &elapsed) override;
     int getSize(){ return m_size;};
     int getMaxTerrainHeight(){ return max_terrain_height;};
@@ -54,10 +54,23 @@ private:
     std::bitset<6> determineBlockVisibility(int x, int y, int z);
     glm::vec3 m_offset;
     unsigned int m_size;
-    FastNoise m_noise;
+    FastNoise m_noise,m_typenoise,m_grondTypeNoise;
     int m_seed;
+    float waterlevel;
     unsigned int VBO,VAO,PROGRAMM;
-    int max_terrain_height;//
+    int max_terrain_height;
+    float borderThiccccccccness;
+    glm::vec3 getColor(glm::ivec3 position);
+
+
+    float borderFactor(int x,int z);
+
+
+
+    glm::vec3 getColorGradient(float noiseGradient, glm::vec3 color1, glm::vec3 color2);
+
+
+
 };
 
 

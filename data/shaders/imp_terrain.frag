@@ -14,23 +14,31 @@ const float perc = 1.0/255;
 
 void main() {
 
-    float brightness = max(dot(-lightDirection,normalOut),0.3);
+    float brightness = max(dot(-lightDirection,normalOut),0.4);
 
 
     float fogFactor =0.f;
 
 
     float dist = distance(fragPos.xz,playerPos.xz);
-    vec4 nomrmalColor = vec4(outColor,1.0)*perc*brightness;
+    vec4 nomrmalColor = vec4(outColor/255,1.0)*brightness;
 
     if(dist>fogdistance)
-        nomrmalColor = fogColor;
-
-    if(dist>fogdistance/2)
     {
-        float half_distance_perc = 1.0/(fogdistance/2);
-        float used_distance = dist-(fogdistance/2);
-        fogFactor = used_distance*half_distance_perc;
+        FragColor = fogColor;
     }
-    FragColor = nomrmalColor*(1.0-fogFactor)+(fogFactor*fogColor);
+    else
+    {
+        if(dist>fogdistance/2)
+        {
+            float half_distance_perc = 1.0/(fogdistance/2);
+            float used_distance = dist-(fogdistance/2);
+            fogFactor = used_distance*half_distance_perc;
+        }
+        if(dist<fogdistance/2)
+        {
+            FragColor = nomrmalColor;
+        }
+        FragColor = nomrmalColor*(1.0-fogFactor)+(fogFactor*fogColor);
+    }
 }

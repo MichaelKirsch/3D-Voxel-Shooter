@@ -33,6 +33,7 @@ void Player::update(float &elapsed) {
         playerPos.y = 100.f;
         vertical_velocity =-10;
     }
+
     playerPos.y+=vertical_velocity;
     hitbox.setPos({playerPos.x,playerPos.y+3,playerPos.z});
 
@@ -76,12 +77,14 @@ void Player::processInputs() {
     glm::vec3 playerMovementSide = glm::normalize(glm::cross(up,playerMovementFront));
     //playerPos.y+=vertical_velocity;
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::LShift))
-        playerSpeed = 10.5f;
+        playerSpeed = 0.6f;
     else
-        playerSpeed =0.2;
+        playerSpeed =0.3;
 
     if(playerPos.y<ter.getHeightOfTerrain(playerPos.x,playerPos.z))
         playerPos.y = ter.getHeightOfTerrain(playerPos.x,playerPos.z);
+
+
 
     if(sf::Keyboard::isKeyPressed(sf::Keyboard::Space)&&playerPos.y<=ter.getHeightOfTerrain(playerPos.x,playerPos.z)+0.1f)
     {
@@ -133,7 +136,8 @@ void Player::processInputs() {
                              static_cast<int>(StateEssentials::get().windowManager.getWindow().getSize().y/2)},
                             StateEssentials::get().windowManager.getWindow());
     }
-
+    if(playerPos.y<0.0f)
+        respawn({ter.getSize()/2.f,ter.getMaxTerrainHeight()+30.f,ter.getSize()/2.f});
 }
 
 void Player::stockUp(AmmoType type) {

@@ -14,7 +14,9 @@ ImprovedTerrain::~ImprovedTerrain() {
     glDeleteBuffers(1,&VBO);
 }
 
-void ImprovedTerrain::create(glm::vec3 offset,unsigned int i_size,int height,int seed, float i_freq, float border) {
+void ImprovedTerrain::create(glm::vec3 offset,unsigned int i_size,int height,int seed, float i_freq, float waterl,float border) {
+    borderThiccccccccness = border;
+    waterlevel = waterl;
     m_offset = offset;
     max_terrain_height = height;
     m_size = i_size;
@@ -23,6 +25,10 @@ void ImprovedTerrain::create(glm::vec3 offset,unsigned int i_size,int height,int
     m_noise.SetSeed(m_seed);
     m_noise.SetNoiseType(FastNoise::SimplexFractal);
     m_noise.SetFractalOctaves(4);
+    m_typenoise.SetSeed(m_seed*4);
+    m_typenoise.SetNoiseType(FastNoise::SimplexFractal);
+    m_typenoise.SetFrequency(i_freq*10);
+
     for(int x =0;x<i_size;x++)
     {
         for(int z=0;z<i_size;z++)
@@ -52,7 +58,7 @@ void ImprovedTerrain::render() {
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().windowManager.perspectiveProjection,"projection");
     ShaderLoader::setUniform(PROGRAMM,model,"model");
     ShaderLoader::setUniform(PROGRAMM,m_offset,"chunkOffset");
-    ShaderLoader::setUniform(PROGRAMM,(float)m_size,"fogdistance");
+    ShaderLoader::setUniform(PROGRAMM,(float)m_size*0.8f,"fogdistance");
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().windowManager.getClearColor(),"fogColor");
     glDrawArrays(GL_TRIANGLES,0,m_VertexData.size());
     glBindVertexArray(0);
@@ -90,7 +96,7 @@ glm::vec3 ImprovedTerrain::convertMeshToVec3(Vertex &vertex) {
 std::vector<Vertex> ImprovedTerrain::generateMeshDownwardsThisPoint(int x, int z) {
     std::vector<Vertex> buf;
     auto starting_height_pillar = getHeightOfTerrain(x,z);
-    for(int y =starting_height_pillar;y>=starting_height_pillar-5;y--)
+    for(int y =starting_height_pillar;y>=0;y--)
     {
         auto t = generateMeshOfSingleBlock(x,y,z);
         buf.insert(buf.end(),t.begin(),t.end());
@@ -100,9 +106,11 @@ std::vector<Vertex> ImprovedTerrain::generateMeshDownwardsThisPoint(int x, int z
 
 int ImprovedTerrain::getHeightOfTerrain(int x, int z) {
     auto raw_noise =  m_noise.GetNoise(x,z);
+
     raw_noise+=1.f;
     raw_noise/=2.f;
-    return (int)(raw_noise*max_terrain_height);
+
+    return (int)(raw_noise*max_terrain_height*borderFactor(x,z));
 }
 
 std::bitset<6> ImprovedTerrain::determineBlockVisibility(int x,int y, int z) {
@@ -171,9 +179,11 @@ std::vector<Vertex> ImprovedTerrain::generateSide(glm::vec3 center, sides side, 
     std::vector<Vertex> buf;
 
     Vertex bufferVertex;
-    bufferVertex.color_red = rand()%40;
-    bufferVertex.color_green = 100+rand()%155;
-    bufferVertex.color_blue = rand()%20;
+    glm::vec3 color = getColor(center);
+
+    bufferVertex.color_red = color.x;
+    bufferVertex.color_green = color.y;
+    bufferVertex.color_blue = color.z;
     bufferVertex.center_x = center.x;
     bufferVertex.center_y = center.y;
     bufferVertex.center_z = center.z;
@@ -186,6 +196,78 @@ std::vector<Vertex> ImprovedTerrain::generateSide(glm::vec3 center, sides side, 
     }
     return buf;
 }
+
+glm::vec3 ImprovedTerrain::getColorGradient(float noiseGradient, glm::vec3 color1, glm::vec3 color2) {
+    //gradient to percent
+
+    float normGradient = 0.5f*(noiseGradient+1.f);
+    float one_percent_red,one_percent_green,one_percent_blue;
+
+    one_percent_red = (color1.x-color2.x);
+    one_percent_green = (color1.y-color2.y);
+    one_percent_blue = (color1.z-color2.z);
+    glm::vec3 color (color1.x-(normGradient*one_percent_red),color1.y-(normGradient*one_percent_green),color1.z-(normGradient*one_percent_blue));
+    return color;
+}
+
+glm::vec3 ImprovedTerrain::getColor(glm::ivec3 pos) {
+    if(pos.y<=getWaterlevel()&&!isBorder(pos.x,pos.z))
+    {
+        //sand
+        return getColorGradient(m_typenoise.GetNoise(pos.x,pos.z),{245, 242, 91},{250, 255, 143});
+    }
+    if(isBorder(pos.x,pos.z))
+    {
+        return getColorGradient(m_typenoise.GetNoise(pos.x,pos.z),{130, 130, 130},{74, 75, 73});
+    }
+
+    return getColorGradient(m_typenoise.GetNoise(pos.x,pos.z),{0, 173, 51},{40, 245, 0});
+}
+
+int ImprovedTerrain::getWaterlevel() {
+    return max_terrain_height*waterlevel;
+}
+
+float ImprovedTerrain::borderFactor(int x, int z) {
+    float factor = 1.0;
+
+    int size_border=m_size*borderThiccccccccness;
+
+    if(z<size_border)
+    {
+        float buf=(1.0/size_border)*z;
+        if(buf<factor)
+            factor=buf;
+    }
+    if(x<size_border)
+    {
+        float buf=(1.0/size_border)*x;
+        if(buf<factor)
+            factor=buf;
+    }
+
+    if(x>(m_size-size_border))
+    {
+        float bufx = x-(m_size-size_border);
+
+        float buf=(1.0/size_border)*(size_border-bufx);
+        if(buf<factor)
+            factor=buf;
+    }
+
+    if(z>(m_size-size_border))
+    {
+        float bufy = z-(m_size-size_border);
+
+        float buf=(1.0/size_border)*(size_border-bufy);
+        if(buf<factor)
+            factor=buf;
+    }
+
+
+    return factor;
+}
+
 
 
 

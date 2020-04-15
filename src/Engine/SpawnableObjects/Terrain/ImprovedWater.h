@@ -38,7 +38,7 @@ public:
 
     float waveheight;
 
-    void create(ImprovedTerrain& r_terrain,float waterlevel = 0.05f);
+    void create(ImprovedTerrain& r_terrain);
 
     ~ImprovedWater();
 
@@ -47,7 +47,7 @@ private:
     {
         nw=0,ne,sw,se
     };
-    FastNoise m_noise;
+    FastNoise m_waternoise;
     std::vector<glm::vec3> vbo_data;
     unsigned int VBO,VAO,PROGRAMM;
     ImprovedTerrain* p_terrain;

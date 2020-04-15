@@ -19,7 +19,7 @@ vec3 unpackvertex(vec3 data)
     uint positionxz= floatBitsToUint(data.x);
     uint posx = positionxz>>(16) & mask16bit;
     uint posz = positionxz>>(0) & mask16bit;
-    to_return.y = (sin((data.y*2*M_PI)+degrees)*waveheight)+waterlevel;
+    to_return.y = (sin((data.y*2*3.1415926535897932384626433832795)+degrees)*waveheight)+waterlevel;
     uint whichside_and_unused = floatBitsToUint(data.z);
     uint whichside = (whichside_and_unused>>24);
     if(whichside==0) //nw

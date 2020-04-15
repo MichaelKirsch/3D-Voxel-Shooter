@@ -3,8 +3,6 @@
 #include <glm/glm/gtc/matrix_transform.hpp>
 #include "WindowManager.h"
 
-
-
 WindowManager::~WindowManager() {
     m_Window.close();
 }
@@ -45,7 +43,7 @@ void WindowManager::create(sf::Vector2u resolution , bool fullscreen,float fov, 
     m_Window.setActive();
     if(!gladLoadGL())
     {
-        std::runtime_error("Glad is not loading");
+        throw std::runtime_error("Glad is not loading");
     }
     glViewport(0, 0, m_Window.getSize().x,m_Window.getSize().y);
     glClearColor(clearColor.x,clearColor.y,clearColor.z,clearColor.a);
