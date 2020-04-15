@@ -91,13 +91,13 @@ int ShaderLoader::setUniform(unsigned int& progID,int input,const std::string &n
 
 int ShaderLoader::setUniform(unsigned int& progID,float input,const std::string &name) {
     int vertexColorLocation = glGetUniformLocation(progID, name.c_str());
-    glUniform1f(vertexColorLocation,input);
+    glUniform1f(vertexColorLocation,static_cast<GLfloat>(input));
     return vertexColorLocation;
 }
 
 int ShaderLoader::setUniform(unsigned int& progID,double input,const std::string &name) {
     int vertexColorLocation = glGetUniformLocation(progID, name.c_str());
-    glUniform1d(vertexColorLocation,input);
+    glUniform1d(vertexColorLocation, input );
     return vertexColorLocation;
 }
 

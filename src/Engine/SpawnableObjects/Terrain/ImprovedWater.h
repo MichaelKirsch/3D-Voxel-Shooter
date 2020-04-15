@@ -57,7 +57,7 @@ private:
     const float size = 0.5f;
     void convertWatertileToFloatAndAddToVBOdata(WaterTile tile);
     glm::vec3 waterVertexToRaw(WaterVertex vert);
-    float degrees;
+    float timevalue=0.f;
 protected:
 };
 

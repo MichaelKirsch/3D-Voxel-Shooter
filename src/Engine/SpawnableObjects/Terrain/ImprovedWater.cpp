@@ -115,12 +115,13 @@ ImprovedWater::ImprovedWater() {
 void ImprovedWater::render() {
     ShaderLoader::useProgramm(PROGRAMM);
     glBindVertexArray(VAO);
+    ShaderLoader::setUniform(PROGRAMM,timevalue,"timevalue");
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().windowManager.perspectiveProjection,"projection");
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().camera.GetViewMatrix(),"view");
     ShaderLoader::setUniform(PROGRAMM,(float)m_waterlevel,"waterlevel");
     ShaderLoader::setUniform(PROGRAMM,glm::vec3(0.141, 0.752, 1),"waterColor");
     ShaderLoader::setUniform(PROGRAMM, static_cast<float>(.1f),"waveheight");
-    ShaderLoader::setUniform(PROGRAMM,degrees,"degrees");
+
     glDrawArrays(GL_TRIANGLES,0,vbo_data.size()/3);
     glBindVertexArray(0);
 }
@@ -131,7 +132,7 @@ ImprovedWater::~ImprovedWater() {
 }
 
 void ImprovedWater::update(float &elapsed) {
-    degrees+=0.04f;
+    timevalue+=0.04f;
 }
 
 

@@ -1,5 +1,5 @@
 #version 330
-#define M_PI 3.1415926535897932384626433832795
+const float M_PI =  3.14159;
 layout (location = 0) in vec3 vertex1;
 layout (location = 1) in vec3 vertex2;
 layout (location = 2) in vec3 vertex3;
@@ -10,16 +10,17 @@ const float size = 0.5;
 out vec3 position;
 uniform mat4 view;
 uniform mat4 projection;
+uniform float timevalue;
 uniform float waterlevel;
-uniform float degrees;
 uniform float waveheight;
 vec3 unpackvertex(vec3 data)
 {
+    float timev = 5000.f+timevalue;
     vec3 to_return;
     uint positionxz= floatBitsToUint(data.x);
     uint posx = positionxz>>(16) & mask16bit;
     uint posz = positionxz>>(0) & mask16bit;
-    to_return.y = (sin((data.y*2*3.1415926535897932384626433832795)+degrees)*waveheight)+waterlevel;
+    to_return.y = cos((data.y*2.0*M_PI)+timev)*waveheight + waterlevel;
     uint whichside_and_unused = floatBitsToUint(data.z);
     uint whichside = (whichside_and_unused>>24);
     if(whichside==0) //nw
