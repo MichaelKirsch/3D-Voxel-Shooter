@@ -38,77 +38,57 @@ void main() {
 
     vec3 rawPosition = vec3(posx,posy,posz);
 
-
-
-    if(which_vertex == 0)
+    switch(which_vertex)
     {
-        //front left  bottom vertex
+        case 0:
         rawPosition+=vec3(-size,-size,size);
-    }
-    if(which_vertex == 1)
-    {
-        //front right  bottom vertex
+        break;
+        case 1:
         rawPosition+=vec3(size,-size,size);
-    }
-    if(which_vertex == 2)
-    {
-        //front right top vertex
+        break;
+        case 2:
         rawPosition+=vec3(size,size,size);
-    }
-    if(which_vertex == 3)
-    {
-        //front left top vertex
+        break;
+        case 3:
         rawPosition+=vec3(-size,size,size);
-    }
-
-    if(which_vertex == 4)
-    {
-        //back left bottom
+        break;
+        case 4:
         rawPosition+=vec3(-size,-size,-size);
-    }
-    if(which_vertex == 5)
-    {
-        //back  right bottom
+        break;
+        case 5:
         rawPosition+=vec3(size,-size,-size);
+        break;
+        case 6:
+        rawPosition+=vec3(size,size,-size);
+        break;
+        case 7:
+        rawPosition+=vec3(-size,size,-size);
+        break;
     }
 
-    if(which_vertex == 6)
+    switch (normal)
     {
-        //back left top
-        rawPosition+=vec3(size,size,-size);
-    }
-    if(which_vertex == 7)
-    {
-        //back  right top
-        rawPosition+=vec3(-size,size,-size);
+        case 0:
+        normalOut=vec3(-1.0,0.0,0.0);
+        break;
+        case 1:
+        normalOut=vec3(1.0,0.0,0.0);
+        break;
+        case 2:
+        normalOut=vec3(0.0,1.0,0.0);
+        break;
+        case 3:
+        normalOut=vec3(0.0,-1.0,0.0);
+        break;
+        case 4:
+        normalOut=vec3(0.0,0.0,1.0);
+        break;
+        case 5:
+        normalOut=vec3(0.0,0.0,-1.0);
+        break;
     }
 
     //left=0,right,up,down,front,back,underwater,_spare_bit
-
-    if(normal==0)
-    {
-        normalOut=vec3(-1.0,0.0,0.0);
-    }
-    if(normal==1)
-    {
-        normalOut=vec3(1.0,0.0,0.0);
-    }
-    if(normal==2)
-    {
-        normalOut=vec3(0.0,1.0,0.0);
-    }
-    if(normal==3)
-    {
-        normalOut=vec3(0.0,-1.0,0.0);
-    }
-    if(normal==4)
-    {
-        normalOut=vec3(0.0,0.0,1.0);
-    }
-    if(normal==5)
-    {
-        normalOut=vec3(0.0,0.0,-1.0);
-    }
 
     vec4 pos =   projection*view*(vec4(rawPosition,1.0));
     gl_Position = pos;

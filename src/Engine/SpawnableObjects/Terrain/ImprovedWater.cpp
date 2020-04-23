@@ -80,7 +80,7 @@ void ImprovedWater::convertWatertileToFloatAndAddToVBOdata(WaterTile tile) {
 
     //triangle two
     std::vector<glm::vec3> triangle2={waterVertexToRaw(vert_se),waterVertexToRaw(vert_ne),waterVertexToRaw(vert_sw),
-                                      waterVertexToRaw(vert_ne),waterVertexToRaw(vert_sw),waterVertexToRaw(vert_ne),
+                                      waterVertexToRaw(vert_ne),waterVertexToRaw(vert_sw),waterVertexToRaw(vert_se),
                                       waterVertexToRaw(vert_sw),waterVertexToRaw(vert_se),waterVertexToRaw(vert_ne)};
 
     vbo_data.insert(vbo_data.end(),triangle1.begin(),triangle1.end());
