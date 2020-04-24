@@ -6,6 +6,7 @@
 #include "Renderable.h"
 #include "FastNoise/FastNoise.h"
 #include <bitset>
+#include <cmath>
 
 enum sides
 {
@@ -61,16 +62,11 @@ private:
     int max_terrain_height;
     float borderThiccccccccness;
     glm::vec3 getColor(glm::ivec3 position);
-
+    float borderEquation(float x,int smoothnes=4);
 
     float borderFactor(int x,int z);
 
-
-
     glm::vec3 getColorGradient(float noiseGradient, glm::vec3 color1, glm::vec3 color2);
-
-
-
 };
 
 

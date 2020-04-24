@@ -10,7 +10,7 @@ GameOver::GameOver() : player(new_terrain),bot(new_terrain){
     StateEssentials::get().windowManager.setClearColor({0.019, 0.862, 1,1.0});
     timer.setTickrate(0.5);
     StopWatch watch;
-    new_terrain.create({0,0,0},500,64,rand()%1000,0.003,0.3f,0.02f);
+    new_terrain.create({0,0,0},500,64,rand()%1000,0.003,0.3f,0.04f);
     new_water.create(new_terrain);
     std::cout << "Took: " << std::to_string(watch.stop(StopWatch::milli))<< " milliseconds to build "<< new_terrain.m_VertexData.size() << " Vertices"<< std::endl;
 

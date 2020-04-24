@@ -234,13 +234,13 @@ float ImprovedTerrain::borderFactor(int x, int z) {
 
     if(z<size_border)
     {
-        float buf=(1.0/size_border)*z;
+        float buf=borderEquation((1.0/size_border)*z);
         if(buf<factor)
             factor=buf;
     }
     if(x<size_border)
     {
-        float buf=(1.0/size_border)*x;
+        float buf=borderEquation((1.0/size_border)*x);
         if(buf<factor)
             factor=buf;
     }
@@ -249,7 +249,7 @@ float ImprovedTerrain::borderFactor(int x, int z) {
     {
         float bufx = x-(m_size-size_border);
 
-        float buf=(1.0/size_border)*(size_border-bufx);
+        float buf=borderEquation((1.0/size_border)*(size_border-bufx));
         if(buf<factor)
             factor=buf;
     }
@@ -258,13 +258,19 @@ float ImprovedTerrain::borderFactor(int x, int z) {
     {
         float bufy = z-(m_size-size_border);
 
-        float buf=(1.0/size_border)*(size_border-bufy);
+        float buf=borderEquation((1.0/size_border)*(size_border-bufy));
         if(buf<factor)
             factor=buf;
     }
-
-
     return factor;
+}
+
+float ImprovedTerrain::borderEquation(float x,int smoothnes) {
+    //1-e^(8x-8)
+    float y = 1-exp(-smoothnes*x);
+    if(y<0.f)
+        return 0.f;
+    return y;
 }
 
 
