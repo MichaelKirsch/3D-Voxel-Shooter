@@ -6,15 +6,24 @@ in vec3 outColor;
 in vec3 normalOut;
 in vec3 fragPos;
 
-const vec3 lightDirection = normalize(vec3(0.4,-1.0,0.8));
 uniform vec3 playerPos;
 uniform vec4 fogColor;
 uniform float fogdistance;
+uniform vec3 sunpos;
+uniform vec4 suncolor;
 const float perc = 1.0/255;
+
+
 
 void main() {
 
-    float brightness = max(dot(-lightDirection,normalOut),0.4);
+    vec3 lightDirection = normalize(fragPos-sunpos);
+
+    float lightStrength = 1.0- ((1.0/1000.0) * length(fragPos-sunpos));
+
+    float brightness = max(dot(-lightDirection,normalOut),0.4)*lightStrength;
+
+
 
 
     float fogFactor =0.f;

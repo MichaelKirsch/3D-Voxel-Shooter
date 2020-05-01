@@ -5,7 +5,7 @@
 #include "ImprovedTerrain.h"
 #include "Renderable.h"
 #include "ShaderLoader.h"
-
+#include "Sun.h"
 
 struct WaterTile
 {
@@ -38,7 +38,7 @@ public:
 
     float waveheight;
 
-    void create(ImprovedTerrain& r_terrain);
+    void create(ImprovedTerrain& r_terrain, Sun* sun);
 
     ~ImprovedWater();
 
@@ -47,6 +47,7 @@ private:
     {
         nw=0,ne,sw,se
     };
+    Sun* m_sun;
     FastNoise m_waternoise;
     std::vector<glm::vec3> vbo_data;
     unsigned int VBO,VAO,PROGRAMM;

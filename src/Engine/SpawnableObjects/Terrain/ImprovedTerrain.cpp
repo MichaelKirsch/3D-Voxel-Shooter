@@ -3,6 +3,7 @@
 #include <Engine/StateMachine/Essential.h>
 #include "ImprovedTerrain.h"
 
+
 ImprovedTerrain::ImprovedTerrain() {
     PROGRAMM = ShaderLoader::createProgram({{"imp_terrain.frag"},{"imp_terrain.vert"}});
     glGenVertexArrays(1,&VAO);
@@ -14,7 +15,7 @@ ImprovedTerrain::~ImprovedTerrain() {
     glDeleteBuffers(1,&VBO);
 }
 
-void ImprovedTerrain::create(glm::vec3 offset,unsigned int i_size,int height,int seed, float i_freq, float waterl,float border) {
+void ImprovedTerrain::create(Sun* i_sun,glm::vec3 offset,unsigned int i_size,int height,int seed, float i_freq, float waterl,float border) {
     borderThiccccccccness = border;
     waterlevel = waterl;
     m_offset = offset;
@@ -28,6 +29,7 @@ void ImprovedTerrain::create(glm::vec3 offset,unsigned int i_size,int height,int
     m_typenoise.SetSeed(m_seed*4);
     m_typenoise.SetNoiseType(FastNoise::SimplexFractal);
     m_typenoise.SetFrequency(i_freq*10);
+    sun = i_sun;
 
     for(int x =0;x<i_size;x++)
     {
@@ -57,6 +59,8 @@ void ImprovedTerrain::render() {
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().camera.GetViewMatrix(),"view");
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().windowManager.perspectiveProjection,"projection");
     ShaderLoader::setUniform(PROGRAMM,model,"model");
+    ShaderLoader::setUniform(PROGRAMM,sun->sunPosition,"sunpos");
+    ShaderLoader::setUniform(PROGRAMM,sun->sunColor,"suncolor");
     ShaderLoader::setUniform(PROGRAMM,m_offset,"chunkOffset");
     ShaderLoader::setUniform(PROGRAMM,(float)m_size*0.8f,"fogdistance");
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().windowManager.getClearColor(),"fogColor");

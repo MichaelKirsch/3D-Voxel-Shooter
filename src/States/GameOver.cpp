@@ -10,8 +10,8 @@ GameOver::GameOver() : player(new_terrain),bot(new_terrain){
     StateEssentials::get().windowManager.setClearColor({0.019, 0.862, 1,1.0});
     timer.setTickrate(0.5);
     StopWatch watch;
-    new_terrain.create({0,0,0},500,64,rand()%1000,0.003,0.3f,0.04f);
-    new_water.create(new_terrain);
+    new_terrain.create(&sun,{0,0,0},500,64,rand()%1000,0.003,0.3f,0.04f);
+    new_water.create(new_terrain,&sun);
     std::cout << "Took: " << std::to_string(watch.stop(StopWatch::milli))<< " milliseconds to build "<< new_terrain.m_VertexData.size() << " Vertices"<< std::endl;
 
     font.loadNewFont("JetBrainsMono-Regular.ttf",200);
@@ -19,6 +19,8 @@ GameOver::GameOver() : player(new_terrain),bot(new_terrain){
     text2.create({-0.9,0.9},&font,120,"HELLO WORLD");
     text3.create({-0.9,0.7},&font,120,"HELLO WORLD");
     text4.create({-0.9,0.6},&font,120,"HELLO WORLD");
+    sun.create({new_terrain.getSize()/2,new_terrain.getMaxTerrainHeight()+100,new_terrain.getSize()/2},
+            new_terrain.getSize(),.01f,{0.901, 0.835, 0.537,1.f});
     std::cout <<"new ter:" << new_terrain.m_VertexData.size()<<std::endl;
 
     glCullFace(GL_BACK);
@@ -46,7 +48,7 @@ void GameOver::updateEntities(float& elapsed) {
     new_water.update(elapsed);
     player.update(elapsed);
     bot.update(elapsed);
-
+    sun.update(elapsed);
     if(bot.hitbox.collisionDetectionHitboxes(player.hitbox))
     {
         player.setColor({1.f,0.2f,0.f});
@@ -56,9 +58,7 @@ void GameOver::updateEntities(float& elapsed) {
         bot.setColor({0.3,0.3,0.3});
     }
     float test= 0.05f;
-    text2.setText("Ammo| Light:"+std::to_string(player.getAmmoAmount(AmmoType::light))+
-    " Heavy:"+std::to_string(player.getAmmoAmount(AmmoType::heavy))+
-    " Sniper:"+std::to_string(player.getAmmoAmount(AmmoType::sniper)));
+    text2.setText("Sun: " + std::to_string(sun.sunPosition.x) +" , " + std::to_string(sun.sunPosition.y)+ " , " +std::to_string(sun.sunPosition.z));
     text.setText("Player:"+std::to_string(player.playerPos.x)+"X "+std::to_string(player.playerPos.y)+"Y "+std::to_string(player.playerPos.z)+"Z");
 }
 

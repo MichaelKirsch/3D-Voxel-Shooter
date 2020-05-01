@@ -4,6 +4,7 @@
 
 #include <iostream>
 #include "StateMachine/State.h"
+#include "Sun.h"
 #include "Water.h"
 #include "SFML/Graphics.hpp"
 #include "Terrain.h"
@@ -29,6 +30,7 @@ public:
     ~GameOver() = default;
 
 private:
+    Sun sun;
     ImprovedTerrain new_terrain;
     ImprovedWater new_water;
     Font font;

@@ -7,6 +7,7 @@
 #include "FastNoise/FastNoise.h"
 #include <bitset>
 #include <cmath>
+#include "Sun.h"
 
 enum sides
 {
@@ -36,7 +37,7 @@ public:
     ImprovedTerrain();
     ~ImprovedTerrain();
     int getWaterlevel();
-    void create(glm::vec3 offset,unsigned int i_size=600,int height=40,int seed=400, float i_freq=0.0001, float waterle=0.25f,float border=0.04f);
+    void create(Sun* i_sun,glm::vec3 offset,unsigned int i_size=600,int height=40,int seed=400, float i_freq=0.0001, float waterle=0.25f,float border=0.04f);
 
     void render() override;
     bool isBorder(int x,int z){ return borderFactor(x,z)<1.f;};
@@ -63,7 +64,7 @@ private:
     float borderThiccccccccness;
     glm::vec3 getColor(glm::ivec3 position);
     float borderEquation(float x,int smoothnes=4);
-
+    Sun* sun;
     float borderFactor(int x,int z);
 
     glm::vec3 getColorGradient(float noiseGradient, glm::vec3 color1, glm::vec3 color2);

@@ -4,7 +4,8 @@
 #include "ImprovedWater.h"
 
 
-void ImprovedWater::create(ImprovedTerrain &r_terrain) {
+void ImprovedWater::create(ImprovedTerrain &r_terrain, Sun* sun) {
+    m_sun = sun;
     p_terrain = &r_terrain;
     m_waternoise.SetSeed(rand()%1000);
     m_waternoise.SetNoiseType(FastNoise::Simplex);
@@ -119,6 +120,8 @@ void ImprovedWater::render() {
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().windowManager.perspectiveProjection,"projection");
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().camera.GetViewMatrix(),"view");
     ShaderLoader::setUniform(PROGRAMM,(float)m_waterlevel,"waterlevel");
+    ShaderLoader::setUniform(PROGRAMM,m_sun->sunPosition,"sunpos");
+    ShaderLoader::setUniform(PROGRAMM,m_sun->sunColor,"suncolor");
     ShaderLoader::setUniform(PROGRAMM,glm::vec3(0.141, 0.752, 1),"waterColor");
     ShaderLoader::setUniform(PROGRAMM, static_cast<float>(.1f),"waveheight");
 
