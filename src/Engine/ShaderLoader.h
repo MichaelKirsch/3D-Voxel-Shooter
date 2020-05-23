@@ -7,7 +7,6 @@
 #include "glad/glad.h"
 #include "glm.hpp"
 #include <gtc/type_ptr.inl>
-#include <experimental/filesystem>
 #include <fstream>
 #include <iostream>
 #include <exception>

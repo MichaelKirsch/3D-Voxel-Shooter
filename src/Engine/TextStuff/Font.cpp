@@ -4,8 +4,8 @@
 
 void Font::loadNewFont(std::string name, int textsize) {
     fontname = name;
-    std::string path_to_font_dir = std::experimental::filesystem::current_path().parent_path().string();
-    path_to_font_dir +="/data/fonts/";
+    std::string path_to_font_dir = "";
+    path_to_font_dir +="../data/fonts/";
     if(!m_font.loadFromFile(path_to_font_dir + fontname))
         throw std::runtime_error("Font "+ fontname + " cant be loaded.");
 

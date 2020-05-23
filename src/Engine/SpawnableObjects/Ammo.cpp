@@ -117,8 +117,7 @@ Ammo::Ammo() {
     std::cout << "Ammo vao:" << VAO<< std::endl;
     glGenBuffers(1,&VBO);
 
-    auto path_to_shader_dir = std::experimental::filesystem::current_path().parent_path().string();
-    path_to_shader_dir +="/data/";
+    std::string path_to_shader_dir="../data/";
     pickupsound.loadFromFile(path_to_shader_dir+"sounds/pickup_ammo.wav");
 
     model = glm::mat4(1.f);

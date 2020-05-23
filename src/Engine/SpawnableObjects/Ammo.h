@@ -7,7 +7,6 @@
 #include "Terrain.h"
 #include "FastNoise/FastNoise.h"
 #include "Hitbox.h"
-#include <experimental/filesystem>
 #include "SFML/Audio.hpp"
 
 enum class AmmoType {
