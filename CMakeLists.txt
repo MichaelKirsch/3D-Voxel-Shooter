@@ -26,6 +26,6 @@ include_directories("src/Engine/Manager/")
 
 find_package(OpenGL REQUIRED)
 
-add_executable(${PROJECT_NAME} ${SOURCES} libs/glad/src/glad.c libs/FastNoise/FastNoise.cpp main.cpp)
+add_executable(${PROJECT_NAME} ${SOURCES} libs/glad/src/glad.c libs/FastNoise/FastNoise.cpp main.cpp src/Engine/SpawnableObjects/Projectile.cpp src/Engine/SpawnableObjects/Projectile.h src/Engine/SpawnableObjects/ProjectileGenerator.cpp src/Engine/SpawnableObjects/ProjectileGenerator.h)
 
 target_link_libraries(${PROJECT_NAME} sfml-audio sfml-graphics sfml-window sfml-system ${OPENGL_LIBRARIES} )

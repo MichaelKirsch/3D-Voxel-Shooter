@@ -14,7 +14,7 @@ void main() {
 
     vec3 lightDirection = normalize(position-sunpos);
 
-    float lightStrength = 1.0- ((1.0/1000.0) * length(position-sunpos));
+    float lightStrength = 1.0;//- ((1.0/1000.0) * length(position-sunpos));
 
 
     float specularStrength = 0.5;
@@ -23,6 +23,6 @@ void main() {
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
     float specular = specularStrength * spec ;
 
-    float brightness = max(dot(-lightDirection,normalize(normals)),0.3)*lightStrength;
-    FragColor = vec4(waterColor*(brightness+specular),0.7);
+    float brightness = max(dot(-lightDirection,normalize(normals)),0.3);
+    FragColor = vec4(waterColor*(brightness+specular),0.6);
 }

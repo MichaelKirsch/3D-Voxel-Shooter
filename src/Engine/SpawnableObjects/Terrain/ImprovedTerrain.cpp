@@ -277,6 +277,10 @@ float ImprovedTerrain::borderEquation(float x,int smoothnes) {
     return y;
 }
 
+bool ImprovedTerrain::isBlock(glm::vec3 position) {
+    return (position.y<=getHeightOfTerrain(position.x,position.z));
+}
+
 
 
 

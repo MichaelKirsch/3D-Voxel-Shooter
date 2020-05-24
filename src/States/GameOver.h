@@ -20,6 +20,7 @@
 #include "Terrain/ImprovedTerrain.h"
 #include "Terrain/ImprovedWater.h"
 #include "StopWatch.h"
+#include "ProjectileGenerator.h"
 
 class GameOver : public State {
 public:
@@ -27,23 +28,30 @@ public:
     void updateFrame(float& elapsed);
     void updateEntities(float& elapsed);
     void processInputs(float& elapsed);
-    ~GameOver() = default;
+    ~GameOver()
+    {
+    };
 
 private:
     Sun sun;
+    ProjectileGenerator pr_gen;
     ImprovedTerrain new_terrain;
     ImprovedWater new_water;
     Font font;
     SimpleText text,text2,text3,text4;
     unsigned int programm;
     Player player,bot;
+    std::list<std::unique_ptr<Player>> m_Bots;
     sf::Mouse m_Mouse;
     float last_time;
     bool mouse_hold;
-
+    sf::Sound shot,hit;
+    sf::SoundBuffer shotsound,hitbuffer;
     bool wire;
-
+    sf::Clock shotTimer;
+    float shot_timer;
     SimpleTimer timer;
+    int hitcounter =0;
 protected:
 };
 

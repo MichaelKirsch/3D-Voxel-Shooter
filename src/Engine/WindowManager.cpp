@@ -29,6 +29,7 @@ void WindowManager::create(sf::Vector2u resolution , bool fullscreen,float fov, 
     m_range = range;
     m_fov = fov;
     m_fullscreen = fullscreen;
+
     perspectiveProjection = glm::perspective(glm::radians(fov), (float)resolution.x/(float)resolution.y, 0.1f, range);
     settings.depthBits = 24;
     settings.attributeFlags = settings.Core;
@@ -38,7 +39,7 @@ void WindowManager::create(sf::Vector2u resolution , bool fullscreen,float fov, 
     if(!fullscreen)
         m_Window.create(sf::VideoMode(resolution.x,resolution.y),"TopDown", sf::Style::Default, settings);
     else
-        m_Window.create(sf::VideoMode(resolution.x,resolution.y),"TopDown", sf::Style::Fullscreen , settings);
+        m_Window.create(sf::VideoMode::getDesktopMode(),"TopDown", sf::Style::Fullscreen , settings);
 
     m_Window.setActive();
     if(!gladLoadGL())

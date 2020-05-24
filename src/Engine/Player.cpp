@@ -15,7 +15,7 @@ void Player::render() {
     glDisable(GL_CULL_FACE);
     ShaderLoader::useProgramm(PROGRAMM);
     model = glm::mat4(1.f);
-    model = glm::translate(model,{playerPos.x,playerPos.y+6,playerPos.z});
+    model = glm::translate(model,{playerPos.x,playerPos.y,playerPos.z});
     ShaderLoader::setUniform(PROGRAMM,color_according_to_armor,"armorColor");
     ShaderLoader::setUniform(PROGRAMM,glm::fvec3(playerPos),"cameraPos");
     ShaderLoader::setUniform(PROGRAMM,StateEssentials::get().camera.GetViewMatrix(),"view");
@@ -34,8 +34,10 @@ void Player::update(float &elapsed) {
         vertical_velocity =-10;
     }
 
+    if(playerPos.y < ter.getHeightOfTerrain(playerPos.x,playerPos.z))
+        playerPos.y = ter.getHeightOfTerrain(playerPos.x,playerPos.z)+1;
+
     playerPos.y+=vertical_velocity;
-    hitbox.setPos({playerPos.x,playerPos.y+3,playerPos.z});
 
     if(playerPos.y > ter.getHeightOfTerrain(playerPos.x,playerPos.z))
         if(playerPos.y <=-1.0f)
@@ -45,6 +47,8 @@ void Player::update(float &elapsed) {
             vertical_velocity-=0.035f;
     else
         vertical_velocity =0;
+
+    hitbox.setPos({playerPos.x,playerPos.y,playerPos.z});
 }
 
 void Player::create() {

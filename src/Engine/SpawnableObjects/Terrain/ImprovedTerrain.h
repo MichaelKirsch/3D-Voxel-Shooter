@@ -43,6 +43,7 @@ public:
     bool isBorder(int x,int z){ return borderFactor(x,z)<1.f;};
     void update(float &elapsed) override;
     int getSize(){ return m_size;};
+    bool isBlock(glm::vec3 position);
     int getMaxTerrainHeight(){ return max_terrain_height;};
 
     int getHeightOfTerrain(int x,int z);

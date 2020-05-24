@@ -12,19 +12,15 @@ uniform float fogdistance;
 uniform vec3 sunpos;
 uniform vec4 suncolor;
 const float perc = 1.0/255;
-
+uniform mat4 view;
+uniform mat4 projection;
 
 
 void main() {
 
     vec3 lightDirection = normalize(fragPos-sunpos);
 
-    float lightStrength = 1.0- ((1.0/1000.0) * length(fragPos-sunpos));
-
-    float brightness = max(dot(-lightDirection,normalOut),0.4)*lightStrength;
-
-
-
+    float brightness =  max(dot(normalOut,-lightDirection),0.7);
 
     float fogFactor =0.f;
 
